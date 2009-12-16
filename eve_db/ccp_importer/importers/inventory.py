@@ -356,24 +356,6 @@ class Importer_invControlTowerResources(SQLImporter):
             imp_obj.min_security_level = row['minSecurityLevel']
             imp_obj.save()
         c.close()
-
-class Importer_typeActivityMaterials(SQLImporter):
-    def run_importer(self, conn):
-        c = conn.cursor()
-    
-        for row in c.execute('select * from typeActivityMaterials'):
-            blueprint_type = EVEInventoryType.objects.get(id=row['typeID'])
-            activity = ResearchAndMfgActivity.objects.get(id=row['activityID'])
-            required_type = EVEInventoryType.objects.get(id=row['requiredTypeID'])
-            actmaterial, created = EVETypeActivityMaterials.objects.get_or_create(blueprint_type=blueprint_type,
-                                                                                  activity=activity,
-                                                                                  required_type=required_type)
-    
-            actmaterial.quantity = row['quantity']
-            actmaterial.damage_per_job = row['damagePerJob']
-    
-            actmaterial.save()
-        c.close()
     
 class Importer_invTypeReactions(SQLImporter):
     """

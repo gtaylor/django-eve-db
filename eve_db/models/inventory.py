@@ -470,34 +470,6 @@ class EVEInventoryTypeReactions(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVETypeActivityMaterials(models.Model):
-    """
-    Stores materials and skills required for Blueprints and Artifacts
-    """
-    blueprint_type = models.ForeignKey(EVEInventoryType, blank=False,
-                                       null=False,
-                                       related_name='blueprint_materials_set')
-    activity = models.ForeignKey('ResearchAndMfgActivity', blank=False,
-                                 null=False,
-                                 related_name='activity_materials_set')
-    required_type = models.ForeignKey(EVEInventoryType, blank=False,
-                                      null=False,
-                                      related_name='required_materials_set')
-    quantity = models.IntegerField(blank=True, null=True)
-    damage_per_job = models.FloatField(blank=True, null=True)
-
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['id']
-        verbose_name = 'Activity Material'
-        verbose_name_plural = 'Activity Materials'
-
-    def __unicode__(self):
-        return self.blueprint_type
-
-    def __str__(self):
-        return self.__unicode__()
-    
 class ContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.

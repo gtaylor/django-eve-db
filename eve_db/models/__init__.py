@@ -6,7 +6,6 @@ one monolithic models.py.
 from core import *
 from inventory import *
 from map import *
-from eve_db.models import *
 from chr import *
 from npc import *
 from station import *
