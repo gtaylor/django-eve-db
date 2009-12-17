@@ -25,7 +25,7 @@ def list_tables(option, opt, value, parser):
     print "CCP Data Dump Table List"
     print "------------------------"
     for table in util.IMPORT_LIST:
-        print "%s" % table.__name__.replace('import_', '')
+        print "%s" % table.__name__.replace('Importer_', '')
     print "-- %d tables --" % len(util.IMPORT_LIST)
     # The -l argument is just used for listing, proceed no further.
     exit_with_succ()
