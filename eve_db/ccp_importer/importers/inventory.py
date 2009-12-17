@@ -282,7 +282,7 @@ class Importer_dgmTypeEffects(SQLImporter):
     def run_importer(self, conn):
         c = conn.cursor()
         
-        for row in c.execute('select *  from dgmTypeEffects order by typeID desc'):
+        for row in c.execute('select * from dgmTypeEffects'):
             type = EVEInventoryType.objects.get(id=row['typeID'])
             effect = EVEInventoryEffect.objects.get(id=row['effectID'])
             try:
