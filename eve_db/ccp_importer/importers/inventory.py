@@ -282,13 +282,16 @@ class Importer_dgmTypeEffects(SQLImporter):
     def run_importer(self, conn):
         c = conn.cursor()
         
-        for row in c.execute('select * from dgmTypeEffects'):
+        for row in c.execute('select *  from dgmTypeEffects order by typeID desc'):
             type = EVEInventoryType.objects.get(id=row['typeID'])
-            effect = EVEInventoryEffect.objects.get(id=row['effectID'])        
-            imp_obj, created = EVEInventoryTypeEffect.objects.get_or_create(
-                                                                    type=type,
-                                                                    effect=effect)
-            imp_obj.is_default = row['isDefault']
+            effect = EVEInventoryEffect.objects.get(id=row['effectID'])
+            try:
+                imp_obj = EVEInventoryTypeEffect.objects.get(type=type,
+                                                             effect=effect)
+            except EVEInventoryTypeEffect.DoesNotExist:
+                imp_obj = EVEInventoryTypeEffect(type=type, effect=effect)
+                
+            imp_obj.is_default = row['isDefault'] 
             imp_obj.save()
         c.close()
     
