@@ -189,7 +189,7 @@ class Importer_dgmTypeAttributes(SQLImporter):
         for row in c.execute('select * from dgmtypeattributes'):    
             inventory_type = EVEInventoryType.objects.get(id=row['typeid'])
             attribute = EVEInventoryAttributeType.objects.get(id=row['attributeid'])
-            imp_obj, created = EVEInventoryTypeAttributes.objects.get_or_create(inventory_type=inventory_type,
+            imp_obj, created = EVEInventoryTypeAttribute.objects.get_or_create(inventory_type=inventory_type,
                                                                                 attribute=attribute)
     
             if row['valueint']:
@@ -370,7 +370,7 @@ class Importer_invTypeReactions(SQLImporter):
         for row in c.execute('select * from invTypeReactions'):
             reaction_type = EVEInventoryType.objects.get(id=row['reactionTypeID'])
             type = EVEInventoryType.objects.get(id=row['typeID'])
-            imp_obj, created = EVEInventoryTypeReactions.objects.get_or_create(reaction_type=reaction_type,
+            imp_obj, created = EVEInventoryTypeReaction.objects.get_or_create(reaction_type=reaction_type,
                                                                                type=type)
             imp_obj.input = row['input']
             imp_obj.quantity = row['quantity']

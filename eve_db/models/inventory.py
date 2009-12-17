@@ -252,7 +252,7 @@ class EVEInventoryAttributeType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEInventoryTypeAttributes(models.Model):
+class EVEInventoryTypeAttribute(models.Model):
     inventory_type = models.ForeignKey(EVEInventoryType)
     attribute = models.ForeignKey(EVEInventoryAttributeType)
     value_int = models.IntegerField(blank=True, null=True)
@@ -441,7 +441,7 @@ class EVEPOSResource(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryTypeReactions(models.Model):
+class EVEInventoryTypeReaction(models.Model):
     """
     Reaction recipes for POSes.
     

@@ -45,9 +45,9 @@ class EVEInventoryTypeEffectAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'effect', 'is_default')
 admin.site.register(EVEInventoryTypeEffect, EVEInventoryTypeEffectAdmin)
 
-class EVEInventoryTypeReactionsAdmin(admin.ModelAdmin):
+class EVEInventoryTypeReactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'reaction_type', 'type', 'input')
-admin.site.register(EVEInventoryTypeReactions, EVEInventoryTypeReactionsAdmin)
+admin.site.register(EVEInventoryTypeReaction, EVEInventoryTypeReactionAdmin)
 
 class EVEPOSResourcePurposeAdmin(admin.ModelAdmin):
     list_display = ('id', 'purpose')
@@ -108,9 +108,9 @@ class EVEInventoryAttributeTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description')
 admin.site.register(EVEInventoryAttributeType, EVEInventoryAttributeTypeAdmin)
  
-class EVEInventoryTypeAttributesAdmin(admin.ModelAdmin):
+class EVEInventoryTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
-admin.site.register(EVEInventoryTypeAttributes, EVEInventoryTypeAttributesAdmin)
+admin.site.register(EVEInventoryTypeAttribute, EVEInventoryTypeAttributeAdmin)
 
 class EVEGraphicAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'name', 'icon_filename')
