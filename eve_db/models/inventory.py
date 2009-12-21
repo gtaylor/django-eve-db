@@ -170,7 +170,7 @@ class EVEInventoryTypeMaterial(models.Model):
     type = models.ForeignKey(EVEInventoryType, related_name='material_set')
     material_type = models.ForeignKey(EVEInventoryType, 
                                       related_name='itemtype_set')
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
     
     class Meta:
         app_label = 'eve_db'
