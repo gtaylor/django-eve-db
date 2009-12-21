@@ -125,6 +125,19 @@ class Importer_invTypes(SQLImporter):
             invtype.chance_of_duplicating = row['chanceOfDuplicating']
             invtype.save()
         c.close()
+        
+class Importer_invTypeMaterials(SQLImporter):
+    def run_importer(self, conn):
+        c = conn.cursor()
+        
+        for row in c.execute('select * from invTypeMaterials'):
+            item_type = EVEInventoryType.objects.get(id=row['typeID'])
+            material_type = EVEInventoryType.objects.get(id=row['materialTypeID'])
+            invmat, created = EVEInventoryTypeMaterial.objects.get_or_create(type=item_type,
+                                                                             material_type=material_type)
+            invmat.quantity = row['quantity']
+            invmat.save()
+        c.close()
     
 class Importer_invMetaTypes(SQLImporter):
     def run_importer(self, conn):

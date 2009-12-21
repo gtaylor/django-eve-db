@@ -162,6 +162,32 @@ class EVEInventoryType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
+class EVEInventoryTypeMaterial(models.Model):
+    """
+    These are materials required to produce an item type. Used for calculating
+    build requirements. 
+    """
+    type = models.ForeignKey(EVEInventoryType, related_name='material_set')
+    material_type = models.ForeignKey(EVEInventoryType, 
+                                      related_name='itemtype_set')
+    quantity = models.IntegerField()
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Inventory Type Material'
+        verbose_name_plural = 'Inventory Type Materials'
+        
+    def __unicode__(self):
+        if self.name:
+            return self.name
+        else:
+            return "%s: (%dx %s)" % (self.type.name, self.quantity,
+                                     self.material_type.name)
+    
+    def __str__(self):
+        return self.__unicode__()
+    
 class EVEInventoryMetaType(models.Model):
     """
     Relation between different variants of item (i.e. Tech-I, Faction, Tech-II). 
@@ -169,8 +195,10 @@ class EVEInventoryMetaType(models.Model):
     For that information see Attribute metaLevel (attributeID=633) in table 
     dgmTypeAttributes linked with type in question. 
     """
-    type = models.ForeignKey(EVEInventoryType, related_name='eveinventorymetatype_type_set')
-    parent_type = models.ForeignKey(EVEInventoryType, related_name='eveinventorymetatype_parent_type_set')
+    type = models.ForeignKey(EVEInventoryType, 
+                            related_name='inventorymetatype_type_set')
+    parent_type = models.ForeignKey(EVEInventoryType, 
+                            related_name='inventorymetatype_parent_type_set')
     meta_group = models.ForeignKey(EVEInventoryMetaGroup) 
     
     class Meta:
@@ -325,19 +353,19 @@ class EVEInventoryEffect(models.Model):
     is_assistance = models.BooleanField(default=False)
     duration_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                            blank=True, null=True,
-                                           related_name='eveinventoryeffectdurationeattribute')
+                                           related_name='inventoryeffectdurationeattribute')
     tracking_speed_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                                  blank=True, null=True,
-                                                 related_name='eveinventoryeffecttrackingspeedattribute')
+                                                 related_name='inventoryeffecttrackingspeedattribute')
     discharge_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                             blank=True, null=True,
-                                            related_name='eveinventoryeffectdischargeattribute')
+                                            related_name='inventoryeffectdischargeattribute')
     range_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                         blank=True, null=True,
-                                        related_name='eveinventoryeffectrangeattribute')
+                                        related_name='inventoryeffectrangeattribute')
     falloff_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                           blank=True, null=True,
-                                          related_name='eveinventoryeffectfalloffattribute')
+                                          related_name='inventoryeffectfalloffattribute')
     disallow_auto_repeat = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
     # Name of effect as displayed in game.
@@ -350,13 +378,13 @@ class EVEInventoryEffect(models.Model):
     sfx_name = models.CharField(max_length=100, blank=True)
     npc_usage_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                                    blank=True, null=True,
-                                                   related_name='eveinventoryeffectnpcusagechanceattribute')
+                                                   related_name='inventoryeffectnpcusagechanceattribute')
     npc_activation_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                                         blank=True, null=True,
-                                                        related_name='eveinventoryeffectnpcactivationchanceattribute')
+                                                        related_name='inventoryeffectnpcactivationchanceattribute')
     fitting_usage_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
                                                        blank=True, null=True,
-                                                       related_name='eveinventoryeffectfittingusagechanceattribute')
+                                                       related_name='inventoryeffectfittingusagechanceattribute')
     
     class Meta:
         app_label = 'eve_db'
@@ -451,10 +479,10 @@ class EVEInventoryTypeReaction(models.Model):
                    (1, 'Reaction material'))
     
     reaction_type = models.ForeignKey(EVEInventoryType,
-                    related_name='eveinventorytypereactions_reaction_type_set')
+                    related_name='inventorytypereactions_reaction_type_set')
     input = models.IntegerField(choices=INPUT_TYPES, blank=True, null=True)
     type = models.ForeignKey(EVEInventoryType,
-                    related_name='eveinventorytypereactions_type_set', 
+                    related_name='inventorytypereactions_type_set', 
                     help_text="Reaction result or material.")
     quantity = models.IntegerField(blank=True, null=True)
     
