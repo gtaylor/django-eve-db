@@ -16,9 +16,7 @@ class Importer_crpActivities(SQLImporter):
         c.close()
     
 class Importer_crpNPCCorporations(SQLImporter):
-    """
-    Needs EVEInventoryName to be imported beforehand.
-    """
+    DEPENDENCIES = ['chrFactions', 'eveNames', 'mapSolarSystems']
     def run_importer(self, conn):
         c = conn.cursor()
         

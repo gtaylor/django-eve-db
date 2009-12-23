@@ -18,6 +18,7 @@ class Importer_eveUnits(SQLImporter):
         c.close()
         
 class Importer_eveNames(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
     def run_importer(self, conn):
         c = conn.cursor()
 

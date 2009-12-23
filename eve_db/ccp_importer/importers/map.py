@@ -26,6 +26,7 @@ class Importer_mapUniverse(SQLImporter):
         c.close()
     
 class Importer_mapRegions(SQLImporter):
+    DEPENDENCIES = ['chrFactions']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -49,6 +50,7 @@ class Importer_mapRegions(SQLImporter):
         c.close()
 
 class Importer_mapConstellations(SQLImporter):
+    DEPENDENCIES = ['chrFactions', 'mapRegions']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -78,6 +80,8 @@ class Importer_mapConstellations(SQLImporter):
         c.close()
     
 class Importer_mapSolarSystems(SQLImporter):
+    DEPENDENCIES = ['chrFactions', 'mapRegions', 'mapConstellations',
+                    'invTypes']
     def run_importer(self, conn):
         c = conn.cursor()
         

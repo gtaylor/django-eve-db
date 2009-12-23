@@ -28,6 +28,7 @@ class Importer_invCategories(SQLImporter):
         c.close()
     
 class Importer_invGroups(SQLImporter):
+    DEPENDENCIES = ['eveGraphics']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -57,6 +58,7 @@ class Importer_invGroups(SQLImporter):
         c.close()
 
 class Importer_invMetaGroups(SQLImporter):
+    DEPENDENCIES = ['eveGraphics']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -72,6 +74,7 @@ class Importer_invMetaGroups(SQLImporter):
         c.close()
 
 class Importer_invMarketGroups(SQLImporter):
+    DEPENDENCIES = ['eveGraphics', 'invMarketGroups']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -95,6 +98,8 @@ class Importer_invMarketGroups(SQLImporter):
         c.close()
     
 class Importer_invTypes(SQLImporter):
+    DEPENDENCIES = ['eveGraphics', 'invMarketGroups', 'chrRaces',
+                    'invGroups']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -127,6 +132,7 @@ class Importer_invTypes(SQLImporter):
         c.close()
         
 class Importer_invTypeMaterials(SQLImporter):
+    DEPENDENCIES = ['invTypes']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -140,6 +146,7 @@ class Importer_invTypeMaterials(SQLImporter):
         c.close()
     
 class Importer_invMetaTypes(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invMetaGroups']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -167,6 +174,7 @@ class Importer_dgmAttributeCategories(SQLImporter):
         c.close()
 
 class Importer_dgmAttributeTypes(SQLImporter):
+    DEPENDENCIES = ['dgmAttributeCategories', 'eveGraphics', 'eveUnits']
     def run_importer(self, conn):
         c = conn.cursor()
     
@@ -196,6 +204,7 @@ class Importer_dgmAttributeTypes(SQLImporter):
         c.close()
 
 class Importer_dgmTypeAttributes(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'dgmAttributeTypes', 'dgmTypeAttributes']
     def run_importer(self, conn):
         c = conn.cursor()
     
@@ -216,6 +225,7 @@ class Importer_dgmTypeAttributes(SQLImporter):
 
     
 class Importer_dgmEffects(SQLImporter):
+    DEPENDENCIES = ['eveGraphics', 'dgmAttributeTypes']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -292,6 +302,7 @@ class Importer_dgmEffects(SQLImporter):
         c.close()
     
 class Importer_dgmTypeEffects(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'dgmEffects', 'dgmTypeEffects']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -309,6 +320,7 @@ class Importer_dgmTypeEffects(SQLImporter):
         c.close()
     
 class Importer_invFlags(SQLImporter):
+    DEPENDENCIES = ['invFlags']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -322,6 +334,7 @@ class Importer_invFlags(SQLImporter):
         c.close()
     
 class Importer_invBlueprintTypes(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
     def run_importer(self, conn):
         c = conn.cursor()
         
@@ -347,6 +360,7 @@ class Importer_invBlueprintTypes(SQLImporter):
         c.close()
     
 class Importer_invControlTowerResourcePurposes(SQLImporter):
+    DEPENDENCIES = ['invControlTowerResourcePurposes']
     def run_importer(self, conn):
         c = conn.cursor()
     
@@ -357,6 +371,7 @@ class Importer_invControlTowerResourcePurposes(SQLImporter):
         c.close()
     
 class Importer_invControlTowerResources(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invControlTowerResourcePurposes']
     def run_importer(self, conn):
         c = conn.cursor()
     
@@ -374,9 +389,7 @@ class Importer_invControlTowerResources(SQLImporter):
         c.close()
     
 class Importer_invTypeReactions(SQLImporter):
-    """
-    Import POS reactions.
-    """
+    DEPENDENCIES = ['invTypes']
     def run_importer(self, conn):
         c = conn.cursor()
     
@@ -392,6 +405,7 @@ class Importer_invTypeReactions(SQLImporter):
         c.close()
     
 class Importer_invContrabandTypes(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'chrFactions']
     def run_importer(self, conn):
         c = conn.cursor()
     
