@@ -58,10 +58,10 @@ class EVEPOSResourceAdmin(admin.ModelAdmin):
                     'quantity', 'faction')
 admin.site.register(EVEPOSResource, EVEPOSResourceAdmin)
 
-class ContrabandTypeAdmin(admin.ModelAdmin):
+class EVEContrabandTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'faction', 'standing_loss', 
                     'confiscate_min_sec', 'attack_min_sec', 'fine_by_value')
-admin.site.register(ContrabandType, ContrabandTypeAdmin)
+admin.site.register(EVEContrabandType, EVEContrabandTypeAdmin)
 
 class EVEInventoryBlueprintTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'blueprint_type', 'product_type', 'tech_level')

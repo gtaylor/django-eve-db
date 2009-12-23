@@ -412,7 +412,7 @@ class Importer_invContrabandTypes(SQLImporter):
         for row in c.execute('select * from invContrabandTypes'):
             faction = EVEFaction.objects.get(id=row['factionID'])
             type = EVEInventoryType.objects.get(id=row['typeID'])
-            imp_obj, created = ContrabandType.objects.get_or_create(faction=faction,
+            imp_obj, created = EVEContrabandType.objects.get_or_create(faction=faction,
                                                                     type=type)
             imp_obj.standing_loss = row['standingLoss']
             imp_obj.confiscate_min_sec = row['confiscateMinSec']

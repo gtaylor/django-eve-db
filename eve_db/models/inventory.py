@@ -498,7 +498,7 @@ class EVEInventoryTypeReaction(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class ContrabandType(models.Model):
+class EVEContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
     """
