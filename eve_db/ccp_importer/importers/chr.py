@@ -28,7 +28,7 @@ class Importer_chrFactions(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from chrFactions'):
-            imp_obj, created = Faction.objects.get_or_create(id=row['factionID'])
+            imp_obj, created = EVEFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.name = row['factionName']
             imp_obj.description = row['description']
             

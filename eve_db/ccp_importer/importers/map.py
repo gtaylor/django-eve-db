@@ -43,7 +43,7 @@ class Importer_mapRegions(SQLImporter):
             imp_obj.z_min = row['zMin']
             imp_obj.z_max = row['zMax']
             if row['factionID']:
-                faction, faction_created = Faction.objects.get_or_create(id=row['factionID'])
+                faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
                 imp_obj.faction = faction
             imp_obj.radius = row['radius']
             imp_obj.save()
@@ -73,7 +73,7 @@ class Importer_mapConstellations(SQLImporter):
                 imp_obj.region = region
                 
             if row['factionID']:
-                faction, faction_created = Faction.objects.get_or_create(id=row['factionID'])
+                faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
                 imp_obj.faction = faction
     
             imp_obj.save()
@@ -136,7 +136,7 @@ class Importer_mapSolarSystems(SQLImporter):
                 imp_obj.sun_type = EVEInventoryType.objects.get(id=row['sunTypeID'])
                 
             if row['factionID']:
-                faction, faction_created = Faction.objects.get_or_create(id=row['factionID'])
+                faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
                 imp_obj.faction = faction
     
             imp_obj.save()

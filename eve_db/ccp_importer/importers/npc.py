@@ -69,7 +69,7 @@ class Importer_crpNPCCorporations(SQLImporter):
             imp_obj.corridor_systems = row['corridor']
             imp_obj.hub_systems = row['hub']
             imp_obj.border_systems = row['border']
-            faction, faction_created = Faction.objects.get_or_create(id=row['factionID'])
+            faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
             imp_obj.size_factor = row['sizeFactor']
             imp_obj.station_count = row['stationCount']

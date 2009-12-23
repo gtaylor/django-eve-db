@@ -71,7 +71,7 @@ class NPCCorporation(models.Model):
     corridor_systems = models.IntegerField(default=0)
     hub_systems = models.IntegerField(default=0)
     border_systems = models.IntegerField(default=0)
-    faction = models.ForeignKey('Faction', blank=True, null=True)
+    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)

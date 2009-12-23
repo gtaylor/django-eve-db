@@ -90,7 +90,7 @@ class EVEAncestry(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class Faction(models.Model):
+class EVEFaction(models.Model):
     """
     chrFactions
     """

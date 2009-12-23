@@ -455,7 +455,7 @@ class EVEPOSResource(models.Model):
     purpose = models.ForeignKey(EVEPOSResourcePurpose, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
     min_security_level = models.IntegerField(blank=True, null=True)
-    faction = models.ForeignKey('Faction', blank=True, null=True)
+    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -502,7 +502,7 @@ class ContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
     """
-    faction = models.ForeignKey('Faction')
+    faction = models.ForeignKey('EVEFaction')
     type = models.ForeignKey(EVEInventoryType)
     standing_loss = models.FloatField(blank=True, null=True)
     confiscate_min_sec = models.FloatField(blank=True, null=True)
