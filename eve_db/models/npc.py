@@ -46,7 +46,7 @@ class NPCCorporation(models.Model):
     extent = models.CharField(choices=EXTENT_CHOICES, max_length=1,
                               blank=True)
     
-    solar_system = models.ForeignKey('SolarSystem', blank=True, null=True)
+    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
     investor1 = models.ForeignKey('self', blank=True, null=True,
                                   related_name='invested1_set')
     investor1_shares = models.IntegerField(blank=True, null=True)

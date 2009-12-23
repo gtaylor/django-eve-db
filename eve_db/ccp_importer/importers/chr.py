@@ -33,7 +33,7 @@ class Importer_chrFactions(SQLImporter):
             imp_obj.description = row['description']
             
             if row['solarSystemID']:
-                solar_system, ss_created = SolarSystem.objects.get_or_create(id=row['solarSystemID'])
+                solar_system, ss_created = EVESolarSystem.objects.get_or_create(id=row['solarSystemID'])
                 imp_obj.solar_system = solar_system
                 
             if row['corporationID']:

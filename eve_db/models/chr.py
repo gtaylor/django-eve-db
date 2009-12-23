@@ -96,7 +96,7 @@ class EVEFaction(models.Model):
     """
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    solar_system = models.ForeignKey('SolarSystem', blank=True, null=True,
+    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True,
                                      related_name='faction_set')
     corporation = models.ForeignKey('NPCCorporation', blank=True, null=True,
                                     related_name='faction_set')

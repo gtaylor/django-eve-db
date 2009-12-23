@@ -96,7 +96,7 @@ class EVEConstellation(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class SolarSystem(models.Model):
+class EVESolarSystem(models.Model):
     """
     mapSolarSystems
     """

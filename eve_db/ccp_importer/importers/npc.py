@@ -27,7 +27,7 @@ class Importer_crpNPCCorporations(SQLImporter):
             imp_obj.extent = row['extent']
             
             if row['solarSystemID']:
-                ssystem, created = SolarSystem.objects.get_or_create(id=row['solarSystemID'])
+                ssystem, created = EVESolarSystem.objects.get_or_create(id=row['solarSystemID'])
                 imp_obj.solar_system = ssystem
             
             if row['investorID1']:

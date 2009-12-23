@@ -86,7 +86,7 @@ class Importer_mapSolarSystems(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from mapSolarSystems'):
-            imp_obj, created = SolarSystem.objects.get_or_create(id=row['solarSystemID'])
+            imp_obj, created = EVESolarSystem.objects.get_or_create(id=row['solarSystemID'])
             imp_obj.name = row['solarSystemName']
             imp_obj.x = row['x']
             imp_obj.x_min = row['xMin']
