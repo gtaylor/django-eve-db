@@ -91,7 +91,7 @@ class EVENPCCorporation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class NPCCorporationDivision(models.Model):
+class EVENPCCorporationDivision(models.Model):
     """
     Used for NPC agents.
     

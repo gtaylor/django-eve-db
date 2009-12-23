@@ -129,9 +129,9 @@ class EVENPCCorporationAdmin(admin.ModelAdmin):
                     'size', 'extent')
 admin.site.register(EVENPCCorporation, EVENPCCorporationAdmin)
 
-class NPCCorporationDivisionAdmin(admin.ModelAdmin):
+class EVENPCCorporationDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'leader_type')
-admin.site.register(NPCCorporationDivision, NPCCorporationDivisionAdmin)
+admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
 
 class StationServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
