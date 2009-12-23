@@ -27,7 +27,7 @@ class EVERace(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class Bloodline(models.Model):
+class EVEBloodline(models.Model):
     """
     chrBloodlines
     """
@@ -68,7 +68,7 @@ class Ancestry(models.Model):
     chrAncestries
     """
     name = models.CharField(max_length=255, blank=True)
-    bloodline = models.ForeignKey(Bloodline,blank=True, null=True)
+    bloodline = models.ForeignKey(EVEBloodline,blank=True, null=True)
     description = models.TextField(blank=True)
     perception_bonus = models.IntegerField(default=0)
     willpower_bonus = models.IntegerField(default=0)

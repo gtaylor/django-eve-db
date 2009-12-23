@@ -53,7 +53,7 @@ class Importer_chrBloodlines(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from chrBloodlines'):
-            imp_obj, created = Bloodline.objects.get_or_create(id=row['bloodlineID'])
+            imp_obj, created = EVEBloodline.objects.get_or_create(id=row['bloodlineID'])
             imp_obj.name = row['bloodlineName']
             imp_obj.race = EVERace.objects.get(id=row['raceID'])
             imp_obj.description = row['description']
@@ -82,7 +82,7 @@ class Importer_chrAncestries(SQLImporter):
         for row in c.execute('select * from chrAncestries'):
             imp_obj, created = Ancestry.objects.get_or_create(id=row['ancestryID'])
             imp_obj.name = row['ancestryName']
-            imp_obj.bloodline = Bloodline.objects.get(id=row['bloodlineID'])
+            imp_obj.bloodline = EVEBloodline.objects.get(id=row['bloodlineID'])
             imp_obj.description = row['description']
             imp_obj.perception_bonus = row['perception']
             imp_obj.willpower_bonus = row['willpower']

@@ -8,9 +8,9 @@ class EVEInventoryCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'is_published')
 admin.site.register(EVEInventoryCategory, EVEInventoryCategoryAdmin)
 
-class BloodlineAdmin(admin.ModelAdmin):
+class EVEBloodlineAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'race', 'corporation')
-admin.site.register(Bloodline, BloodlineAdmin)
+admin.site.register(EVEBloodline, EVEBloodlineAdmin)
 
 class AncestryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'bloodline', 'short_description')
