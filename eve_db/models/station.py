@@ -1,6 +1,6 @@
 from django.db import models
 
-class ResearchAndMfgActivity(models.Model):
+class EVEResearchAndMfgActivity(models.Model):
     """
     Research and Manufacturing activities.
     """

@@ -9,7 +9,7 @@ class Importer_ramActivities(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from ramActivities'):
-            imp_obj, created = ResearchAndMfgActivity.objects.get_or_create(id=row['activityID'])
+            imp_obj, created = EVEResearchAndMfgActivity.objects.get_or_create(id=row['activityID'])
             imp_obj.name = row['activityName']
             imp_obj.description = row['description']
             
