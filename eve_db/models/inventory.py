@@ -78,7 +78,7 @@ class EVEInventoryCategory(models.Model):
 class EVEInventoryGroup(models.Model):
     """
     Inventory groups are a further sub-classification within an 
-    EVEInventoryCategory. For example, the 'Region' inventory group's
+    EVEInventoryCategory. For example, the 'EVERegion' inventory group's
     category is 'Celestial'.
     """
     category = models.ForeignKey(EVEInventoryCategory, blank=True, null=True)

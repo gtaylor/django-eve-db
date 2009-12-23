@@ -31,7 +31,7 @@ class Importer_mapRegions(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from mapRegions'):
-            imp_obj, created = Region.objects.get_or_create(id=row['regionID'])
+            imp_obj, created = EVERegion.objects.get_or_create(id=row['regionID'])
             imp_obj.name = row['regionName']
             imp_obj.x = row['x']
             imp_obj.x_min = row['xMin']
@@ -69,7 +69,7 @@ class Importer_mapConstellations(SQLImporter):
             imp_obj.radius = row['radius']
     
             if row['regionID']:
-                region, region_created = Region.objects.get_or_create(id=row['regionID'])
+                region, region_created = EVERegion.objects.get_or_create(id=row['regionID'])
                 imp_obj.region = region
                 
             if row['factionID']:
@@ -125,7 +125,7 @@ class Importer_mapSolarSystems(SQLImporter):
                 imp_obj.has_interconstellational_link = True
     
             if row['regionID']:
-                region, region_created = Region.objects.get_or_create(id=row['regionID'])
+                region, region_created = EVERegion.objects.get_or_create(id=row['regionID'])
                 imp_obj.region = region
                 
             if row['constellationID']:
