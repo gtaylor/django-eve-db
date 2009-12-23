@@ -80,7 +80,7 @@ class Importer_chrAncestries(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from chrAncestries'):
-            imp_obj, created = Ancestry.objects.get_or_create(id=row['ancestryID'])
+            imp_obj, created = EVEAncestry.objects.get_or_create(id=row['ancestryID'])
             imp_obj.name = row['ancestryName']
             imp_obj.bloodline = EVEBloodline.objects.get(id=row['bloodlineID'])
             imp_obj.description = row['description']
