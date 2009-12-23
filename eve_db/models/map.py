@@ -3,7 +3,7 @@ Map-related models.
 """
 from django.db import models
 
-class Universe(models.Model):
+class EVEUniverse(models.Model):
     """
     mapUniverse
     """

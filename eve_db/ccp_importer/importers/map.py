@@ -9,7 +9,7 @@ class Importer_mapUniverse(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from mapUniverse'):
-            imp_obj, created = Universe.objects.get_or_create(id=row['universeID'])
+            imp_obj, created = EVEUniverse.objects.get_or_create(id=row['universeID'])
             if row['universeName']:
                 imp_obj.name = row['universeName']
             imp_obj.x = row['x']

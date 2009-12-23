@@ -75,9 +75,9 @@ class EVEUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
 admin.site.register(EVEUnit, EVEUnitAdmin)
 
-class UniverseAdmin(admin.ModelAdmin):
+class EVEUniverseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
-admin.site.register(Universe, UniverseAdmin)
+admin.site.register(EVEUniverse, EVEUniverseAdmin)
 
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction')
