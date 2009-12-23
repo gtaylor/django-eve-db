@@ -29,7 +29,7 @@ class Importer_staServices(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from staServices'):
-            imp_obj, created = StationService.objects.get_or_create(id=row['serviceID'])
+            imp_obj, created = EVEStationService.objects.get_or_create(id=row['serviceID'])
             imp_obj.name = row['serviceName']
             imp_obj.description = row['description']
             imp_obj.save()

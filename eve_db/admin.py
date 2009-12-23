@@ -133,6 +133,6 @@ class EVENPCCorporationDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'leader_type')
 admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
 
-class StationServiceAdmin(admin.ModelAdmin):
+class EVEStationServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
-admin.site.register(StationService, StationServiceAdmin)
+admin.site.register(EVEStationService, EVEStationServiceAdmin)

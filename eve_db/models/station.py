@@ -22,7 +22,7 @@ class EVEResearchAndMfgActivity(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class StationService(models.Model):
+class EVEStationService(models.Model):
     """
     staServices
     """
