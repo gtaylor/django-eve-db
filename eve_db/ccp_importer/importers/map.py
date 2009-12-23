@@ -55,7 +55,7 @@ class Importer_mapConstellations(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from mapConstellations'):
-            imp_obj, created = Constellation.objects.get_or_create(id=row['constellationID'])
+            imp_obj, created = EVEConstellation.objects.get_or_create(id=row['constellationID'])
             imp_obj.name = row['constellationName']
             imp_obj.x = row['x']
             imp_obj.x_min = row['xMin']
@@ -129,7 +129,7 @@ class Importer_mapSolarSystems(SQLImporter):
                 imp_obj.region = region
                 
             if row['constellationID']:
-                constellation, constellation_created = Constellation.objects.get_or_create(id=row['constellationID'])
+                constellation, constellation_created = EVEConstellation.objects.get_or_create(id=row['constellationID'])
                 imp_obj.constellation = constellation
                 
             if row['sunTypeID']:

@@ -62,7 +62,7 @@ class EVERegion(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class Constellation(models.Model):
+class EVEConstellation(models.Model):
     """
     mapConstellations
     """
@@ -102,7 +102,7 @@ class SolarSystem(models.Model):
     """
     region = models.ForeignKey(EVERegion, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    constellation = models.ForeignKey(Constellation, blank=True, null=True)
+    constellation = models.ForeignKey(EVEConstellation, blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)

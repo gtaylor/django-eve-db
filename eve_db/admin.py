@@ -87,9 +87,9 @@ class EVEFactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'solar_system')
 admin.site.register(EVEFaction, EVEFactionAdmin)
 
-class ConstellationAdmin(admin.ModelAdmin):
+class EVEConstellationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'alliance')
-admin.site.register(Constellation, ConstellationAdmin)
+admin.site.register(EVEConstellation, EVEConstellationAdmin)
 
 class SolarSystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'constellation', 'region', 'faction', 
