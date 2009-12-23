@@ -124,10 +124,10 @@ class EVECorporateActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
 admin.site.register(EVECorporateActivity, EVECorporateActivityAdmin)
 
-class NPCCorporationAdmin(admin.ModelAdmin):
+class EVENPCCorporationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'description', 'station_count', 
                     'size', 'extent')
-admin.site.register(NPCCorporation, NPCCorporationAdmin)
+admin.site.register(EVENPCCorporation, EVENPCCorporationAdmin)
 
 class NPCCorporationDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'leader_type')

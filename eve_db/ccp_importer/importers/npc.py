@@ -21,7 +21,7 @@ class Importer_crpNPCCorporations(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from crpNPCCorporations'):
-            imp_obj, created = NPCCorporation.objects.get_or_create(id=row['corporationID'])
+            imp_obj, created = EVENPCCorporation.objects.get_or_create(id=row['corporationID'])
             imp_obj.name = EVEInventoryName.objects.get(id=row['corporationID']).name
             imp_obj.size = row['size']
             imp_obj.extent = row['extent']
@@ -31,31 +31,31 @@ class Importer_crpNPCCorporations(SQLImporter):
                 imp_obj.solar_system = ssystem
             
             if row['investorID1']:
-                investor1, created = NPCCorporation.objects.get_or_create(id=row['investorID1'])
+                investor1, created = EVENPCCorporation.objects.get_or_create(id=row['investorID1'])
                 imp_obj.investor1 = investor1
                 imp_obj.investor1_shares = row['investorShares1']
                 
             if row['investorID2']:
-                investor2, created = NPCCorporation.objects.get_or_create(id=row['investorID2'])
+                investor2, created = EVENPCCorporation.objects.get_or_create(id=row['investorID2'])
                 imp_obj.investor2 = investor2
                 imp_obj.investor2_shares = row['investorShares2']
                 
             if row['investorID3']:
-                investor3, created = NPCCorporation.objects.get_or_create(id=row['investorID3'])
+                investor3, created = EVENPCCorporation.objects.get_or_create(id=row['investorID3'])
                 imp_obj.investor3 = investor3
                 imp_obj.investor3_shares = row['investorShares3']
                 
             if row['investorID4']:
-                investor4, created = NPCCorporation.objects.get_or_create(id=row['investorID4'])
+                investor4, created = EVENPCCorporation.objects.get_or_create(id=row['investorID4'])
                 imp_obj.investor4 = investor4
                 imp_obj.investor4_shares = row['investorShares4']
                 
             if row['friendID']:
-                friend, created = NPCCorporation.objects.get_or_create(id=row['friendID'])
+                friend, created = EVENPCCorporation.objects.get_or_create(id=row['friendID'])
                 imp_obj.friendly_corp = friend
                 
             if row['enemyID']:
-                enemy, created = NPCCorporation.objects.get_or_create(id=row['enemyID'])
+                enemy, created = EVENPCCorporation.objects.get_or_create(id=row['enemyID'])
                 imp_obj.enemy_corp = enemy
             
             imp_obj.public_share_percent = row['publicShares']
@@ -83,7 +83,7 @@ class Importer_crpNPCDivisions(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from crpNPCDivisions'):
-            imp_obj, created = NPCCorporationDivision.objects.get_or_create(id=row['divisionID'])
+            imp_obj, created = EVENPCCorporationDivision.objects.get_or_create(id=row['divisionID'])
             imp_obj.name = row['divisionName']
             imp_obj.description = row['description']
             imp_obj.leader_type = row['leaderType']

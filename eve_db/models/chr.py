@@ -40,7 +40,7 @@ class EVEBloodline(models.Model):
     starter_ship_type = models.ForeignKey('EVEInventoryType', blank=True,
                                     null=True,
                                     related_name='bloodline_starter_ship_set')
-    corporation = models.ForeignKey('NPCCorporation', blank=True, null=True)
+    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
     starting_perception = models.IntegerField(default=0)
     starting_willpower = models.IntegerField(default=0)
     starting_charisma = models.IntegerField(default=0)
@@ -98,7 +98,7 @@ class EVEFaction(models.Model):
     description = models.TextField(blank=True)
     solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True,
                                      related_name='faction_set')
-    corporation = models.ForeignKey('NPCCorporation', blank=True, null=True,
+    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True,
                                     related_name='faction_set')
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)

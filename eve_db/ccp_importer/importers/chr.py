@@ -37,7 +37,7 @@ class Importer_chrFactions(SQLImporter):
                 imp_obj.solar_system = solar_system
                 
             if row['corporationID']:
-                corp, corp_created = NPCCorporation.objects.get_or_create(id=row['corporationID'])
+                corp, corp_created = EVENPCCorporation.objects.get_or_create(id=row['corporationID'])
                 imp_obj.corporation = corp
                 
             imp_obj.size_factor = row['sizeFactor']
