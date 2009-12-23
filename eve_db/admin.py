@@ -120,9 +120,9 @@ class EVERaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'short_description')
 admin.site.register(EVERace, EVERaceAdmin)
 
-class CorporateActivityAdmin(admin.ModelAdmin):
+class EVECorporateActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
-admin.site.register(CorporateActivity, CorporateActivityAdmin)
+admin.site.register(EVECorporateActivity, EVECorporateActivityAdmin)
 
 class NPCCorporationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'description', 'station_count', 

@@ -3,7 +3,7 @@ NPC Corporations, agents, and other fun.
 """
 from django.db import models
 
-class CorporateActivity(models.Model):
+class EVECorporateActivity(models.Model):
     """
     crpActivities
     """

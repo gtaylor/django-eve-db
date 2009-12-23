@@ -9,7 +9,7 @@ class Importer_crpActivities(SQLImporter):
         c = conn.cursor()
         
         for row in c.execute('select * from crpActivities'):
-            imp_obj, created = CorporateActivity.objects.get_or_create(id=row['activityID'])
+            imp_obj, created = EVECorporateActivity.objects.get_or_create(id=row['activityID'])
             imp_obj.name = row['activityName']
             imp_obj.description = row['description']
             imp_obj.save()
