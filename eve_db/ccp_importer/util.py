@@ -37,7 +37,7 @@ IMPORT_LIST = [Importer_chrFactions,
                Importer_chrAncestries,
                Importer_mapSolarSystems,
                #Importer_mapSolarSystemJumps,
-               #Importer_mapDenormalize,
+               Importer_mapDenormalize,
                #Importer_mapJumps,
                #Importer_mapCelestialStatistics,
                #Importer_mapLandmarks,
@@ -59,8 +59,8 @@ IMPORT_LIST = [Importer_chrFactions,
                #Importer_crpNPCCorporationDivisions,
                #Importer_crpNPCCorporationTrades,
                #Importer_crpNPCCorporationResearchFields,
-               #Importer_staStationTypes,
-               #Importer_staOperations,
+               Importer_staStationTypes,
+               Importer_staOperations,
                #Importer_staStations,
                #Importer_ramAssemblyLines,
                #Importer_staOperationServices,
@@ -97,10 +97,13 @@ def _recursively_find_dependencies(importer_class, importer_classes):
     for dependency in importer_class.DEPENDENCIES:
         # Get the importer class from the table name.
         dependency_class = getattr(importers, 'Importer_%s' % dependency)
-        # Add the dependency to the master list of importer classes to run.
-        importer_classes.add(dependency_class)
-        # Find the dependencies of this dependency.
-        _recursively_find_dependencies(dependency_class, importer_classes)
+        
+        # Protect against infinite recursion.
+        if dependency_class not in importer_classes:
+            # Add the dependency to the master list of importer classes to run.
+            importer_classes.add(dependency_class)
+            # Find the dependencies of this dependency.
+            _recursively_find_dependencies(dependency_class, importer_classes)
 
 def add_dependencies(importer_classes):
     """

@@ -145,3 +145,34 @@ class EVESolarSystem(models.Model):
 
     def __str__(self):
         return self.__unicode__()
+        
+class EVEMapDenormalize(models.Model):
+    """
+    mapDenormalize
+    """
+    type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    group = models.ForeignKey('EVEInventoryGroup', blank=True, null=True)
+    solar_system = models.ForeignKey(EVESolarSystem, blank=True, null=True)
+    constellation = models.ForeignKey(EVEConstellation, blank=True, null=True)
+    region = models.ForeignKey(EVERegion, blank=True, null=True)
+    orbit_id = models.IntegerField(blank=True, null=True)
+    x = models.FloatField(blank=True, null=True)
+    y = models.FloatField(blank=True, null=True)
+    z = models.FloatField(blank=True, null=True)
+    radius = models.FloatField(blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    security = models.FloatField(blank=True, null=True)
+    celestial_index = models.IntegerField(blank=True, null=True)
+    orbit_index = models.IntegerField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Denormalize'
+        verbose_name_plural = 'Denormalizations'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()

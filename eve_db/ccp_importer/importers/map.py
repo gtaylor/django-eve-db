@@ -141,3 +141,39 @@ class Importer_mapSolarSystems(SQLImporter):
     
             imp_obj.save()
         c.close()
+        
+class Importer_mapDenormalize(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invGroups', 'mapSolarSystems',
+                        'mapConstellations', 'mapRegions']
+    def run_importer(self, conn):
+        c = conn.cursor()
+            
+        for row in c.execute('select * from mapDenormalize'):
+            mapdenorm, created = EVEMapDenormalize.objects.get_or_create(id=row['itemID'])
+            mapdenorm.orbit_id = row['orbitID']
+            mapdenorm.x = row['x']
+            mapdenorm.y = row['y']
+            mapdenorm.z = row['z']
+            mapdenorm.radius = row['radius']
+            mapdenorm.name = row['itemName']
+            mapdenorm.security = row['security']
+            mapdenorm.celestial_index = row['celestialIndex']
+            mapdenorm.orbit_index = row['orbitIndex']
+                
+            if row['typeID']:
+                mapdenorm.type = EVEInventoryType.objects.get(id=row['typeID'])
+                    
+            if row['groupID']:
+                mapdenorm.group = EVEInventoryGroup.objects.get(id=row['groupID'])
+                    
+            if row['solarSystemID']:
+                mapdenorm.solar_system = EVESolarSystem.objects.get(id=row['solarSystemID'])
+                    
+            if row['constellationID']:
+                mapdenorm.constellation = EVEConstellation.objects.get(id=row['constellationID'])
+                    
+            if row['regionID']:
+                mapdenorm.region = EVERegion.objects.get(id=row['regionID'])
+                
+            mapdenorm.save()
+        c.close()

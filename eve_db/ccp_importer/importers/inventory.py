@@ -28,7 +28,7 @@ class Importer_invCategories(SQLImporter):
         c.close()
     
 class Importer_invGroups(SQLImporter):
-    DEPENDENCIES = ['eveGraphics']
+    DEPENDENCIES = ['eveGraphics', 'invCategories']
     def run_importer(self, conn):
         c = conn.cursor()
         

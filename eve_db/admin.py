@@ -136,3 +136,31 @@ admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
 class EVEStationServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
 admin.site.register(EVEStationService, EVEStationServiceAdmin)
+
+class EVEStationTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'docking_bay_graphic', 'hangar_graphic',
+                    'dock_entry_x', 'dock_orientation_x', 'dock_entry_y',
+                    'dock_orientation_y', 'dock_entry_z', 'dock_orientation_z',
+                    'operation', 'office_slots', 'reprocessing_efficiency', 'is_conquerable')
+admin.site.register(EVEStationType, EVEStationTypeAdmin)
+ 
+class EVEStationOperationAdmin(admin.ModelAdmin):
+    """
+    Unsolved issue when any of these are added to the admin panel:
+    'caldari_station_type', 'minmatar_station_type'
+    'amarr_station_type', 'gallente_station_type',
+    'jove_station_type'
+    
+    "Caught an exception while rendering: 'EVEStationType'
+    object has no attribute 'name'"
+    """
+     
+    list_display = ('id', 'activity_id', 'name', 'description',
+                    'fringe', 'corridor', 'hub', 'border', 'ratio')
+admin.site.register(EVEStationOperation, EVEStationOperationAdmin)
+ 
+class EVEMapDenormalizeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'group', 'constellation', 'region',
+                    'orbit_id', 'x', 'y', 'z', 'radius', 'name',
+                    'security', 'celestial_index', 'orbit_index')
+admin.site.register(EVEMapDenormalize, EVEMapDenormalizeAdmin)
