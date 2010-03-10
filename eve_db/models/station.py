@@ -115,3 +115,37 @@ class EVEStationOperation(models.Model):
     
     def __str__(self):
         return self.__unicode__()
+        
+class EVEStation(models.Model):
+    """
+    staStations
+    """
+    security = models.IntegerField(blank=True, null=True)
+    docking_cost_per_volume = models.FloatField(blank=True, null=True)
+    max_ship_volume_dockable = models.FloatField(blank=True, null=True)
+    office_rental_cost = models.IntegerField(blank=True, null=True)
+    operation = models.ForeignKey(EVEStationOperation, blank=True, null=True)
+    type = models.ForeignKey(EVEStationType, blank=True, null=True)
+    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
+    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
+    constellation = models.ForeignKey('EVEConstellation', blank=True, null=True)
+    region = models.ForeignKey('EVERegion', blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True)
+    x = models.FloatField(blank=True, null=True)
+    y = models.FloatField(blank=True, null=True)
+    z = models.FloatField(blank=True, null=True)
+    reprocessing_efficiency = models.FloatField(blank=True, null=True)
+    reprocessing_stations_take = models.FloatField(blank=True, null=True)
+    reprocessing_hangar_flag = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Station'
+        verbose_name_plural = 'Stations'
+        
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.__unicode__()

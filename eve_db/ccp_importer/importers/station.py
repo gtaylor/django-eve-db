@@ -112,4 +112,48 @@ class Importer_staOperations(SQLImporter):
             
             operation.save()
             db.reset_queries()
-        c.close()  
+        c.close()
+        
+class Importer_staStations(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'staOperations', 'staStationTypes',
+                    'chrNPCCorporations', 'mapSolarSystems', 
+                    'mapConstellations', 'mapRegions']
+    
+    def run_importer(self, conn):
+        c = conn.cursor()
+        
+        for row in c.execute('select * from staStations'):
+            station, created = EVEStation.objects.get_or_create(id=row['stationID'])
+            station.security = row['security']
+            station.docking_cost_per_volume = row['dockingCostPerVolume']
+            station.max_ship_volume_dockable = row['maxShipVolumeDockable']
+            station.office_rental_cost = row['officeRentalCost']
+            station.name = row['stationName']
+            station.x = row['x']
+            station.y = row['y']
+            station.z = row['z']
+            station.reprocessing_efficiency = row['reprocessingEfficiency']
+            station.reprocessing_stations_take = row['reprocessingStationsTake']
+            station.reprocessing_hangar_flag = row['reprocessingHangarFlag']
+            
+            if row['operationID']:
+                station.operation, created = EVEStationOperation.objects.get_or_create(id=row['operationID'])
+            
+            if row['stationTypeID']:
+                invtype, created = EVEInventoryType.objects.get_or_create(id=row['stationTypeID'])
+                station.type, created = EVEStationType.objects.get_or_create(type=invtype)
+                
+            if row['corporationID']:
+                station.corporation, created = EVENPCCorporation.objects.get_or_create(id=row['corporationID'])
+                
+            if row['solarSystemID']:
+                station.solar_system = EVESolarSystem.objects.get(id=row['solarSystemID'])
+                
+            if row['constellationID']:
+                station.constellation = EVEConstellation.objects.get(id=row['constellationID'])
+                
+            if row['regionID']:
+                station.region = EVERegion.objects.get(id=row['regionID'])
+                
+            station.save()
+        c.close()

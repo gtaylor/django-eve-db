@@ -164,3 +164,10 @@ class EVEMapDenormalizeAdmin(admin.ModelAdmin):
                     'orbit_id', 'x', 'y', 'z', 'radius', 'name',
                     'security', 'celestial_index', 'orbit_index')
 admin.site.register(EVEMapDenormalize, EVEMapDenormalizeAdmin)
+
+class EVEStationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'security',
+                    'office_rental_cost',
+                    'operation', 'type', 'corporation',
+                    'solar_system', 'constellation', 'region')
+admin.site.register(EVEStation, EVEStationAdmin)
