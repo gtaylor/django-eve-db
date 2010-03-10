@@ -2,6 +2,7 @@
 """
 Import various important system tables.
 """
+from django import db
 from eve_db.models import *
 from importer_classes import SQLImporter
 
@@ -15,6 +16,7 @@ class Importer_eveUnits(SQLImporter):
             imp_obj.display_name = row['displayname']
             imp_obj.description = row['description']
             imp_obj.save()
+            db.reset_queries()
         c.close()
         
 class Importer_eveNames(SQLImporter):
@@ -29,6 +31,7 @@ class Importer_eveNames(SQLImporter):
             imp_obj.group = EVEInventoryGroup.objects.get(id=row['groupID'])
             imp_obj.type = EVEInventoryType.objects.get(id=row['typeID'])
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_eveGraphics(SQLImporter):
@@ -52,4 +55,5 @@ class Importer_eveGraphics(SQLImporter):
             else:
                 graphic.is_obsolete = False
             graphic.save()
+            db.reset_queries()
         c.close()

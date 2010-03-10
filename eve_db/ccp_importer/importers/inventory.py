@@ -1,6 +1,7 @@
 """
 Import inventory data.
 """
+from django import db
 from eve_db.models import *
 from importer_classes import SQLImporter
 
@@ -25,6 +26,7 @@ class Importer_invCategories(SQLImporter):
                 category.is_published = False
     
             category.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invGroups(SQLImporter):
@@ -55,6 +57,7 @@ class Importer_invGroups(SQLImporter):
             group.is_published = self.parse_int_bool(row['published'])
     
             group.save()
+            db.reset_queries()
         c.close()
 
 class Importer_invMetaGroups(SQLImporter):
@@ -70,7 +73,9 @@ class Importer_invMetaGroups(SQLImporter):
             graphic_id = row['graphicID']
             if graphic_id:
                 imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_invMarketGroups(SQLImporter):
@@ -95,6 +100,7 @@ class Importer_invMarketGroups(SQLImporter):
             group.has_items = self.parse_int_bool(row['hasTypes'])
     
             group.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invTypes(SQLImporter):
@@ -128,7 +134,9 @@ class Importer_invTypes(SQLImporter):
                 invtype.graphic = EVEGraphic.objects.get(id=row['graphicID'])
                 
             invtype.chance_of_duplicating = row['chanceOfDuplicating']
+
             invtype.save()
+            db.reset_queries()
         c.close()
         
 class Importer_invTypeMaterials(SQLImporter):
@@ -142,7 +150,9 @@ class Importer_invTypeMaterials(SQLImporter):
             invmat, created = EVEInventoryTypeMaterial.objects.get_or_create(type=item_type,
                                                                              material_type=material_type)
             invmat.quantity = row['quantity']
+
             invmat.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invMetaTypes(SQLImporter):
@@ -159,6 +169,7 @@ class Importer_invMetaTypes(SQLImporter):
                                                     parent_type=parent_type,
                                                     meta_group=meta_group)
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_dgmAttributeCategories(SQLImporter):
@@ -171,6 +182,7 @@ class Importer_dgmAttributeCategories(SQLImporter):
             imp_obj.description = row['categorydescription']
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_dgmAttributeTypes(SQLImporter):
@@ -201,6 +213,7 @@ class Importer_dgmAttributeTypes(SQLImporter):
                 imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_dgmTypeAttributes(SQLImporter):
@@ -221,6 +234,7 @@ class Importer_dgmTypeAttributes(SQLImporter):
                 imp_obj.value_float = row['valuefloat']
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
     
@@ -299,6 +313,7 @@ class Importer_dgmEffects(SQLImporter):
                 imp_obj.fitting_usage_chance_attribute = EVEInventoryAttributeType.objects.get(id=row['fittingUsageChanceAttributeID'])
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_dgmTypeEffects(SQLImporter):
@@ -317,6 +332,7 @@ class Importer_dgmTypeEffects(SQLImporter):
                 
             imp_obj.is_default = row['isDefault'] 
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invFlags(SQLImporter):
@@ -331,6 +347,7 @@ class Importer_invFlags(SQLImporter):
             imp_obj.type_text = row['flagType']
             imp_obj.order = row['orderID']
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invBlueprintTypes(SQLImporter):
@@ -355,8 +372,8 @@ class Importer_invBlueprintTypes(SQLImporter):
             invtype.material_modifier = row['materialModifier']
             invtype.waste_factor = row['wasteFactor']
             invtype.max_production_limit = row['maxProductionLimit']
-    
             invtype.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invControlTowerResourcePurposes(SQLImporter):
@@ -402,6 +419,7 @@ class Importer_invTypeReactions(SQLImporter):
             imp_obj.quantity = row['quantity']
             
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_invContrabandTypes(SQLImporter):
@@ -420,4 +438,5 @@ class Importer_invContrabandTypes(SQLImporter):
             imp_obj.attack_min_sec = row['attackMinSec']
             
             imp_obj.save()
+            db.reset_queries()
         c.close()

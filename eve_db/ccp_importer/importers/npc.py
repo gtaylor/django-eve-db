@@ -1,6 +1,7 @@
 """
 Import NPC corp/agent data.
 """
+from django import db
 from eve_db.models import *
 from importer_classes import SQLImporter
 
@@ -76,6 +77,7 @@ class Importer_crpNPCCorporations(SQLImporter):
             imp_obj.station_system_count = row['stationSystemCount']
             imp_obj.description = row['description']
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_crpNPCDivisions(SQLImporter):
@@ -88,4 +90,5 @@ class Importer_crpNPCDivisions(SQLImporter):
             imp_obj.description = row['description']
             imp_obj.leader_type = row['leaderType']
             imp_obj.save()
+            db.reset_queries()
         c.close()

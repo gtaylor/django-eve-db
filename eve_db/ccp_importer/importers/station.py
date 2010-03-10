@@ -1,6 +1,7 @@
 """
 Import station related data.
 """
+from django import db
 from eve_db.models import *
 from importer_classes import SQLImporter
 
@@ -22,6 +23,7 @@ class Importer_ramActivities(SQLImporter):
                 imp_obj.is_published = False
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_staServices(SQLImporter):
@@ -33,6 +35,7 @@ class Importer_staServices(SQLImporter):
             imp_obj.name = row['serviceName']
             imp_obj.description = row['description']
             imp_obj.save()
+            db.reset_queries()
         c.close()
 
 class Importer_staStationTypes(SQLImporter):
@@ -67,6 +70,7 @@ class Importer_staStationTypes(SQLImporter):
                 statype.is_conquerable = True
                 
             statype.save()
+            db.reset_queries()
         c.close()
         
 class Importer_staOperations(SQLImporter):
@@ -107,4 +111,5 @@ class Importer_staOperations(SQLImporter):
                 operation.jove_station_type, created = EVEStationType.objects.get_or_create(type=invtype)
             
             operation.save()
+            db.reset_queries()
         c.close()  

@@ -1,6 +1,7 @@
 """
 Import map data.
 """
+from django import db
 from eve_db.models import *
 from importer_classes import SQLImporter
 
@@ -77,6 +78,7 @@ class Importer_mapConstellations(SQLImporter):
                 imp_obj.faction = faction
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
     
 class Importer_mapSolarSystems(SQLImporter):
@@ -140,6 +142,7 @@ class Importer_mapSolarSystems(SQLImporter):
                 imp_obj.faction = faction
     
             imp_obj.save()
+            db.reset_queries()
         c.close()
         
 class Importer_mapDenormalize(SQLImporter):
@@ -176,4 +179,5 @@ class Importer_mapDenormalize(SQLImporter):
                 mapdenorm.region = EVERegion.objects.get(id=row['regionID'])
                 
             mapdenorm.save()
+            db.reset_queries()
         c.close()
