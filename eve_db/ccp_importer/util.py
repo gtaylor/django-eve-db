@@ -136,8 +136,6 @@ def run_importers(importer_classes, include_deps=False):
     # Carry out the imports in order.
     for importer_class in ordered_importers:
         importer = importer_class()
-        importer_name = importer.__class__.__name__.split('_')[1]
-        print "  - %s" % importer_name
-        importer.run_importer(conn)
+        importer.prep_and_run_importer(conn)
         
     print "Import complete."
