@@ -10,9 +10,9 @@ import importers
 # that have not been written yet.
 IMPORT_LIST = [Importer_chrFactions,
                Importer_mapRegions,
-               #Importer_mapRegionJumps,
+               Importer_mapRegionJumps,
                Importer_mapConstellations,
-               #Importer_mapConstellationJumps,
+               Importer_mapConstellationJumps,
                #Importer_agtAgentTypes,
                Importer_crpNPCDivisions,
                Importer_crpActivities,

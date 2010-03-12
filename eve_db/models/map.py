@@ -62,6 +62,28 @@ class EVERegion(models.Model):
     def __str__(self):
         return self.__unicode__()
     
+class EVERegionJump(models.Model):
+    """
+    mapRegionJumps
+    """
+    from_region = models.ForeignKey(EVERegion, 
+                                    related_name='region_jumps_from_region_set')
+    to_region = models.ForeignKey(EVERegion,
+                                  related_name='region_jumps_to_region_set')
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Region Jump'
+        verbose_name_plural = 'Region Jumps'
+        
+    def __unicode__(self):
+        return "%s -> %s" % (self.from_region.name,
+                             self.to_region.name)
+        
+    def __str__(self):
+        return self.__unicode__()
+        
 class EVEConstellation(models.Model):
     """
     mapConstellations
@@ -93,6 +115,32 @@ class EVEConstellation(models.Model):
     def __unicode__(self):
         return self.name
 
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVEConstellationJump(models.Model):
+    """
+    mapConstellationJumps
+    """
+    from_region = models.ForeignKey(EVERegion, 
+                                  related_name='constellation_jumps_from_region_set')
+    from_constellation = models.ForeignKey(EVEConstellation,
+                                  related_name='constellation_jumps_from_constellation_set')
+    to_region = models.ForeignKey(EVERegion,
+                                  related_name='constellation_jumps_to_region_set')
+    to_constellation = models.ForeignKey(EVEConstellation,
+                                  related_name='constellation_jumps_to_constellation_set')
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Constellation Jump'
+        verbose_name_plural = 'Constellation Jumps'
+        
+    def __unicode__(self):
+        return "%s -> %s" % (self.from_constellation.name,
+                             self.to_constellation.name)
+        
     def __str__(self):
         return self.__unicode__()
     

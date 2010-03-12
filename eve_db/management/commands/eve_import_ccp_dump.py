@@ -55,7 +55,7 @@ def get_importer_classes_from_arg_list(arg_list):
     for arg in arg_list:
         importer_class = getattr(importers, 'Importer_%s' % arg, False)
         if importer_class not in util.IMPORT_LIST:
-            exit_with_error("No such table to import: %s" % arg)
+            exit_with_error("No such table to import: %s\n\rNOTE: Table names are case-sensitive." % arg)
         else:
             importer_classes.add(importer_class)
     return importer_classes
@@ -92,8 +92,8 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
                 print "No table names specified, importing all."
                 util.run_importers(util.IMPORT_LIST)
             else:
-                print "Importing: %s" % args
                 importers = get_importer_classes_from_arg_list(args)
+                print "Importing: %s" % args
                 
                 include_deps = options.get('include_deps')
                 if include_deps:

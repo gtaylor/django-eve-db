@@ -83,6 +83,15 @@ class EVERegionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction')
 admin.site.register(EVERegion, EVERegionAdmin)
 
+class EVERegionJumpAdmin(admin.ModelAdmin):
+    list_display = ('id', 'from_region', 'to_region')
+admin.site.register(EVERegionJump, EVERegionJumpAdmin)
+
+class EVEConstellationJumpAdmin(admin.ModelAdmin):
+    list_display = ('id', 'from_constellation', 'from_region', 
+                    'to_constellation', 'to_region')
+admin.site.register(EVEConstellationJump, EVEConstellationJumpAdmin)
+
 class EVEFactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'solar_system')
 admin.site.register(EVEFaction, EVEFactionAdmin)

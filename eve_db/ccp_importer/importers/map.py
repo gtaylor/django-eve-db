@@ -43,7 +43,16 @@ class Importer_mapRegions(SQLImporter):
 
         imp_obj.radius = row['radius']
         imp_obj.save()
+        
+class Importer_mapRegionJumps(SQLImporter):
+    DEPENDENCIES = ['mapRegions']
 
+    def import_row(self, row):
+        from_region = EVERegion.objects.get(id=row['fromRegionID'])
+        to_region = EVERegion.objects.get(id=row['toRegionID'])
+        imp_obj, created = EVERegionJump.objects.get_or_create(from_region=from_region,
+                                                               to_region=to_region)
+        
 class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
 
@@ -70,6 +79,19 @@ class Importer_mapConstellations(SQLImporter):
             imp_obj.faction = faction
 
         imp_obj.save()
+        
+class Importer_mapConstellationJumps(SQLImporter):
+    DEPENDENCIES = ['mapRegions', 'mapConstellations']
+
+    def import_row(self, row):
+        from_constellation = EVEConstellation.objects.get(id=row['fromConstellationID'])
+        from_region = EVERegion.objects.get(id=row['fromRegionID'])
+        to_constellation = EVEConstellation.objects.get(id=row['toConstellationID'])
+        to_region = EVERegion.objects.get(id=row['toRegionID'])
+        imp_obj, created = EVEConstellationJump.objects.get_or_create(from_constellation=from_constellation,
+                                                               from_region=from_region,
+                                                               to_constellation=to_constellation,
+                                                               to_region=to_region)
     
 class Importer_mapSolarSystems(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions', 'mapConstellations',
