@@ -112,3 +112,21 @@ class EVENPCCorporationDivision(models.Model):
     
     def __str__(self):
         return self.__unicode__()
+    
+class EVEAgentType(models.Model):
+    """
+    agtAgentTypes
+    """
+    name = models.CharField(max_length=255)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Agent Type'
+        verbose_name_plural = 'Agent Types'
+        
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.__unicode__()

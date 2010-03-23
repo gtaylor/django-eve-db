@@ -154,16 +154,6 @@ class EVEStationTypeAdmin(admin.ModelAdmin):
 admin.site.register(EVEStationType, EVEStationTypeAdmin)
  
 class EVEStationOperationAdmin(admin.ModelAdmin):
-    """
-    Unsolved issue when any of these are added to the admin panel:
-    'caldari_station_type', 'minmatar_station_type'
-    'amarr_station_type', 'gallente_station_type',
-    'jove_station_type'
-    
-    "Caught an exception while rendering: 'EVEStationType'
-    object has no attribute 'name'"
-    """
-     
     list_display = ('id', 'activity_id', 'name', 'description',
                     'fringe', 'corridor', 'hub', 'border', 'ratio')
 admin.site.register(EVEStationOperation, EVEStationOperationAdmin)
@@ -180,3 +170,7 @@ class EVEStationAdmin(admin.ModelAdmin):
                     'operation', 'type', 'corporation',
                     'solar_system', 'constellation', 'region')
 admin.site.register(EVEStation, EVEStationAdmin)
+
+class EVEAgentTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+admin.site.register(EVEAgentType, EVEAgentTypeAdmin)

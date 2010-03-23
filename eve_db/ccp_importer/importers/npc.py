@@ -10,6 +10,11 @@ class Importer_crpActivities(SQLImporter):
         imp_obj.name = row['activityName']
         imp_obj.description = row['description']
         imp_obj.save()
+        
+class Importer_agtAgentTypes(SQLImporter):
+    def import_row(self, row):
+        imp_obj, created = EVEAgentType.objects.get_or_create(name=row['agentType'])
+        imp_obj.save()
     
 class Importer_crpNPCCorporations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'eveNames', 'mapSolarSystems']
