@@ -83,3 +83,26 @@ class Importer_crpNPCDivisions(SQLImporter):
         imp_obj.description = row['description']
         imp_obj.leader_type = row['leaderType']
         imp_obj.save()
+        
+class Importer_agtAgents(SQLImporter):
+    DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
+                    'eveNames', 'agtAgentTypes']
+    def import_row(self, row):
+        imp_obj, created = EVEAgent.objects.get_or_create(id=row['agentID'])
+        imp_obj.division = EVENPCCorporationDivision.objects.get(id=row['divisionID'])
+        imp_obj.corporation = EVENPCCorporation.objects.get(id=row['corporationID'])
+        imp_obj.location = EVEMapDenormalize.objects.get(id=row['locationID'])
+        imp_obj.level = row['level']
+        imp_obj.quality = row['quality']
+        imp_obj.type = EVEAgentType.objects.get(id=row['agentTypeID'])
+        imp_obj.name = EVEInventoryName.objects.get(id=row['agentID']).name
+        imp_obj.save()
+        
+class Importer_agtConfig(SQLImporter):
+    DEPENDENCIES = ['agtAgents']
+    def import_row(self, row):
+        agent = EVEAgent.objects.get(id=row['agentID'])
+        imp_obj, created = EVEAgentConfig.objects.get_or_create(agent=agent,
+                                                                key=row['k'])
+        imp_obj.value = row['v']
+        imp_obj.save()

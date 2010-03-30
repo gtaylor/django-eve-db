@@ -1,6 +1,6 @@
 from django.db import models
 
-class EVEResearchAndMfgActivity(models.Model):
+class EVERamActivity(models.Model):
     """
     Research and Manufacturing activities.
     """
@@ -15,6 +15,27 @@ class EVEResearchAndMfgActivity(models.Model):
         ordering = ['id']
         verbose_name = 'Research and Mfg activity'
         verbose_name_plural = 'Research and Mfg activities'
+        
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVERamAssemblyLineType(models.Model):
+    name = models.CharField(max_length=100, blank=True)
+    description = models.CharField(max_length=100, blank=True)
+    base_time_multiplier = models.FloatField(blank=True, null=True)
+    base_material_multiplier = models.FloatField(blank=True, null=True)
+    volume = models.FloatField(blank=True, null=True)
+    activity = models.ForeignKey(EVERamActivity, blank=True, null=True)
+    min_cost_per_hour = models.FloatField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Assembly Line Type'
+        verbose_name_plural = 'Assembly Line Types'
         
     def __unicode__(self):
         return self.name

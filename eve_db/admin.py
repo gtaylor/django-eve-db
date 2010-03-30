@@ -67,9 +67,15 @@ class EVEInventoryBlueprintTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'blueprint_type', 'product_type', 'tech_level')
 admin.site.register(EVEInventoryBlueprintType, EVEInventoryBlueprintTypeAdmin)
 
-class EVEResearchAndMfgActivityAdmin(admin.ModelAdmin):
+class EVERamActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'icon_filename', 'is_published')
-admin.site.register(EVEResearchAndMfgActivity, EVEResearchAndMfgActivityAdmin)
+admin.site.register(EVERamActivity, EVERamActivityAdmin)
+
+class EVERamAssemblyLineTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'base_time_multiplier',
+                    'base_material_multiplier', 'activity',
+                    'min_cost_per_hour')
+admin.site.register(EVERamAssemblyLineType, EVERamAssemblyLineTypeAdmin)
  
 class EVEUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
@@ -104,6 +110,16 @@ class EVESolarSystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'constellation', 'region', 'faction', 
                     'alliance', 'security_class', 'security_level')
 admin.site.register(EVESolarSystem, EVESolarSystemAdmin)
+
+class EVESolarSystemJumpAdmin(admin.ModelAdmin):
+    list_display = ('id', 'from_solar_system', 'from_constellation', 
+                    'from_region', 'to_solar_system', 'to_constellation', 
+                    'to_region')
+admin.site.register(EVESolarSystemJump, EVESolarSystemJumpAdmin)
+
+class EVEStargateJumpAdmin(admin.ModelAdmin):
+    list_display = ('id', 'origin_gate', 'destination_gate')
+admin.site.register(EVEStargateJump, EVEStargateJumpAdmin)
  
 class EVEInventoryAttributeCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
@@ -164,6 +180,15 @@ class EVEMapDenormalizeAdmin(admin.ModelAdmin):
                     'security', 'celestial_index', 'orbit_index')
 admin.site.register(EVEMapDenormalize, EVEMapDenormalizeAdmin)
 
+class EVECelestialStatisticAdmin(admin.ModelAdmin):
+    list_display = ('id', 'celestial')
+admin.site.register(EVECelestialStatistic, EVECelestialStatisticAdmin)
+
+class EVELandmarkAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'solar_system',
+                    'importance', 'radius')
+admin.site.register(EVELandmark, EVELandmarkAdmin)
+
 class EVEStationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'security',
                     'office_rental_cost',
@@ -171,6 +196,15 @@ class EVEStationAdmin(admin.ModelAdmin):
                     'solar_system', 'constellation', 'region')
 admin.site.register(EVEStation, EVEStationAdmin)
 
+class EVEAgentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'type', 'division', 'corporation', 'location',
+                    'quality', 'level') 
+admin.site.register(EVEAgent, EVEAgentAdmin)
+
 class EVEAgentTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 admin.site.register(EVEAgentType, EVEAgentTypeAdmin)
+
+class EVEAgentConfigAdmin(admin.ModelAdmin):
+    list_display = ('id', 'agent', 'key', 'value')
+admin.site.register(EVEAgentConfig, EVEAgentConfigAdmin)

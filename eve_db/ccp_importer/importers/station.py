@@ -6,7 +6,7 @@ from importer_classes import SQLImporter
 
 class Importer_ramActivities(SQLImporter):
     def import_row(self, row):
-        imp_obj, created = EVEResearchAndMfgActivity.objects.get_or_create(id=row['activityID'])
+        imp_obj, created = EVERamActivity.objects.get_or_create(id=row['activityID'])
         imp_obj.name = row['activityName']
         imp_obj.description = row['description']
         
@@ -18,6 +18,19 @@ class Importer_ramActivities(SQLImporter):
         else:
             imp_obj.is_published = False
 
+        imp_obj.save()
+        
+class Importer_ramAssemblyLineTypes(SQLImporter):
+    DEPENDENCIES = ['ramActivities']
+    def import_row(self, row):
+        imp_obj, created = EVERamAssemblyLineType.objects.get_or_create(id=row['assemblyLineTypeID'])
+        imp_obj.name = row['assemblyLineTypeName']
+        imp_obj.description = row['description']
+        imp_obj.base_time_multiplier = row['baseTimeMultiplier']
+        imp_obj.base_material_multiplier = row['baseMaterialMultiplier']
+        imp_obj.volume = row['volume']
+        imp_obj.activity = EVERamActivity.objects.get(id=row['activityID'])
+        imp_obj.min_cost_per_hour = row['minCostPerHour']
         imp_obj.save()
 
 class Importer_staServices(SQLImporter):

@@ -154,6 +154,32 @@ class Importer_mapSolarSystems(SQLImporter):
 
         imp_obj.save()
         
+class Importer_mapSolarSystemJumps(SQLImporter):
+    DEPENDENCIES = ['mapRegions', 'mapConstellations', 'mapSolarSystems']
+
+    def import_row(self, row):
+        from_constellation = EVEConstellation.objects.get(id=row['fromConstellationID'])
+        from_region = EVERegion.objects.get(id=row['fromRegionID'])
+        from_solar_system = EVESolarSystem.objects.get(id=row['fromSolarSystemID'])
+        to_constellation = EVEConstellation.objects.get(id=row['toConstellationID'])
+        to_region = EVERegion.objects.get(id=row['toRegionID'])
+        to_solar_system = EVESolarSystem.objects.get(id=row['toSolarSystemID'])
+        imp_obj, created = EVESolarSystemJump.objects.get_or_create(from_constellation=from_constellation,
+                                                                    from_region=from_region,
+                                                                    to_constellation=to_constellation,
+                                                                    to_region=to_region,
+                                                                    from_solar_system=from_solar_system,
+                                                                    to_solar_system=to_solar_system)
+
+class Importer_mapJumps(SQLImporter):
+    DEPENDENCIES = ['mapDenormalize']
+
+    def import_row(self, row):
+        origin_gate = EVEMapDenormalize.objects.get(id=row['stargateID'])
+        destination_gate = EVEMapDenormalize.objects.get(id=row['celestialID'])
+        imp_obj, created = EVEStargateJump.objects.get_or_create(origin_gate=origin_gate,
+                                                                 destination_gate=destination_gate)
+        
 class Importer_mapDenormalize(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invGroups', 'mapSolarSystems',
                         'mapConstellations', 'mapRegions']
@@ -186,3 +212,59 @@ class Importer_mapDenormalize(SQLImporter):
             mapdenorm.region = EVERegion.objects.get(id=row['regionID'])
             
         mapdenorm.save()
+
+class Importer_mapLandmarks(SQLImporter):
+    DEPENDENCIES = ['mapSolarSystems', 'eveGraphics']
+
+    def import_row(self, row):
+        imp_obj, created = EVELandmark.objects.get_or_create(id=row['landmarkID'])
+        imp_obj.name = row['landmarkName']
+        imp_obj.description = row['description']
+        imp_obj.x = row['x']
+        imp_obj.y = row['y']
+        imp_obj.z = row['z']
+        imp_obj.radius = row['radius']
+        imp_obj.importance = row['importance']
+        
+        if row['url2d']:
+            imp_obj.url_2d = row['url2d']
+
+        if row['locationID']:
+            imp_obj.solar_system = EVESolarSystem.objects.get(id=row['locationID'])
+            
+        if row['graphicID']:
+            imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+
+        imp_obj.save()
+
+class Importer_mapCelestialStatistics(SQLImporter):
+    DEPENDENCIES = ['mapDenormalize']
+
+    def import_row(self, row):
+        celestial = EVEMapDenormalize.objects.get(id=row['celestialID'])
+        imp_obj, created = EVECelestialStatistic.objects.get_or_create(celestial=celestial)
+        imp_obj.temperature = row['temperature']
+        imp_obj.spectral_class = row['spectralClass']
+        imp_obj.luminosity = row['luminosity']
+        imp_obj.age = row['age']
+        imp_obj.life = row['life']
+        imp_obj.orbit_radius = row['orbitRadius']
+        imp_obj.eccentricity = row['eccentricity']
+        imp_obj.mass_dust = row['massDust']
+        imp_obj.mass_gas = row['massGas']
+        imp_obj.density = row['density']
+        imp_obj.surface_gravity = row['surfaceGravity']
+        imp_obj.escape_velocity = row['escapeVelocity']
+        imp_obj.orbit_period = row['orbitPeriod']
+        imp_obj.rotation_rate = row['rotationRate']
+        imp_obj.pressure = row['pressure']
+        imp_obj.radius = row['radius']
+        imp_obj.mass = row['mass']
+        
+        if row['locked'] == 1:
+            imp_obj.is_locked = True
+        
+        if row['fragmented'] == 1:
+            imp_obj.is_fragmented = True
+
+        imp_obj.save()

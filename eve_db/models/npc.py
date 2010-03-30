@@ -130,3 +130,48 @@ class EVEAgentType(models.Model):
     
     def __str__(self):
         return self.__unicode__()
+    
+class EVEAgent(models.Model):
+    """
+    agtAgents
+    """
+    name = models.CharField(max_length=255, blank=True)
+    division = models.ForeignKey(EVENPCCorporationDivision, blank=True,
+                                 null=True)
+    corporation = models.ForeignKey(EVENPCCorporation, blank=True, null=True)
+    location = models.ForeignKey('EVEMapDenormalize', blank=True, null=True)
+    level = models.IntegerField(blank=True, null=True)
+    quality = models.IntegerField(blank=True, null=True)
+    type = models.ForeignKey(EVEAgentType, blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Agent'
+        verbose_name_plural = 'Agents'
+        
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVEAgentConfig(models.Model):
+    """
+    agtConfig
+    """
+    agent = models.ForeignKey(EVEAgent)
+    key = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Agent Config'
+        verbose_name_plural = 'Agent Configs'
+        
+    def __unicode__(self):
+        return "%s %s=%s" % (self.agent.name, self.key, self.value)
+    
+    def __str__(self):
+        return self.__unicode__()

@@ -123,13 +123,13 @@ class EVEConstellationJump(models.Model):
     mapConstellationJumps
     """
     from_region = models.ForeignKey(EVERegion, 
-                                  related_name='constellation_jumps_from_region_set')
+                                    related_name='constellation_jumps_from_region_set')
     from_constellation = models.ForeignKey(EVEConstellation,
-                                  related_name='constellation_jumps_from_constellation_set')
+                                           related_name='constellation_jumps_from_constellation_set')
     to_region = models.ForeignKey(EVERegion,
                                   related_name='constellation_jumps_to_region_set')
     to_constellation = models.ForeignKey(EVEConstellation,
-                                  related_name='constellation_jumps_to_constellation_set')
+                                         related_name='constellation_jumps_to_constellation_set')
     
     class Meta:
         app_label = 'eve_db'
@@ -193,6 +193,96 @@ class EVESolarSystem(models.Model):
 
     def __str__(self):
         return self.__unicode__()
+    
+class EVESolarSystemJump(models.Model):
+    """
+    mapSolarSystemJumps
+    """
+    from_region = models.ForeignKey(EVERegion, blank=True, null=True,
+                                    related_name='solar_system_jumps_from_region_set')
+    from_constellation = models.ForeignKey(EVEConstellation, blank=True, 
+                                           null=True,
+                                  related_name='solar_system_jumps_from_constellation_set')
+    from_solar_system = models.ForeignKey(EVESolarSystem,
+                                          related_name='solar_system_jumps_from_solar_system_set')
+    to_region = models.ForeignKey(EVERegion, blank=True, null=True,
+                                  related_name='solar_system_jumps_to_region_set')
+    to_constellation = models.ForeignKey(EVEConstellation, blank=True, 
+                                         null=True,
+                                         related_name='solar_system_jumps_to_constellation_set')
+    to_solar_system = models.ForeignKey(EVESolarSystem,
+                                        related_name='solar_system_jumps_to_solar_system_set')
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Solar System Jump'
+        verbose_name_plural = 'Solar System Jumps'
+        
+    def __unicode__(self):
+        return "%s -> %s" % (self.from_solar_system.name,
+                             self.to_solar_system.name)
+        
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVEStargateJump(models.Model):
+    """
+    mapJumps
+    """
+    origin_gate = models.ForeignKey('EVEMapDenormalize',
+                                    related_name='stargate_jump_origin_set')
+    destination_gate = models.ForeignKey('EVEMapDenormalize',
+                                         related_name='stargate_jump_destination_set')
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Stargate Jump'
+        verbose_name_plural = 'Stargate Jumps'
+        
+    def __unicode__(self):
+        return "%s -> %s" % (self.origin_gate, self.destination_gate)
+        
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVECelestialStatistic(models.Model):
+    """
+    mapCelestialStatistics
+    """
+    celestial = models.ForeignKey('EVEMapDenormalize')
+    temperature = models.FloatField(blank=True, null=True)
+    spectral_class = models.CharField(max_length=255, blank=True)
+    luminousity = models.FloatField(blank=True, null=True)
+    age = models.FloatField(blank=True, null=True)
+    life = models.FloatField(blank=True, null=True)
+    orbit_radius = models.FloatField(blank=True, null=True)
+    eccentricity = models.FloatField(blank=True, null=True)
+    mass_dust = models.FloatField(blank=True, null=True)
+    mass_gas = models.FloatField(blank=True, null=True)
+    is_fragmented = models.BooleanField(default=False)
+    density = models.FloatField(blank=True, null=True)
+    surface_gravity = models.FloatField(blank=True, null=True)
+    escape_velocity = models.FloatField(blank=True, null=True)
+    orbit_period = models.FloatField(blank=True, null=True)
+    rotation_rate = models.FloatField(blank=True, null=True)
+    is_locked = models.BooleanField(default=False)
+    pressure = models.FloatField(blank=True, null=True)
+    radius = models.FloatField(blank=True, null=True)
+    mass = models.FloatField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Celestial Statistic'
+        verbose_name_plural = 'Celestial Statistics'
+        
+    def __unicode__(self):
+        return "%s stats" % self.celestial.name
+        
+    def __str__(self):
+        return self.__unicode__()
         
 class EVEMapDenormalize(models.Model):
     """
@@ -218,6 +308,33 @@ class EVEMapDenormalize(models.Model):
         ordering = ['id']
         verbose_name = 'Denormalize'
         verbose_name_plural = 'Denormalizations'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVELandmark(models.Model):
+    """
+    mapLandmarks
+    """
+    name = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
+    x = models.FloatField(blank=True, null=True)
+    y = models.FloatField(blank=True, null=True)
+    z = models.FloatField(blank=True, null=True)
+    radius = models.FloatField(blank=True, null=True)
+    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    importance = models.IntegerField(blank=True, null=True)
+    url_2d = models.CharField(max_length=255, blank=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Landmark'
+        verbose_name_plural = 'Landmarks'
 
     def __unicode__(self):
         return self.name
