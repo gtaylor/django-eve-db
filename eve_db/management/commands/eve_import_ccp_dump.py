@@ -60,6 +60,18 @@ def get_importer_classes_from_arg_list(arg_list):
             importer_classes.add(importer_class)
     return importer_classes
 
+def get_importers_for_start_at_import(specified_importers):
+    """
+    This function replaces the user-specified importer list (which should only
+    be one importer to start at), replacing it with the specified importer
+    and every importer in the master util.IMPORT_LIST that is sequentially
+    after the specified importer.
+    """
+    importer = list(specified_importers)[0]
+    importer_index = util.IMPORT_LIST.index(importer)
+    specified_importers = util.IMPORT_LIST[importer_index:]
+    return specified_importers
+
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false', dest='interactive', default=True,
@@ -71,6 +83,10 @@ class Command(BaseCommand):
         make_option("-l", "--list", action="callback",
                           callback=list_tables,
                           help="List all of the tables in the CCP dump and exit."),
+        make_option("-s", "--start-at", action="store_true",
+                          dest="start_at_import",
+                          help="""Starts and continues the import process at
+                                  the specified table."""),
     )
     help = """This importer script will either import one or all tables from
 the CCP data dump. If no arguments are specified, all tables will be imported."""
@@ -92,14 +108,22 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
                 print "No table names specified, importing all."
                 util.run_importers(util.IMPORT_LIST)
             else:
-                importers = get_importer_classes_from_arg_list(args)
+                specified_importers = get_importer_classes_from_arg_list(args)
+                start_at_import = options.get('start_at_import')
                 print "Importing: %s" % args
                 
                 include_deps = options.get('include_deps')
-                if include_deps:
-                    print "Calculating dependencies."
-
-                util.run_importers(importers, include_deps=include_deps)
+                if include_deps and not start_at_import:
+                    print "Including dependencies."
+                    
+                if start_at_import:
+                    # User wishes to start the import process at a specific
+                    # table name. Import the specified importer, and
+                    # everything after it.
+                    specified_importers = get_importers_for_start_at_import(specified_importers)
+                    
+                util.run_importers(specified_importers, 
+                                   include_deps=include_deps)
         except KeyboardInterrupt:
             print "Terminating early..."
             exit_with_succ()
