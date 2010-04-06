@@ -91,9 +91,9 @@ class EVENPCCorporation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVENPCCorporationDivision(models.Model):
+class EVENPCDivision(models.Model):
     """
-    Used for NPC agents.
+    Agent division types.
     
     crpNPCDivisions
     """
@@ -104,15 +104,81 @@ class EVENPCCorporationDivision(models.Model):
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
-        verbose_name = 'NPC Corporation Division'
-        verbose_name_plural = 'NPC Corporation Division'
+        verbose_name = 'NPC Division'
+        verbose_name_plural = 'NPC Divisions'
         
     def __unicode__(self):
         return self.name
     
     def __str__(self):
         return self.__unicode__()
+
+class EVENPCCorporationDivision(models.Model):
+    """
+    Agent divisions available in corporations.
     
+    crpNPCCorporationDivisions
+    """
+    corporation = models.ForeignKey(EVENPCCorporation)
+    division = models.ForeignKey(EVENPCDivision)
+    size = models.IntegerField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'NPC Corporation Division'
+        verbose_name_plural = 'NPC Corporation Divisions'
+        
+    def __unicode__(self):
+        return "%s: %s" % (self.corporation, self.division)
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVENPCCorporationTrade(models.Model):
+    """
+    Market items the corporation buys or sells. Supply/demand has been removed 
+    from dumps, see:
+    http://www.eveonline.com/ingameboard.asp?a=topic&threadID=835467&page=2#32. 
+    
+    crpNPCCorporationTrades
+    """
+    corporation = models.ForeignKey(EVENPCCorporation)
+    type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'NPC Corporation Trade'
+        verbose_name_plural = 'NPC Corporation Trades'
+        
+    def __unicode__(self):
+        return "%s: %s" % (self.corporation, self.type)
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVENPCCorporationResearchField(models.Model):
+    """
+    Research fields for R&D agents in corporations. 
+    
+    crpNPCCorporationResearchFields
+    """
+    corporation = models.ForeignKey(EVENPCCorporation)
+    skill = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'NPC Corporation Research Field'
+        verbose_name_plural = 'NPC Corporation Research Fields'
+        
+    def __unicode__(self):
+        return "%s: %s" % (self.corporation, self.skill)
+    
+    def __str__(self):
+        return self.__unicode__()
+
 class EVEAgentType(models.Model):
     """
     agtAgentTypes
@@ -136,7 +202,7 @@ class EVEAgent(models.Model):
     agtAgents
     """
     name = models.CharField(max_length=255, blank=True)
-    division = models.ForeignKey(EVENPCCorporationDivision, blank=True,
+    division = models.ForeignKey(EVENPCDivision, blank=True,
                                  null=True)
     corporation = models.ForeignKey(EVENPCCorporation, blank=True, null=True)
     location = models.ForeignKey('EVEMapDenormalize', blank=True, null=True)

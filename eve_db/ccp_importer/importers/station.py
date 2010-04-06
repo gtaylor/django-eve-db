@@ -22,6 +22,7 @@ class Importer_ramActivities(SQLImporter):
         
 class Importer_ramAssemblyLineTypes(SQLImporter):
     DEPENDENCIES = ['ramActivities']
+
     def import_row(self, row):
         imp_obj, created = EVERamAssemblyLineType.objects.get_or_create(id=row['assemblyLineTypeID'])
         imp_obj.name = row['assemblyLineTypeName']
@@ -31,6 +32,71 @@ class Importer_ramAssemblyLineTypes(SQLImporter):
         imp_obj.volume = row['volume']
         imp_obj.activity = EVERamActivity.objects.get(id=row['activityID'])
         imp_obj.min_cost_per_hour = row['minCostPerHour']
+        imp_obj.save()
+
+class Importer_staOperationServices(SQLImporter):
+    DEPENDENCIES = ['staOperations', 'staServices']
+    
+    def import_row(self, row):
+        operation = EVEStationOperation.objects.get(id=row['operationID'])
+        service = EVEStationService.objects.get(id=row['serviceID'])
+        imp_obj, created = EVEStationOperationServices.objects.get_or_create(
+                                                    operation=operation,
+                                                    service=service)
+        imp_obj.save()
+
+class Importer_ramAssemblyLines(SQLImporter):
+    DEPENDENCIES = ['ramActivities', 'ramAssemblyLineTypes', 'staStations',
+                    'crpNPCCorporations']
+
+    def import_row(self, row):
+        assembly_line_type = EVERamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
+        station = EVEStation.objects.get(id=row['containerID'])
+        owner = EVENPCCorporation.objects.get(id=row['ownerID'])
+        activity = EVERamActivity.objects.get(id=row['activityID'])
+        
+        imp_obj, created = EVERamAssemblyLine.objects.get_or_create(id=row['assemblyLineID'])
+        imp_obj.name = assembly_line_type.name
+        imp_obj.assembly_line_type = assembly_line_type
+        imp_obj.station = station
+        imp_obj.ui_grouping_id = row['UIGroupingID']
+        imp_obj.cost_install = row['costInstall']
+        imp_obj.cost_per_hour = row['costPerHour']
+        imp_obj.discount_per_good_standing_point = row['discountPerGoodStandingPoint']
+        imp_obj.surcharge_per_bad_standing_point = row['surchargePerBadStandingPoint']
+        imp_obj.minimum_standing = row['minimumStanding']
+        imp_obj.minimum_char_security = row['minimumCharSecurity']
+        imp_obj.minimum_corp_security = row['minimumCorpSecurity']
+        imp_obj.maximum_char_security = row['maximumCharSecurity']
+        imp_obj.maximum_corp_security = row['maximumCorpSecurity']
+        imp_obj.owner = owner
+        imp_obj.activity = activity
+        imp_obj.save
+        
+class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
+    DEPENDENCIES = ['ramAssemblyLineTypes', 'invCategories']
+    
+    def import_row(self, row):
+        ass_type = EVERamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
+        category = EVEInventoryCategory.objects.get(id=row['categoryID'])
+        imp_obj, created = EVERamAssemblyLineTypeDetailPerCategory.objects.get_or_create(
+                                                    assembly_line_type=ass_type,
+                                                    category=category)
+        imp_obj.time_multiplier = row['timeMultiplier']
+        imp_obj.material_multiplier = row['materialMultiplier']
+        imp_obj.save()
+        
+class Importer_ramAssemblyLineTypeDetailPerGroup(SQLImporter):
+    DEPENDENCIES = ['ramAssemblyLineTypes', 'invGroups']
+    
+    def import_row(self, row):
+        ass_type = EVERamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
+        group = EVEInventoryGroup.objects.get(id=row['groupID'])
+        imp_obj, created = EVERamAssemblyLineTypeDetailPerGroup.objects.get_or_create(
+                                                    assembly_line_type=ass_type,
+                                                    group=group)
+        imp_obj.time_multiplier = row['timeMultiplier']
+        imp_obj.material_multiplier = row['materialMultiplier']
         imp_obj.save()
 
 class Importer_staServices(SQLImporter):
@@ -44,31 +110,29 @@ class Importer_staStationTypes(SQLImporter):
     DEPENDENCIES = ['eveGraphics', 'staOperations', 'invTypes']
     
     def import_row(self, row):
-        invtype, created = EVEInventoryType.objects.get_or_create(id=row['stationTypeID'])
-        statype, created = EVEStationType.objects.get_or_create(type=invtype)
-        statype.type = invtype
-        statype.dock_entry_x = row['dockEntryX']
-        statype.dock_orientation_x = row['dockOrientationX']
-        statype.dock_entry_y = row['dockEntryY']
-        statype.dock_orientation_y = row['dockOrientationY']
-        statype.dock_entry_z = row['dockEntryZ']
-        statype.dock_orientation_z = row['dockOrientationZ']
-        statype.office_slots = row['officeSlots']
-        statype.reprocessing_efficiency = row['reprocessingEfficiency']
+        imp_obj, created = EVEStationType.objects.get_or_create(id=row['stationTypeID'])
+        imp_obj.dock_entry_x = row['dockEntryX']
+        imp_obj.dock_orientation_x = row['dockOrientationX']
+        imp_obj.dock_entry_y = row['dockEntryY']
+        imp_obj.dock_orientation_y = row['dockOrientationY']
+        imp_obj.dock_entry_z = row['dockEntryZ']
+        imp_obj.dock_orientation_z = row['dockOrientationZ']
+        imp_obj.office_slots = row['officeSlots']
+        imp_obj.reprocessing_efficiency = row['reprocessingEfficiency']
             
         if row['dockingBayGraphicID']:
-            statype.docking_bay_graphic = EVEGraphic.objects.get(id=row['dockingBayGraphicID'])
+            imp_obj.docking_bay_graphic = EVEGraphic.objects.get(id=row['dockingBayGraphicID'])
             
         if row['hangarGraphicID']:
-            statype.hangar_graphic = EVEGraphic.objects.get(id=row['hangarGraphicID'])
+            imp_obj.hangar_graphic = EVEGraphic.objects.get(id=row['hangarGraphicID'])
             
         if row['operationID']:
-            statype.operation, created = EVEStationOperation.objects.get_or_create(id=row['operationID'])
+            imp_obj.operation, created = EVEStationOperation.objects.get_or_create(id=row['operationID'])
         
         if row['conquerable'] == 1:
-            statype.is_conquerable = True
+            imp_obj.is_conquerable = True
             
-        statype.save()
+        imp_obj.save()
         
 class Importer_staOperations(SQLImporter):
     DEPENDENCIES = ['staStationTypes']
@@ -105,7 +169,24 @@ class Importer_staOperations(SQLImporter):
             operation.jove_station_type, created = EVEStationType.objects.get_or_create(type=invtype)
         
         operation.save()
-        
+
+class Importer_ramAssemblyLineStations(SQLImporter):
+    DEPENDENCIES = ['staStations', 'ramAssemblyLineTypes', 'staStationTypes',
+                    'chrNPCCorporations', 'mapSolarSystems', 
+                    'mapRegions']
+
+    def import_row(self, row):
+        station = EVEStation.objects.get(id=row['stationID'])
+        assembly_line_type = EVERamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
+        imp_obj, created = EVERamAssemblyLineStations.objects.get_or_create(station=station,
+                                                                            assembly_line_type=assembly_line_type)
+        imp_obj.station_type = EVEStationType.objects.get(id=row['stationTypeID'])
+        imp_obj.owner = EVENPCCorporation.objects.get(id=row['ownerID'])
+        imp_obj.solar_system = EVESolarSystem.objects.get(id=row['solarSystemID'])
+        imp_obj.region = EVERegion.objects.get(id=row['regionID'])
+        imp_obj.quantity = row['quantity']
+        imp_obj.save()
+
 class Importer_staStations(SQLImporter):
     DEPENDENCIES = ['invTypes', 'staOperations', 'staStationTypes',
                     'chrNPCCorporations', 'mapSolarSystems', 

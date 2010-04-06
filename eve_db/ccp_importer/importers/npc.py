@@ -11,6 +11,37 @@ class Importer_crpActivities(SQLImporter):
         imp_obj.description = row['description']
         imp_obj.save()
         
+class Importer_crpNPCCorporationDivisions(SQLImporter):
+    DEPENDENCIES = ['crpNPCDivisions', 'crpNPCCorporations']
+    
+    def import_row(self, row):
+        corporation = EVENPCCorporation.objects.get(id=row['corporationID'])
+        division = EVENPCDivision.objects.get(id=row['divisionID'])
+        imp_obj, created = EVENPCCorporationDivision.objects.get_or_create(corporation=corporation,
+                                                                           division=division)
+        imp_obj.size = row['size']
+        imp_obj.save()
+        
+class Importer_crpNPCCorporationTrades(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'crpNPCCorporations']
+    
+    def import_row(self, row):
+        corporation = EVENPCCorporation.objects.get(id=row['corporationID'])
+        type = EVEInventoryType.objects.get(id=row['typeID'])
+        imp_obj, created = EVENPCCorporationTrade.objects.get_or_create(corporation=corporation)
+        imp_obj.type = type
+        imp_obj.save()
+        
+class Importer_crpNPCCorporationResearchFields(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'crpNPCCorporations']
+    
+    def import_row(self, row):
+        corporation = EVENPCCorporation.objects.get(id=row['corporationID'])
+        skill = EVEInventoryType.objects.get(id=row['skillID'])
+        imp_obj, created = EVENPCCorporationResearchField.objects.get_or_create(corporation=corporation)
+        imp_obj.skill = skill
+        imp_obj.save()
+        
 class Importer_agtAgentTypes(SQLImporter):
     def import_row(self, row):
         imp_obj, created = EVEAgentType.objects.get_or_create(name=row['agentType'])
@@ -78,7 +109,7 @@ class Importer_crpNPCCorporations(SQLImporter):
     
 class Importer_crpNPCDivisions(SQLImporter):
     def import_row(self, row):
-        imp_obj, created = EVENPCCorporationDivision.objects.get_or_create(id=row['divisionID'])
+        imp_obj, created = EVENPCDivision.objects.get_or_create(id=row['divisionID'])
         imp_obj.name = row['divisionName']
         imp_obj.description = row['description']
         imp_obj.leader_type = row['leaderType']
@@ -89,7 +120,7 @@ class Importer_agtAgents(SQLImporter):
                     'eveNames', 'agtAgentTypes']
     def import_row(self, row):
         imp_obj, created = EVEAgent.objects.get_or_create(id=row['agentID'])
-        imp_obj.division = EVENPCCorporationDivision.objects.get(id=row['divisionID'])
+        imp_obj.division = EVENPCDivision.objects.get(id=row['divisionID'])
         imp_obj.corporation = EVENPCCorporation.objects.get(id=row['corporationID'])
         imp_obj.location = EVEMapDenormalize.objects.get(id=row['locationID'])
         imp_obj.level = row['level']

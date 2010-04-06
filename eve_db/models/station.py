@@ -42,6 +42,97 @@ class EVERamAssemblyLineType(models.Model):
     
     def __str__(self):
         return self.__unicode__()
+    
+class EVERamAssemblyLine(models.Model):
+    """
+    ramAssemblyLines
+    """
+    # Just a denormalized assembly_line_type.name.
+    name = models.CharField(max_length=255, blank=True)
+    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType, blank=True,
+                                           null=True)
+    station = models.ForeignKey('EVEStation', blank=True, null=True)
+    ui_grouping_id = models.IntegerField(blank=True, null=True)
+    cost_install = models.FloatField(blank=True, null=True)
+    cost_per_hour = models.FloatField(blank=True, null=True)
+    discount_per_good_standing_point = models.FloatField(blank=True, null=True)
+    surcharge_per_bad_standing_point = models.FloatField(blank=True, null=True)
+    minimum_standing = models.FloatField(blank=True, null=True)
+    minimum_char_security = models.FloatField(blank=True, null=True)
+    minimum_corp_security = models.FloatField(blank=True, null=True)
+    maximum_char_security = models.FloatField(blank=True, null=True)
+    maximum_corp_security = models.FloatField(blank=True, null=True)
+    owner = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
+    activity = models.ForeignKey('EVERamActivity', blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Assembly Line'
+        verbose_name_plural = 'Assembly Lines'
+        
+    def __unicode__(self):
+        return self.assembly_line_type
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVERamAssemblyLineTypeDetailPerCategory(models.Model):
+    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType)
+    category = models.ForeignKey('EVEInventoryCategory')
+    time_multiplier = models.FloatField(blank=True, null=True)
+    material_multiplier = models.FloatField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Assembly Line Detail per Category'
+        verbose_name_plural = 'Assembly Line Details per Category'
+        
+    def __unicode__(self):
+        return self.assembly_line_type.name
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVERamAssemblyLineTypeDetailPerGroup(models.Model):
+    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType)
+    group = models.ForeignKey('EVEInventoryGroup')
+    time_multiplier = models.FloatField(blank=True, null=True)
+    material_multiplier = models.FloatField(blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Assembly Line Detail per Group'
+        verbose_name_plural = 'Assembly Line Details per Group'
+        
+    def __unicode__(self):
+        return self.assembly_line_type.name
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVERamAssemblyLineStations(models.Model):
+    station = models.ForeignKey('EVEStation')
+    assembly_line_type = models.ForeignKey('EVERamAssemblyLineType')
+    quantity = models.IntegerField(blank=True, null=True)
+    station_type = models.ForeignKey('EVEStationType', blank=True, null=True)
+    owner = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
+    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
+    region = models.ForeignKey('EVERegion', blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Assembly Line Station'
+        verbose_name_plural = 'Assembly Line Stations'
+        
+    def __unicode__(self):
+        return "%s: %s" % (self.station, self.assembly_line_type.name)
+    
+    def __str__(self):
+        return self.__unicode__()
 
 class EVEStationService(models.Model):
     """
@@ -66,7 +157,6 @@ class EVEStationType(models.Model):
     """
     staStationTypes
     """
-    type = models.ForeignKey('EVEInventoryType', related_name='stationtype_set')
     docking_bay_graphic = models.ForeignKey('EVEGraphic',
                                             related_name='docking_bay_graphic', 
                                             blank=True, null=True)
@@ -91,7 +181,7 @@ class EVEStationType(models.Model):
         verbose_name_plural = 'Station Types'
         
     def __unicode__(self):
-        return self.type.name
+        return "Station Type %d" % self.id
     
     def __str__(self):
         return self.__unicode__()
@@ -167,6 +257,27 @@ class EVEStation(models.Model):
         
     def __unicode__(self):
         return self.name
+    
+    def __str__(self):
+        return self.__unicode__()
+    
+class EVEStationOperationServices(models.Model):
+    """
+    staOperationServices
+    
+    Services per operations. 
+    """
+    operation = models.ForeignKey(EVEStationOperation)
+    service = models.ForeignKey(EVEStationService)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Station Operation Service'
+        verbose_name_plural = 'Station Operation Services'
+        
+    def __unicode__(self):
+        return "%s: %s" % (self.operation, self.service)
     
     def __str__(self):
         return self.__unicode__()

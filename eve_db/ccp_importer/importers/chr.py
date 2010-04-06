@@ -18,6 +18,22 @@ class Importer_chrRaces(SQLImporter):
             imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
 
         imp_obj.save()
+        
+class Importer_chrAttributes(SQLImporter):
+    DEPENDENCIES = ['eveGraphics']
+
+    def import_row(self, row):
+        imp_obj, created = EVECharAttribute.objects.get_or_create(id=row['attributeID'])
+        imp_obj.name = row['attributeName']
+        imp_obj.short_description = row['shortDescription']
+        imp_obj.description = row['description']
+        imp_obj.notes = row['notes']
+        
+        graphic_id = row['graphicID']
+        if graphic_id:
+            imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+
+        imp_obj.save()
 
 class Importer_chrFactions(SQLImporter):
     DEPENDENCIES = ['mapSolarSystems', 'crpNPCCorporations']

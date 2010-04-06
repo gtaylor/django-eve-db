@@ -89,6 +89,30 @@ class EVEAncestry(models.Model):
     
     def __str__(self):
         return self.__unicode__()
+    
+class EVECharAttribute(models.Model):
+    """
+    chrAttributes
+    
+    Player attributes.
+    """
+    name = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    short_description = models.TextField(blank=True)
+    notes = models.TextField(blank=True)
+    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Character Attribute'
+        verbose_name_plural = 'Character Attributes'
+        
+    def __unicode__(self):
+        return self.name
+    
+    def __str__(self):
+        return self.__unicode__()
 
 class EVEFaction(models.Model):
     """

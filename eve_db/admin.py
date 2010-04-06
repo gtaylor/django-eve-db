@@ -16,6 +16,11 @@ class EVEAncestryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'bloodline', 'short_description')
 admin.site.register(EVEAncestry, EVEAncestryAdmin)
 
+class EVECharAttributeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'short_description')
+    list_display_links = ('id', 'name')
+admin.site.register(EVECharAttribute, EVECharAttributeAdmin)
+
 class EVEInventoryMetaGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'graphic')
 admin.site.register(EVEInventoryMetaGroup, EVEInventoryMetaGroupAdmin)
@@ -71,11 +76,33 @@ class EVERamActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'icon_filename', 'is_published')
 admin.site.register(EVERamActivity, EVERamActivityAdmin)
 
+class EVERamAssemblyLineAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'station', 'owner', 'activity',
+                    'minimum_char_security', 'cost_per_hour')
+admin.site.register(EVERamAssemblyLine, EVERamAssemblyLineAdmin)
+
+class EVERamAssemblyLineStationsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'station', 'assembly_line_type', 'quantity',
+                    'station_type', 'owner', 'solar_system', 'region')
+admin.site.register(EVERamAssemblyLineStations, EVERamAssemblyLineStationsAdmin)
+
 class EVERamAssemblyLineTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'base_time_multiplier',
                     'base_material_multiplier', 'activity',
                     'min_cost_per_hour')
 admin.site.register(EVERamAssemblyLineType, EVERamAssemblyLineTypeAdmin)
+
+class EVERamAssemblyLineTypeDetailPerCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'assembly_line_type', 'category',
+                    'time_multiplier', 'material_multiplier')
+admin.site.register(EVERamAssemblyLineTypeDetailPerCategory,
+                    EVERamAssemblyLineTypeDetailPerCategoryAdmin)
+
+class EVERamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'assembly_line_type', 'group',
+                    'time_multiplier', 'material_multiplier')
+admin.site.register(EVERamAssemblyLineTypeDetailPerGroup,
+                    EVERamAssemblyLineTypeDetailPerGroupAdmin)
  
 class EVEUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
@@ -149,14 +176,31 @@ class EVECorporateActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
 admin.site.register(EVECorporateActivity, EVECorporateActivityAdmin)
 
+class EVENPCCorporationDivisionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'corporation', 'division', 'size')
+admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
+
 class EVENPCCorporationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'description', 'station_count', 
                     'size', 'extent')
 admin.site.register(EVENPCCorporation, EVENPCCorporationAdmin)
 
-class EVENPCCorporationDivisionAdmin(admin.ModelAdmin):
+class EVENPCCorporationTradeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'corporation', 'type')
+admin.site.register(EVENPCCorporationTrade, EVENPCCorporationTradeAdmin)
+
+class EVENPCCorporationResearchFieldAdmin(admin.ModelAdmin):
+    list_display = ('id', 'corporation', 'skill')
+admin.site.register(EVENPCCorporationResearchField,
+                    EVENPCCorporationResearchFieldAdmin)
+
+class EVENPCDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'leader_type')
-admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
+admin.site.register(EVENPCDivision, EVENPCDivisionAdmin)
+
+class EVEStationOperationServicesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'operation', 'service')
+admin.site.register(EVEStationOperationServices, EVEStationOperationServicesAdmin)
 
 class EVEStationServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
@@ -208,3 +252,24 @@ admin.site.register(EVEAgentType, EVEAgentTypeAdmin)
 class EVEAgentConfigAdmin(admin.ModelAdmin):
     list_display = ('id', 'agent', 'key', 'value')
 admin.site.register(EVEAgentConfig, EVEAgentConfigAdmin)
+
+class CrtCategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+admin.site.register(CrtCategory, CrtCategoryAdmin)
+
+class CrtClassAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description')
+admin.site.register(CrtClass, CrtClassAdmin)
+
+class CrtCertificateAdmin(admin.ModelAdmin):
+    list_display = ('id', 'category', 'cert_class', 'grade', 'corporation',
+                    'icon_num', 'description')
+admin.site.register(CrtCertificate, CrtCertificateAdmin)
+
+class CrtRelationshipAdmin(admin.ModelAdmin):
+    list_display = ('id', 'parent', 'parent_type', 'parent_level', 'child')
+admin.site.register(CrtRelationship, CrtRelationshipAdmin)
+
+class CrtRecommendationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ship_type', 'certificate', 'recommendation_level')
+admin.site.register(CrtRecommendation, CrtRecommendationAdmin)
