@@ -4,39 +4,15 @@ This module holds inventory/item-related models.
 from xml.dom import minidom
 from django.db import models
     
-class EVEInventoryName(models.Model):
-    """
-    This appears to be something used to search everything at once. Most of
-    the stuff in this table have models with a 'name' field on them. The CCP
-    dump doesn't use the eveNames table directly many times.
-    
-    Things covered by this model include space objects, corporations, and
-    people.
-    """
-    name = models.CharField(max_length=255)
-    category = models.ForeignKey('EVEInventoryCategory', blank=True, null=True)
-    group = models.ForeignKey('EVEInventoryGroup', blank=True, null=True)
-    type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
-    
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['id']
-        verbose_name = 'Name'
-        verbose_name_plural = 'Names'
-        
-    def __unicode__(self):
-        return self.name
-    
-    def __str__(self):
-        return self.__unicode__()
-    
-class EVEMarketGroup(models.Model):
+class InvMarketGroup(models.Model):
     """
     Market groups are used to group items together in the market browser.
+    
+    invMarketGroups
     """
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
-    parent = models.ForeignKey('EVEMarketGroup', blank=True, null=True)
+    parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
     has_items = models.BooleanField(default=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
     
@@ -52,11 +28,13 @@ class EVEMarketGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryCategory(models.Model):
+class InvCategory(models.Model):
     """
     Inventory categories are the top level classification for all items, be
     it planets, moons, modules, ships, or any other entity within the game
     that physically exists.
+    
+    invCategories
     """
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
@@ -75,13 +53,15 @@ class EVEInventoryCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryGroup(models.Model):
+class InvGroup(models.Model):
     """
     Inventory groups are a further sub-classification within an 
-    EVEInventoryCategory. For example, the 'EVERegion' inventory group's
+    InvCategory. For example, the 'MapRegion' inventory group's
     category is 'Celestial'.
+    
+    invGroups
     """
-    category = models.ForeignKey(EVEInventoryCategory, blank=True, null=True)
+    category = models.ForeignKey(InvCategory, blank=True, null=True)
     name = models.CharField(max_length=150)
     description = models.TextField()
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
@@ -105,9 +85,11 @@ class EVEInventoryGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryMetaGroup(models.Model):
+class InvMetaGroup(models.Model):
     """
-    Names of variants of items. 
+    Names of variants of items.
+    
+    invMetaGroups
     """
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -125,24 +107,26 @@ class EVEInventoryMetaGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryType(models.Model):
+class InvType(models.Model):
     """
     Inventory types are generally objects that can be carried in your
     inventory (with the exception of suns, moons, planets, etc.) These are mostly
     market items, along with some basic attributes of each that are common
     to all items. 
+    
+    invTypes
     """
     name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
-    group = models.ForeignKey(EVEInventoryGroup, blank=True, null=True)
-    market_group = models.ForeignKey(EVEMarketGroup, blank=True, null=True)
+    group = models.ForeignKey(InvGroup, blank=True, null=True)
+    market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
     volume = models.FloatField(blank=True, null=True)
     capacity = models.FloatField(blank=True, null=True)
     portion_size = models.IntegerField(blank=True, null=True)
-    race = models.ForeignKey('EVERace', blank=True, null=True)
+    race = models.ForeignKey('ChrRace', blank=True, null=True)
     base_price = models.FloatField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     chance_of_duplicating = models.FloatField(blank=True, null=True)
@@ -162,13 +146,15 @@ class EVEInventoryType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryTypeMaterial(models.Model):
+class InvTypeMaterial(models.Model):
     """
     These are materials required to produce an item type. Used for calculating
-    build requirements. 
+    build requirements.
+    
+    invTypeMaterials
     """
-    type = models.ForeignKey(EVEInventoryType, related_name='material_set')
-    material_type = models.ForeignKey(EVEInventoryType, 
+    type = models.ForeignKey(InvType, related_name='material_set')
+    material_type = models.ForeignKey(InvType, 
                                       related_name='itemtype_set')
     quantity = models.IntegerField(default=0)
     
@@ -188,18 +174,20 @@ class EVEInventoryTypeMaterial(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryMetaType(models.Model):
+class InvMetaType(models.Model):
     """
     Relation between different variants of item (i.e. Tech-I, Faction, Tech-II). 
     These are not "meta-levels" of items used for calculate invention success. 
     For that information see Attribute metaLevel (attributeID=633) in table 
-    dgmTypeAttributes linked with type in question. 
+    dgmTypeAttributes linked with type in question.
+    
+    invMetaTypes
     """
-    type = models.ForeignKey(EVEInventoryType, 
+    type = models.ForeignKey(InvType, 
                             related_name='inventorymetatype_type_set')
-    parent_type = models.ForeignKey(EVEInventoryType, 
+    parent_type = models.ForeignKey(InvType, 
                             related_name='inventorymetatype_parent_type_set')
-    meta_group = models.ForeignKey(EVEInventoryMetaGroup) 
+    meta_group = models.ForeignKey(InvMetaGroup) 
     
     class Meta:
         app_label = 'eve_db'
@@ -213,11 +201,13 @@ class EVEInventoryMetaType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryFlag(models.Model):
+class InvFlag(models.Model):
     """
     The invFlags table is used to identify the location and/or status of an 
     item within an office, station, ship, module or other container for the 
     API calls APIv2 Char AssetList XML and APIv2 Corp AssetList XML. 
+    
+    invFlags
     """
     # Short name for the flag.
     name = models.CharField(max_length=255)
@@ -240,7 +230,12 @@ class EVEInventoryFlag(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryAttributeCategory(models.Model):
+class DgmAttributeCategory(models.Model):
+    """
+    Attribute Categories and their descriptions. 
+    
+    dgmAttributeCategories
+    """
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=100, blank=True)
 
@@ -256,9 +251,14 @@ class EVEInventoryAttributeCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEInventoryAttributeType(models.Model):
+class DgmAttributeType(models.Model):
+    """
+    Names and descriptions of attributes. 
+    
+    dgmAttributeTypes
+    """
     name = models.CharField(max_length=75)
-    category = models.ForeignKey(EVEInventoryAttributeCategory, blank=True, null=True)
+    category = models.ForeignKey(DgmAttributeCategory, blank=True, null=True)
     description = models.TextField(blank=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
     defaultvalue = models.IntegerField(blank=True, null=True)
@@ -280,9 +280,14 @@ class EVEInventoryAttributeType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEInventoryTypeAttribute(models.Model):
-    inventory_type = models.ForeignKey(EVEInventoryType)
-    attribute = models.ForeignKey(EVEInventoryAttributeType)
+class InvTypeAttribute(models.Model):
+    """
+    All attributes for items.
+    
+    dgmTypeAttributes
+    """
+    inventory_type = models.ForeignKey(InvType)
+    attribute = models.ForeignKey(DgmAttributeType)
     value_int = models.IntegerField(blank=True, null=True)
     value_float = models.FloatField(blank=True, null=True)
 
@@ -298,16 +303,18 @@ class EVEInventoryTypeAttribute(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryBlueprintType(models.Model):
+class InvBlueprintType(models.Model):
     """
     Stores info about each kind of blueprint.
+    
+    invBlueprintTypes
     """
-    blueprint_type = models.ForeignKey(EVEInventoryType,
+    blueprint_type = models.ForeignKey(InvType,
                                        related_name='blueprint_type_set')
-    product_type = models.ForeignKey(EVEInventoryType,
+    product_type = models.ForeignKey(InvType,
                                      related_name='blueprint_product_type_set')
     # This is used for T2. Not always populated.
-    parent_blueprint_type = models.ForeignKey(EVEInventoryType, blank=True,
+    parent_blueprint_type = models.ForeignKey(InvType, blank=True,
                                               null=True,
                                               related_name='parent_blueprint_type_set')
     tech_level = models.IntegerField(blank=True, null=True)
@@ -332,9 +339,11 @@ class EVEInventoryBlueprintType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryEffect(models.Model):
+class DgmEffect(models.Model):
     """
     Name and descriptions of effects.
+    
+    dgmTypeEffects
     """
     name = models.CharField(max_length=150)
     # Not sure what this is. Internal category of effect.
@@ -351,19 +360,19 @@ class EVEInventoryEffect(models.Model):
     is_offensive = models.BooleanField(default=False)
     # If True, applied to ally.
     is_assistance = models.BooleanField(default=False)
-    duration_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    duration_attribute = models.ForeignKey(DgmAttributeType, 
                                            blank=True, null=True,
                                            related_name='inventoryeffectdurationeattribute')
-    tracking_speed_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    tracking_speed_attribute = models.ForeignKey(DgmAttributeType, 
                                                  blank=True, null=True,
                                                  related_name='inventoryeffecttrackingspeedattribute')
-    discharge_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    discharge_attribute = models.ForeignKey(DgmAttributeType, 
                                             blank=True, null=True,
                                             related_name='inventoryeffectdischargeattribute')
-    range_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    range_attribute = models.ForeignKey(DgmAttributeType, 
                                         blank=True, null=True,
                                         related_name='inventoryeffectrangeattribute')
-    falloff_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    falloff_attribute = models.ForeignKey(DgmAttributeType, 
                                           blank=True, null=True,
                                           related_name='inventoryeffectfalloffattribute')
     disallow_auto_repeat = models.BooleanField(default=False)
@@ -376,13 +385,13 @@ class EVEInventoryEffect(models.Model):
     has_propulsion_chance = models.BooleanField(default=False)
     distribution = models.IntegerField(blank=True, null=True)
     sfx_name = models.CharField(max_length=100, blank=True)
-    npc_usage_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    npc_usage_chance_attribute = models.ForeignKey(DgmAttributeType, 
                                                    blank=True, null=True,
                                                    related_name='inventoryeffectnpcusagechanceattribute')
-    npc_activation_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    npc_activation_chance_attribute = models.ForeignKey(DgmAttributeType, 
                                                         blank=True, null=True,
                                                         related_name='inventoryeffectnpcactivationchanceattribute')
-    fitting_usage_chance_attribute = models.ForeignKey(EVEInventoryAttributeType, 
+    fitting_usage_chance_attribute = models.ForeignKey(DgmAttributeType, 
                                                        blank=True, null=True,
                                                        related_name='inventoryeffectfittingusagechanceattribute')
     
@@ -398,16 +407,16 @@ class EVEInventoryEffect(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEInventoryTypeEffect(models.Model):
+class DgmTypeEffect(models.Model):
     """
     Effects related to items. Effects are like boolean flags - if an item has
     an effect listed, it's subject to this effect with the specified
-    parameters, listed as per the EveInventoryEffect.
+    parameters, listed as per the DgmEffect.
     
     dgmTypeEffects
     """
-    type = models.ForeignKey(EVEInventoryType)
-    effect = models.ForeignKey(EVEInventoryEffect)
+    type = models.ForeignKey(InvType)
+    effect = models.ForeignKey(DgmEffect)
     is_default = models.BooleanField(default=False)
     
     class Meta:
@@ -422,7 +431,7 @@ class EVEInventoryTypeEffect(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEPOSResourcePurpose(models.Model):
+class InvPOSResourcePurpose(models.Model):
     """
     Types of tasks for which POS need resources, i.e. Online, Reinforced. 
     
@@ -442,20 +451,20 @@ class EVEPOSResourcePurpose(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEPOSResource(models.Model):
+class InvPOSResource(models.Model):
     """
     Fuel needed to support POSes. 
     
     invControlTowerResources
     """
-    control_tower_type = models.ForeignKey(EVEInventoryType,
+    control_tower_type = models.ForeignKey(InvType,
                                            related_name='tower_resource_set')
-    resource_type = models.ForeignKey(EVEInventoryType,
+    resource_type = models.ForeignKey(InvType,
                                       related_name='pos_resource_set')
-    purpose = models.ForeignKey(EVEPOSResourcePurpose, blank=True, null=True)
+    purpose = models.ForeignKey(InvPOSResourcePurpose, blank=True, null=True)
     quantity = models.IntegerField(blank=True, null=True)
     min_security_level = models.IntegerField(blank=True, null=True)
-    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
+    faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -469,7 +478,7 @@ class EVEPOSResource(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEInventoryTypeReaction(models.Model):
+class InvTypeReaction(models.Model):
     """
     Reaction recipes for POSes.
     
@@ -478,10 +487,10 @@ class EVEInventoryTypeReaction(models.Model):
     INPUT_TYPES = ((0, 'Result of reaction'), 
                    (1, 'Reaction material'))
     
-    reaction_type = models.ForeignKey(EVEInventoryType,
+    reaction_type = models.ForeignKey(InvType,
                     related_name='inventorytypereactions_reaction_type_set')
     input = models.IntegerField(choices=INPUT_TYPES, blank=True, null=True)
-    type = models.ForeignKey(EVEInventoryType,
+    type = models.ForeignKey(InvType,
                     related_name='inventorytypereactions_type_set', 
                     help_text="Reaction result or material.")
     quantity = models.IntegerField(blank=True, null=True)
@@ -498,12 +507,14 @@ class EVEInventoryTypeReaction(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEContrabandType(models.Model):
+class InvContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
+    
+    invContrabandTypes
     """
-    faction = models.ForeignKey('EVEFaction')
-    type = models.ForeignKey(EVEInventoryType)
+    faction = models.ForeignKey('ChrFaction')
+    type = models.ForeignKey(InvType)
     standing_loss = models.FloatField(blank=True, null=True)
     confiscate_min_sec = models.FloatField(blank=True, null=True)
     fine_by_value = models.FloatField(blank=True, null=True)

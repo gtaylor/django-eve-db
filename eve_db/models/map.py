@@ -3,7 +3,7 @@ Map-related models.
 """
 from django.db import models
 
-class EVEUniverse(models.Model):
+class MapUniverse(models.Model):
     """
     mapUniverse
     """
@@ -32,12 +32,12 @@ class EVEUniverse(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERegion(models.Model):
+class MapRegion(models.Model):
     """
     mapRegions
     """
     name = models.CharField(max_length=255, blank=True)
-    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
+    faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
@@ -62,13 +62,13 @@ class EVERegion(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERegionJump(models.Model):
+class MapRegionJump(models.Model):
     """
     mapRegionJumps
     """
-    from_region = models.ForeignKey(EVERegion, 
+    from_region = models.ForeignKey(MapRegion, 
                                     related_name='region_jumps_from_region_set')
-    to_region = models.ForeignKey(EVERegion,
+    to_region = models.ForeignKey(MapRegion,
                                   related_name='region_jumps_to_region_set')
     
     class Meta:
@@ -84,12 +84,12 @@ class EVERegionJump(models.Model):
     def __str__(self):
         return self.__unicode__()
         
-class EVEConstellation(models.Model):
+class MapConstellation(models.Model):
     """
     mapConstellations
     """
     name = models.CharField(max_length=255, blank=True)
-    region = models.ForeignKey(EVERegion, blank=True, null=True)
+    region = models.ForeignKey(MapRegion, blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
@@ -102,7 +102,7 @@ class EVEConstellation(models.Model):
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     alliance = models.ForeignKey('eve_api.EVEPlayerAlliance', blank=True, null=True)
-    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
+    faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
     sovereignty_grace_start_time = models.DateTimeField(blank=True, null=True)
 
@@ -118,17 +118,17 @@ class EVEConstellation(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEConstellationJump(models.Model):
+class MapConstellationJump(models.Model):
     """
     mapConstellationJumps
     """
-    from_region = models.ForeignKey(EVERegion, 
+    from_region = models.ForeignKey(MapRegion, 
                                     related_name='constellation_jumps_from_region_set')
-    from_constellation = models.ForeignKey(EVEConstellation,
+    from_constellation = models.ForeignKey(MapConstellation,
                                            related_name='constellation_jumps_from_constellation_set')
-    to_region = models.ForeignKey(EVERegion,
+    to_region = models.ForeignKey(MapRegion,
                                   related_name='constellation_jumps_to_region_set')
-    to_constellation = models.ForeignKey(EVEConstellation,
+    to_constellation = models.ForeignKey(MapConstellation,
                                          related_name='constellation_jumps_to_constellation_set')
     
     class Meta:
@@ -144,13 +144,13 @@ class EVEConstellationJump(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVESolarSystem(models.Model):
+class MapSolarSystem(models.Model):
     """
     mapSolarSystems
     """
-    region = models.ForeignKey(EVERegion, blank=True, null=True)
+    region = models.ForeignKey(MapRegion, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
-    constellation = models.ForeignKey(EVEConstellation, blank=True, null=True)
+    constellation = models.ForeignKey(MapConstellation, blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
     x_max = models.FloatField(blank=True, null=True)
@@ -170,10 +170,10 @@ class EVESolarSystem(models.Model):
     has_interregional_link = models.BooleanField(default=False)
     has_interconstellational_link = models.BooleanField(default=False)
     security_level = models.FloatField(blank=True, null=True)
-    faction = models.ForeignKey('EVEFaction', blank=True, null=True,
+    faction = models.ForeignKey('ChrFaction', blank=True, null=True,
                                 related_name='solarsystem_set')
     radius = models.FloatField(blank=True, null=True)
-    sun_type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    sun_type = models.ForeignKey('InvType', blank=True, null=True)
     security_class = models.CharField(max_length=5, blank=True)
     alliance = models.ForeignKey('eve_api.EVEPlayerAlliance', blank=True, null=True)
     sovereignty_level = models.IntegerField(blank=True, null=True)
@@ -194,23 +194,23 @@ class EVESolarSystem(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVESolarSystemJump(models.Model):
+class MapSolarSystemJump(models.Model):
     """
     mapSolarSystemJumps
     """
-    from_region = models.ForeignKey(EVERegion, blank=True, null=True,
+    from_region = models.ForeignKey(MapRegion, blank=True, null=True,
                                     related_name='solar_system_jumps_from_region_set')
-    from_constellation = models.ForeignKey(EVEConstellation, blank=True, 
+    from_constellation = models.ForeignKey(MapConstellation, blank=True, 
                                            null=True,
                                   related_name='solar_system_jumps_from_constellation_set')
-    from_solar_system = models.ForeignKey(EVESolarSystem,
+    from_solar_system = models.ForeignKey(MapSolarSystem,
                                           related_name='solar_system_jumps_from_solar_system_set')
-    to_region = models.ForeignKey(EVERegion, blank=True, null=True,
+    to_region = models.ForeignKey(MapRegion, blank=True, null=True,
                                   related_name='solar_system_jumps_to_region_set')
-    to_constellation = models.ForeignKey(EVEConstellation, blank=True, 
+    to_constellation = models.ForeignKey(MapConstellation, blank=True, 
                                          null=True,
                                          related_name='solar_system_jumps_to_constellation_set')
-    to_solar_system = models.ForeignKey(EVESolarSystem,
+    to_solar_system = models.ForeignKey(MapSolarSystem,
                                         related_name='solar_system_jumps_to_solar_system_set')
     
     class Meta:
@@ -226,13 +226,15 @@ class EVESolarSystemJump(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEStargateJump(models.Model):
+class MapJump(models.Model):
     """
+    Jumps between stargates.
+    
     mapJumps
     """
-    origin_gate = models.ForeignKey('EVEMapDenormalize',
+    origin_gate = models.ForeignKey('MapDenormalize',
                                     related_name='stargate_jump_origin_set')
-    destination_gate = models.ForeignKey('EVEMapDenormalize',
+    destination_gate = models.ForeignKey('MapDenormalize',
                                          related_name='stargate_jump_destination_set')
     
     class Meta:
@@ -247,11 +249,11 @@ class EVEStargateJump(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVECelestialStatistic(models.Model):
+class MapCelestialStatistic(models.Model):
     """
     mapCelestialStatistics
     """
-    celestial = models.ForeignKey('EVEMapDenormalize')
+    celestial = models.ForeignKey('MapDenormalize')
     temperature = models.FloatField(blank=True, null=True)
     spectral_class = models.CharField(max_length=255, blank=True)
     luminousity = models.FloatField(blank=True, null=True)
@@ -284,15 +286,15 @@ class EVECelestialStatistic(models.Model):
     def __str__(self):
         return self.__unicode__()
         
-class EVEMapDenormalize(models.Model):
+class MapDenormalize(models.Model):
     """
     mapDenormalize
     """
-    type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
-    group = models.ForeignKey('EVEInventoryGroup', blank=True, null=True)
-    solar_system = models.ForeignKey(EVESolarSystem, blank=True, null=True)
-    constellation = models.ForeignKey(EVEConstellation, blank=True, null=True)
-    region = models.ForeignKey(EVERegion, blank=True, null=True)
+    type = models.ForeignKey('InvType', blank=True, null=True)
+    group = models.ForeignKey('InvGroup', blank=True, null=True)
+    solar_system = models.ForeignKey(MapSolarSystem, blank=True, null=True)
+    constellation = models.ForeignKey(MapConstellation, blank=True, null=True)
+    region = models.ForeignKey(MapRegion, blank=True, null=True)
     orbit_id = models.IntegerField(blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     y = models.FloatField(blank=True, null=True)
@@ -315,13 +317,13 @@ class EVEMapDenormalize(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVELandmark(models.Model):
+class MapLandmark(models.Model):
     """
     mapLandmarks
     """
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
+    solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     y = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)

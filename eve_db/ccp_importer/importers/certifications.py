@@ -26,7 +26,7 @@ class Importer_crtCertificates(SQLImporter):
         imp_obj.category = CrtCategory.objects.get(id=row['categoryID'])
         imp_obj.cert_class = CrtClass.objects.get(id=row['classID'])
         imp_obj.grade = row['grade']
-        imp_obj.corporation = EVENPCCorporation.objects.get(id=row['corpID'])
+        imp_obj.corporation = CrpNPCCorporation.objects.get(id=row['corpID'])
         imp_obj.description = row['description']
         imp_obj.icon_num = row['iconID']
         imp_obj.save()
@@ -43,7 +43,7 @@ class Importer_crtRelationships(SQLImporter):
             imp_obj.parent = CrtCertificate.objects.get(id=row['parentID'])
         
         if row['parentTypeID']:
-            imp_obj.parent_type = EVEInventoryType.objects.get(id=row['parentTypeID'])
+            imp_obj.parent_type = InvType.objects.get(id=row['parentTypeID'])
 
         imp_obj.save()
         
@@ -52,7 +52,7 @@ class Importer_crtRecommendations(SQLImporter):
 
     def import_row(self, row):
         imp_obj, created = CrtRecommendation.objects.get_or_create(id=row['recommendationID'])
-        imp_obj.ship_type = EVEInventoryType.objects.get(id=row['shipTypeID'])
+        imp_obj.ship_type = InvType.objects.get(id=row['shipTypeID'])
         imp_obj.certificate = CrtCertificate.objects.get(id=row['certificateID'])
         imp_obj.recommendation_level = row['recommendationLevel']
         imp_obj.save()

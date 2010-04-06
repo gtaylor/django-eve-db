@@ -8,7 +8,7 @@ class Importer_chrRaces(SQLImporter):
     DEPENDENCIES = ['eveGraphics']
 
     def import_row(self, row):
-        imp_obj, created = EVERace.objects.get_or_create(id=row['raceID'])
+        imp_obj, created = ChrRace.objects.get_or_create(id=row['raceID'])
         imp_obj.name = row['raceName']
         imp_obj.short_description = row['shortDescription']
         imp_obj.description = row['description']
@@ -23,7 +23,7 @@ class Importer_chrAttributes(SQLImporter):
     DEPENDENCIES = ['eveGraphics']
 
     def import_row(self, row):
-        imp_obj, created = EVECharAttribute.objects.get_or_create(id=row['attributeID'])
+        imp_obj, created = ChrAttribute.objects.get_or_create(id=row['attributeID'])
         imp_obj.name = row['attributeName']
         imp_obj.short_description = row['shortDescription']
         imp_obj.description = row['description']
@@ -39,16 +39,16 @@ class Importer_chrFactions(SQLImporter):
     DEPENDENCIES = ['mapSolarSystems', 'crpNPCCorporations']
 
     def import_row(self, row):
-        imp_obj, created = EVEFaction.objects.get_or_create(id=row['factionID'])
+        imp_obj, created = ChrFaction.objects.get_or_create(id=row['factionID'])
         imp_obj.name = row['factionName']
         imp_obj.description = row['description']
         
         if row['solarSystemID']:
-            solar_system, ss_created = EVESolarSystem.objects.get_or_create(id=row['solarSystemID'])
+            solar_system, ss_created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
             imp_obj.solar_system = solar_system
             
         if row['corporationID']:
-            corp, corp_created = EVENPCCorporation.objects.get_or_create(id=row['corporationID'])
+            corp, corp_created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
             imp_obj.corporation = corp
             
         imp_obj.size_factor = row['sizeFactor']
@@ -60,13 +60,13 @@ class Importer_chrBloodlines(SQLImporter):
     DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveGraphics']
 
     def import_row(self, row):
-        imp_obj, created = EVEBloodline.objects.get_or_create(id=row['bloodlineID'])
+        imp_obj, created = ChrBloodline.objects.get_or_create(id=row['bloodlineID'])
         imp_obj.name = row['bloodlineName']
-        imp_obj.race = EVERace.objects.get(id=row['raceID'])
+        imp_obj.race = ChrRace.objects.get(id=row['raceID'])
         imp_obj.description = row['description']
         imp_obj.male_description = row['maleDescription']
         imp_obj.female_description = row['femaleDescription']
-        starter_ship, ship_created = EVEInventoryType.objects.get_or_create(id=row['shipTypeID'])
+        starter_ship, ship_created = InvType.objects.get_or_create(id=row['shipTypeID'])
         imp_obj.starter_ship_type = starter_ship
         imp_obj.starting_perception = row['perception']
         imp_obj.starting_willpower = row['willpower']
@@ -86,9 +86,9 @@ class Importer_chrAncestries(SQLImporter):
     DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveGraphics']
 
     def import_row(self, row):
-        imp_obj, created = EVEAncestry.objects.get_or_create(id=row['ancestryID'])
+        imp_obj, created = ChrAncestry.objects.get_or_create(id=row['ancestryID'])
         imp_obj.name = row['ancestryName']
-        imp_obj.bloodline = EVEBloodline.objects.get(id=row['bloodlineID'])
+        imp_obj.bloodline = ChrBloodline.objects.get(id=row['bloodlineID'])
         imp_obj.description = row['description']
         imp_obj.perception_bonus = row['perception']
         imp_obj.willpower_bonus = row['willpower']

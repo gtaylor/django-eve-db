@@ -49,7 +49,7 @@ class CrtCertificate(models.Model):
     # Can't call this 'class', that's a reserved keyword.
     cert_class = models.ForeignKey(CrtClass, blank=True, null=True)
     grade = models.IntegerField(blank=True, null=True)
-    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
+    corporation = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     # Is this similar to the icon_filename fields on other models? The format
     # is different in the CCP dump.
     icon_num = models.IntegerField(blank=True, null=True)
@@ -73,7 +73,7 @@ class CrtRelationship(models.Model):
     """
     parent = models.ForeignKey(CrtCertificate, blank=True, null=True,
                                related_name='parent_crtrelationship_set')
-    parent_type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    parent_type = models.ForeignKey('InvType', blank=True, null=True)
     parent_level = models.IntegerField(blank=True, null=True)
     child = models.ForeignKey(CrtCertificate, blank=True, null=True,
                               related_name='child_crtrelationship_set')
@@ -94,7 +94,7 @@ class CrtRecommendation(models.Model):
     """
     crtRecommendations
     """
-    ship_type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    ship_type = models.ForeignKey('InvType', blank=True, null=True)
     certificate = models.ForeignKey(CrtCertificate, blank=True, null=True)
     recommendation_level = models.IntegerField(blank=True, null=True)
     

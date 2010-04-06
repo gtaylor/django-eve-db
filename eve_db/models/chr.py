@@ -3,9 +3,9 @@ Character stuff.
 """
 from django.db import models
 
-class EVERace(models.Model):
+class ChrRace(models.Model):
     """
-    An EVE race.
+    Table lists available races. Races are numbered like bitmask - 1,2,4,8,16... 
     
     chrRaces
     """
@@ -27,20 +27,22 @@ class EVERace(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEBloodline(models.Model):
+class ChrBloodline(models.Model):
     """
+    Bloodlines for newly created characters with starting attributes. 
+
     chrBloodlines
     """
     name = models.CharField(max_length=255, blank=True)
-    race = models.ForeignKey(EVERace,blank=True, null=True, 
+    race = models.ForeignKey(ChrRace,blank=True, null=True, 
                              related_name='bloodline_set')
     description = models.TextField(blank=True)
     male_description = models.TextField(blank=True)
     female_description = models.TextField(blank=True)
-    starter_ship_type = models.ForeignKey('EVEInventoryType', blank=True,
+    starter_ship_type = models.ForeignKey('InvType', blank=True,
                                     null=True,
                                     related_name='bloodline_starter_ship_set')
-    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
+    corporation = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     starting_perception = models.IntegerField(default=0)
     starting_willpower = models.IntegerField(default=0)
     starting_charisma = models.IntegerField(default=0)
@@ -63,12 +65,14 @@ class EVEBloodline(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEAncestry(models.Model):
+class ChrAncestry(models.Model):
     """
+    Available Ancestries with bonus skills and items. 
+
     chrAncestries
     """
     name = models.CharField(max_length=255, blank=True)
-    bloodline = models.ForeignKey(EVEBloodline,blank=True, null=True)
+    bloodline = models.ForeignKey(ChrBloodline,blank=True, null=True)
     description = models.TextField(blank=True)
     perception_bonus = models.IntegerField(default=0)
     willpower_bonus = models.IntegerField(default=0)
@@ -90,11 +94,11 @@ class EVEAncestry(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVECharAttribute(models.Model):
+class ChrAttribute(models.Model):
     """
-    chrAttributes
+    Five base Attrinutes annotated. 
     
-    Player attributes.
+    chrAttributes
     """
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -114,15 +118,17 @@ class EVECharAttribute(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEFaction(models.Model):
+class ChrFaction(models.Model):
     """
+    All main Factions found in game. 
+
     chrFactions
     """
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True,
+    solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True,
                                      related_name='faction_set')
-    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True,
+    corporation = models.ForeignKey('CrpNPCCorporation', blank=True, null=True,
                                     related_name='faction_set')
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)

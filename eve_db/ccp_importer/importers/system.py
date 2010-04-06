@@ -17,11 +17,11 @@ class Importer_eveNames(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
 
     def import_row(self, row):
-        imp_obj, created = EVEInventoryName.objects.get_or_create(id=row['itemID'])
+        imp_obj, created = EveName.objects.get_or_create(id=row['itemID'])
         imp_obj.name = row['itemName']
-        imp_obj.category = EVEInventoryCategory.objects.get(id=row['categoryID'])
-        imp_obj.group = EVEInventoryGroup.objects.get(id=row['groupID'])
-        imp_obj.type = EVEInventoryType.objects.get(id=row['typeID'])
+        imp_obj.category = InvCategory.objects.get(id=row['categoryID'])
+        imp_obj.group = InvGroup.objects.get(id=row['groupID'])
+        imp_obj.type = InvType.objects.get(id=row['typeID'])
         imp_obj.save()
 
 class Importer_eveGraphics(SQLImporter):

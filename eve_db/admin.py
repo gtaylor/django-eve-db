@@ -4,254 +4,254 @@ Admin interface models. Automatically detected by admin.autodiscover().
 from django.contrib import admin
 from eve_db.models import *
 
-class EVEInventoryCategoryAdmin(admin.ModelAdmin):
+class InvCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'is_published')
-admin.site.register(EVEInventoryCategory, EVEInventoryCategoryAdmin)
+admin.site.register(InvCategory, InvCategoryAdmin)
 
-class EVEBloodlineAdmin(admin.ModelAdmin):
+class ChrBloodlineAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'race', 'corporation')
-admin.site.register(EVEBloodline, EVEBloodlineAdmin)
+admin.site.register(ChrBloodline, ChrBloodlineAdmin)
 
-class EVEAncestryAdmin(admin.ModelAdmin):
+class ChrAncestryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'bloodline', 'short_description')
-admin.site.register(EVEAncestry, EVEAncestryAdmin)
+admin.site.register(ChrAncestry, ChrAncestryAdmin)
 
-class EVECharAttributeAdmin(admin.ModelAdmin):
+class ChrAttributeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'short_description')
     list_display_links = ('id', 'name')
-admin.site.register(EVECharAttribute, EVECharAttributeAdmin)
+admin.site.register(ChrAttribute, ChrAttributeAdmin)
 
-class EVEInventoryMetaGroupAdmin(admin.ModelAdmin):
+class InvMetaGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'graphic')
-admin.site.register(EVEInventoryMetaGroup, EVEInventoryMetaGroupAdmin)
+admin.site.register(InvMetaGroup, InvMetaGroupAdmin)
 
-class EVEInventoryMetaTypeAdmin(admin.ModelAdmin):
+class InvMetaTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'parent_type', 'meta_group')
-admin.site.register(EVEInventoryMetaType, EVEInventoryMetaTypeAdmin)
+admin.site.register(InvMetaType, InvMetaTypeAdmin)
 
-class EVEInventoryGroupAdmin(admin.ModelAdmin):
+class InvGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description')
-admin.site.register(EVEInventoryGroup, EVEInventoryGroupAdmin)
+admin.site.register(InvGroup, InvGroupAdmin)
 
-class EVEInventoryTypeAdmin(admin.ModelAdmin):
+class InvTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'group', 'market_group', 'description')
-admin.site.register(EVEInventoryType, EVEInventoryTypeAdmin)
+admin.site.register(InvType, InvTypeAdmin)
 
-class EVEInventoryFlagAdmin(admin.ModelAdmin):
+class InvFlagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'text', 'type_text', 'order')
-admin.site.register(EVEInventoryFlag, EVEInventoryFlagAdmin)
+admin.site.register(InvFlag, InvFlagAdmin)
 
-class EVEInventoryEffectAdmin(admin.ModelAdmin):
+class DgmEffectAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description', 'is_offensive',
                     'is_assistance', 'is_published')
-admin.site.register(EVEInventoryEffect, EVEInventoryEffectAdmin)
+admin.site.register(DgmEffect, DgmEffectAdmin)
 
-class EVEInventoryTypeEffectAdmin(admin.ModelAdmin):
+class DgmTypeEffectAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'effect', 'is_default')
-admin.site.register(EVEInventoryTypeEffect, EVEInventoryTypeEffectAdmin)
+admin.site.register(DgmTypeEffect, DgmTypeEffectAdmin)
 
-class EVEInventoryTypeReactionAdmin(admin.ModelAdmin):
+class InvTypeReactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'reaction_type', 'type', 'input')
-admin.site.register(EVEInventoryTypeReaction, EVEInventoryTypeReactionAdmin)
+admin.site.register(InvTypeReaction, InvTypeReactionAdmin)
 
-class EVEPOSResourcePurposeAdmin(admin.ModelAdmin):
+class InvPOSResourcePurposeAdmin(admin.ModelAdmin):
     list_display = ('id', 'purpose')
-admin.site.register(EVEPOSResourcePurpose, EVEPOSResourcePurposeAdmin)
+admin.site.register(InvPOSResourcePurpose, InvPOSResourcePurposeAdmin)
 
-class EVEPOSResourceAdmin(admin.ModelAdmin):
+class InvPOSResourceAdmin(admin.ModelAdmin):
     list_display = ('id', 'control_tower_type', 'resource_type', 'purpose',
                     'quantity', 'faction')
-admin.site.register(EVEPOSResource, EVEPOSResourceAdmin)
+admin.site.register(InvPOSResource, InvPOSResourceAdmin)
 
-class EVEContrabandTypeAdmin(admin.ModelAdmin):
+class InvContrabandTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'faction', 'standing_loss', 
                     'confiscate_min_sec', 'attack_min_sec', 'fine_by_value')
-admin.site.register(EVEContrabandType, EVEContrabandTypeAdmin)
+admin.site.register(InvContrabandType, InvContrabandTypeAdmin)
 
-class EVEInventoryBlueprintTypeAdmin(admin.ModelAdmin):
+class InvBlueprintTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'blueprint_type', 'product_type', 'tech_level')
-admin.site.register(EVEInventoryBlueprintType, EVEInventoryBlueprintTypeAdmin)
+admin.site.register(InvBlueprintType, InvBlueprintTypeAdmin)
 
-class EVERamActivityAdmin(admin.ModelAdmin):
+class RamActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'icon_filename', 'is_published')
-admin.site.register(EVERamActivity, EVERamActivityAdmin)
+admin.site.register(RamActivity, RamActivityAdmin)
 
-class EVERamAssemblyLineAdmin(admin.ModelAdmin):
+class RamAssemblyLineAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'station', 'owner', 'activity',
                     'minimum_char_security', 'cost_per_hour')
-admin.site.register(EVERamAssemblyLine, EVERamAssemblyLineAdmin)
+admin.site.register(RamAssemblyLine, RamAssemblyLineAdmin)
 
-class EVERamAssemblyLineStationsAdmin(admin.ModelAdmin):
+class RamAssemblyLineStationsAdmin(admin.ModelAdmin):
     list_display = ('id', 'station', 'assembly_line_type', 'quantity',
                     'station_type', 'owner', 'solar_system', 'region')
-admin.site.register(EVERamAssemblyLineStations, EVERamAssemblyLineStationsAdmin)
+admin.site.register(RamAssemblyLineStations, RamAssemblyLineStationsAdmin)
 
-class EVERamAssemblyLineTypeAdmin(admin.ModelAdmin):
+class RamAssemblyLineTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'base_time_multiplier',
                     'base_material_multiplier', 'activity',
                     'min_cost_per_hour')
-admin.site.register(EVERamAssemblyLineType, EVERamAssemblyLineTypeAdmin)
+admin.site.register(RamAssemblyLineType, RamAssemblyLineTypeAdmin)
 
-class EVERamAssemblyLineTypeDetailPerCategoryAdmin(admin.ModelAdmin):
+class RamAssemblyLineTypeDetailPerCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'assembly_line_type', 'category',
                     'time_multiplier', 'material_multiplier')
-admin.site.register(EVERamAssemblyLineTypeDetailPerCategory,
-                    EVERamAssemblyLineTypeDetailPerCategoryAdmin)
+admin.site.register(RamAssemblyLineTypeDetailPerCategory,
+                    RamAssemblyLineTypeDetailPerCategoryAdmin)
 
-class EVERamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
+class RamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'assembly_line_type', 'group',
                     'time_multiplier', 'material_multiplier')
-admin.site.register(EVERamAssemblyLineTypeDetailPerGroup,
-                    EVERamAssemblyLineTypeDetailPerGroupAdmin)
+admin.site.register(RamAssemblyLineTypeDetailPerGroup,
+                    RamAssemblyLineTypeDetailPerGroupAdmin)
  
 class EVEUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
 admin.site.register(EVEUnit, EVEUnitAdmin)
 
-class EVEUniverseAdmin(admin.ModelAdmin):
+class MapUniverseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
-admin.site.register(EVEUniverse, EVEUniverseAdmin)
+admin.site.register(MapUniverse, MapUniverseAdmin)
 
-class EVERegionAdmin(admin.ModelAdmin):
+class MapRegionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction')
-admin.site.register(EVERegion, EVERegionAdmin)
+admin.site.register(MapRegion, MapRegionAdmin)
 
-class EVERegionJumpAdmin(admin.ModelAdmin):
+class MapRegionJumpAdmin(admin.ModelAdmin):
     list_display = ('id', 'from_region', 'to_region')
-admin.site.register(EVERegionJump, EVERegionJumpAdmin)
+admin.site.register(MapRegionJump, MapRegionJumpAdmin)
 
-class EVEConstellationJumpAdmin(admin.ModelAdmin):
+class MapConstellationJumpAdmin(admin.ModelAdmin):
     list_display = ('id', 'from_constellation', 'from_region', 
                     'to_constellation', 'to_region')
-admin.site.register(EVEConstellationJump, EVEConstellationJumpAdmin)
+admin.site.register(MapConstellationJump, MapConstellationJumpAdmin)
 
-class EVEFactionAdmin(admin.ModelAdmin):
+class ChrFactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'solar_system')
-admin.site.register(EVEFaction, EVEFactionAdmin)
+admin.site.register(ChrFaction, ChrFactionAdmin)
 
-class EVEConstellationAdmin(admin.ModelAdmin):
+class MapConstellationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'alliance')
-admin.site.register(EVEConstellation, EVEConstellationAdmin)
+admin.site.register(MapConstellation, MapConstellationAdmin)
 
-class EVESolarSystemAdmin(admin.ModelAdmin):
+class MapSolarSystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'constellation', 'region', 'faction', 
                     'alliance', 'security_class', 'security_level')
-admin.site.register(EVESolarSystem, EVESolarSystemAdmin)
+admin.site.register(MapSolarSystem, MapSolarSystemAdmin)
 
-class EVESolarSystemJumpAdmin(admin.ModelAdmin):
+class MapSolarSystemJumpAdmin(admin.ModelAdmin):
     list_display = ('id', 'from_solar_system', 'from_constellation', 
                     'from_region', 'to_solar_system', 'to_constellation', 
                     'to_region')
-admin.site.register(EVESolarSystemJump, EVESolarSystemJumpAdmin)
+admin.site.register(MapSolarSystemJump, MapSolarSystemJumpAdmin)
 
-class EVEStargateJumpAdmin(admin.ModelAdmin):
+class MapJumpAdmin(admin.ModelAdmin):
     list_display = ('id', 'origin_gate', 'destination_gate')
-admin.site.register(EVEStargateJump, EVEStargateJumpAdmin)
+admin.site.register(MapJump, MapJumpAdmin)
  
-class EVEInventoryAttributeCategoryAdmin(admin.ModelAdmin):
+class DgmAttributeCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
-admin.site.register(EVEInventoryAttributeCategory, EVEInventoryAttributeCategoryAdmin)
+admin.site.register(DgmAttributeCategory, DgmAttributeCategoryAdmin)
  
-class EVEInventoryAttributeTypeAdmin(admin.ModelAdmin):
+class DgmAttributeTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description')
-admin.site.register(EVEInventoryAttributeType, EVEInventoryAttributeTypeAdmin)
+admin.site.register(DgmAttributeType, DgmAttributeTypeAdmin)
  
-class EVEInventoryTypeAttributeAdmin(admin.ModelAdmin):
+class InvTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
-admin.site.register(EVEInventoryTypeAttribute, EVEInventoryTypeAttributeAdmin)
+admin.site.register(InvTypeAttribute, InvTypeAttributeAdmin)
 
 class EVEGraphicAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'name', 'icon_filename')
 admin.site.register(EVEGraphic, EVEGraphicAdmin)
 
-class EVEInventoryNameAdmin(admin.ModelAdmin):
+class EveNameAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'group', 'type')
-admin.site.register(EVEInventoryName, EVEInventoryNameAdmin)
+admin.site.register(EveName, EveNameAdmin)
 
-class EVERaceAdmin(admin.ModelAdmin):
+class ChrRaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'short_description')
-admin.site.register(EVERace, EVERaceAdmin)
+admin.site.register(ChrRace, ChrRaceAdmin)
 
-class EVECorporateActivityAdmin(admin.ModelAdmin):
+class CrpActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
-admin.site.register(EVECorporateActivity, EVECorporateActivityAdmin)
+admin.site.register(CrpActivity, CrpActivityAdmin)
 
-class EVENPCCorporationDivisionAdmin(admin.ModelAdmin):
+class CrpNPCCorporationDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'corporation', 'division', 'size')
-admin.site.register(EVENPCCorporationDivision, EVENPCCorporationDivisionAdmin)
+admin.site.register(CrpNPCCorporationDivision, CrpNPCCorporationDivisionAdmin)
 
-class EVENPCCorporationAdmin(admin.ModelAdmin):
+class CrpNPCCorporationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'faction', 'description', 'station_count', 
                     'size', 'extent')
-admin.site.register(EVENPCCorporation, EVENPCCorporationAdmin)
+admin.site.register(CrpNPCCorporation, CrpNPCCorporationAdmin)
 
-class EVENPCCorporationTradeAdmin(admin.ModelAdmin):
+class CrpNPCCorporationTradeAdmin(admin.ModelAdmin):
     list_display = ('id', 'corporation', 'type')
-admin.site.register(EVENPCCorporationTrade, EVENPCCorporationTradeAdmin)
+admin.site.register(CrpNPCCorporationTrade, CrpNPCCorporationTradeAdmin)
 
-class EVENPCCorporationResearchFieldAdmin(admin.ModelAdmin):
+class CrpNPCCorporationResearchFieldAdmin(admin.ModelAdmin):
     list_display = ('id', 'corporation', 'skill')
-admin.site.register(EVENPCCorporationResearchField,
-                    EVENPCCorporationResearchFieldAdmin)
+admin.site.register(CrpNPCCorporationResearchField,
+                    CrpNPCCorporationResearchFieldAdmin)
 
-class EVENPCDivisionAdmin(admin.ModelAdmin):
+class CrpNPCDivisionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'leader_type')
-admin.site.register(EVENPCDivision, EVENPCDivisionAdmin)
+admin.site.register(CrpNPCDivision, CrpNPCDivisionAdmin)
 
-class EVEStationOperationServicesAdmin(admin.ModelAdmin):
+class StaOperationServicesAdmin(admin.ModelAdmin):
     list_display = ('id', 'operation', 'service')
-admin.site.register(EVEStationOperationServices, EVEStationOperationServicesAdmin)
+admin.site.register(StaOperationServices, StaOperationServicesAdmin)
 
-class EVEStationServiceAdmin(admin.ModelAdmin):
+class StaServiceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
-admin.site.register(EVEStationService, EVEStationServiceAdmin)
+admin.site.register(StaService, StaServiceAdmin)
 
-class EVEStationTypeAdmin(admin.ModelAdmin):
+class StaStationTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'docking_bay_graphic', 'hangar_graphic',
                     'dock_entry_x', 'dock_orientation_x', 'dock_entry_y',
                     'dock_orientation_y', 'dock_entry_z', 'dock_orientation_z',
                     'operation', 'office_slots', 'reprocessing_efficiency', 'is_conquerable')
-admin.site.register(EVEStationType, EVEStationTypeAdmin)
+admin.site.register(StaStationType, StaStationTypeAdmin)
  
-class EVEStationOperationAdmin(admin.ModelAdmin):
+class StaOperationAdmin(admin.ModelAdmin):
     list_display = ('id', 'activity_id', 'name', 'description',
                     'fringe', 'corridor', 'hub', 'border', 'ratio')
-admin.site.register(EVEStationOperation, EVEStationOperationAdmin)
+admin.site.register(StaOperation, StaOperationAdmin)
  
-class EVEMapDenormalizeAdmin(admin.ModelAdmin):
+class MapDenormalizeAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'group', 'constellation', 'region',
                     'orbit_id', 'x', 'y', 'z', 'radius', 'name',
                     'security', 'celestial_index', 'orbit_index')
-admin.site.register(EVEMapDenormalize, EVEMapDenormalizeAdmin)
+admin.site.register(MapDenormalize, MapDenormalizeAdmin)
 
-class EVECelestialStatisticAdmin(admin.ModelAdmin):
+class MapCelestialStatisticAdmin(admin.ModelAdmin):
     list_display = ('id', 'celestial')
-admin.site.register(EVECelestialStatistic, EVECelestialStatisticAdmin)
+admin.site.register(MapCelestialStatistic, MapCelestialStatisticAdmin)
 
-class EVELandmarkAdmin(admin.ModelAdmin):
+class MapLandmarkAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'solar_system',
                     'importance', 'radius')
-admin.site.register(EVELandmark, EVELandmarkAdmin)
+admin.site.register(MapLandmark, MapLandmarkAdmin)
 
-class EVEStationAdmin(admin.ModelAdmin):
+class StaStationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'security',
                     'office_rental_cost',
                     'operation', 'type', 'corporation',
                     'solar_system', 'constellation', 'region')
-admin.site.register(EVEStation, EVEStationAdmin)
+admin.site.register(StaStation, StaStationAdmin)
 
-class EVEAgentAdmin(admin.ModelAdmin):
+class AgtAgentAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'division', 'corporation', 'location',
                     'quality', 'level') 
-admin.site.register(EVEAgent, EVEAgentAdmin)
+admin.site.register(AgtAgent, AgtAgentAdmin)
 
-class EVEAgentTypeAdmin(admin.ModelAdmin):
+class AgtAgentTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
-admin.site.register(EVEAgentType, EVEAgentTypeAdmin)
+admin.site.register(AgtAgentType, AgtAgentTypeAdmin)
 
-class EVEAgentConfigAdmin(admin.ModelAdmin):
+class AgtConfigAdmin(admin.ModelAdmin):
     list_display = ('id', 'agent', 'key', 'value')
-admin.site.register(EVEAgentConfig, EVEAgentConfigAdmin)
+admin.site.register(AgtConfig, AgtConfigAdmin)
 
 class CrtCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')

@@ -3,8 +3,10 @@ NPC Corporations, agents, and other fun.
 """
 from django.db import models
 
-class EVECorporateActivity(models.Model):
+class CrpActivity(models.Model):
     """
+    Activity types of corporations. 
+    
     crpActivities
     """
     name = models.CharField(max_length=100)
@@ -22,7 +24,7 @@ class EVECorporateActivity(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVENPCCorporation(models.Model):
+class CrpNPCCorporation(models.Model):
     """
     crpNPCCorporations
     """
@@ -46,7 +48,7 @@ class EVENPCCorporation(models.Model):
     extent = models.CharField(choices=EXTENT_CHOICES, max_length=1,
                               blank=True)
     
-    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
+    solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
     investor1 = models.ForeignKey('self', blank=True, null=True,
                                   related_name='invested1_set')
     investor1_shares = models.IntegerField(blank=True, null=True)
@@ -71,7 +73,7 @@ class EVENPCCorporation(models.Model):
     corridor_systems = models.IntegerField(default=0)
     hub_systems = models.IntegerField(default=0)
     border_systems = models.IntegerField(default=0)
-    faction = models.ForeignKey('EVEFaction', blank=True, null=True)
+    faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
@@ -91,7 +93,7 @@ class EVENPCCorporation(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVENPCDivision(models.Model):
+class CrpNPCDivision(models.Model):
     """
     Agent division types.
     
@@ -113,14 +115,14 @@ class EVENPCDivision(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVENPCCorporationDivision(models.Model):
+class CrpNPCCorporationDivision(models.Model):
     """
     Agent divisions available in corporations.
     
     crpNPCCorporationDivisions
     """
-    corporation = models.ForeignKey(EVENPCCorporation)
-    division = models.ForeignKey(EVENPCDivision)
+    corporation = models.ForeignKey(CrpNPCCorporation)
+    division = models.ForeignKey(CrpNPCDivision)
     size = models.IntegerField(blank=True, null=True)
     
     class Meta:
@@ -135,7 +137,7 @@ class EVENPCCorporationDivision(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVENPCCorporationTrade(models.Model):
+class CrpNPCCorporationTrade(models.Model):
     """
     Market items the corporation buys or sells. Supply/demand has been removed 
     from dumps, see:
@@ -143,8 +145,8 @@ class EVENPCCorporationTrade(models.Model):
     
     crpNPCCorporationTrades
     """
-    corporation = models.ForeignKey(EVENPCCorporation)
-    type = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    corporation = models.ForeignKey(CrpNPCCorporation)
+    type = models.ForeignKey('InvType', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -158,14 +160,14 @@ class EVENPCCorporationTrade(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVENPCCorporationResearchField(models.Model):
+class CrpNPCCorporationResearchField(models.Model):
     """
     Research fields for R&D agents in corporations. 
     
     crpNPCCorporationResearchFields
     """
-    corporation = models.ForeignKey(EVENPCCorporation)
-    skill = models.ForeignKey('EVEInventoryType', blank=True, null=True)
+    corporation = models.ForeignKey(CrpNPCCorporation)
+    skill = models.ForeignKey('InvType', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -179,7 +181,7 @@ class EVENPCCorporationResearchField(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEAgentType(models.Model):
+class AgtAgentType(models.Model):
     """
     agtAgentTypes
     """
@@ -197,18 +199,18 @@ class EVEAgentType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEAgent(models.Model):
+class AgtAgent(models.Model):
     """
     agtAgents
     """
     name = models.CharField(max_length=255, blank=True)
-    division = models.ForeignKey(EVENPCDivision, blank=True,
+    division = models.ForeignKey(CrpNPCDivision, blank=True,
                                  null=True)
-    corporation = models.ForeignKey(EVENPCCorporation, blank=True, null=True)
-    location = models.ForeignKey('EVEMapDenormalize', blank=True, null=True)
+    corporation = models.ForeignKey(CrpNPCCorporation, blank=True, null=True)
+    location = models.ForeignKey('MapDenormalize', blank=True, null=True)
     level = models.IntegerField(blank=True, null=True)
     quality = models.IntegerField(blank=True, null=True)
-    type = models.ForeignKey(EVEAgentType, blank=True, null=True)
+    type = models.ForeignKey(AgtAgentType, blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -222,11 +224,11 @@ class EVEAgent(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEAgentConfig(models.Model):
+class AgtConfig(models.Model):
     """
     agtConfig
     """
-    agent = models.ForeignKey(EVEAgent)
+    agent = models.ForeignKey(AgtAgent)
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=255, blank=True, null=True)
     

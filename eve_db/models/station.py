@@ -1,8 +1,10 @@
 from django.db import models
 
-class EVERamActivity(models.Model):
+class RamActivity(models.Model):
     """
     Research and Manufacturing activities.
+    
+    ramActivities
     """
     name = models.CharField(max_length=75, blank=True)
     description = models.CharField(max_length=100, blank=True)
@@ -22,13 +24,18 @@ class EVERamActivity(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERamAssemblyLineType(models.Model):
+class RamAssemblyLineType(models.Model):
+    """
+    Various assembly line types.
+    
+    ramAssemblyLineTypes
+    """
     name = models.CharField(max_length=100, blank=True)
     description = models.CharField(max_length=100, blank=True)
     base_time_multiplier = models.FloatField(blank=True, null=True)
     base_material_multiplier = models.FloatField(blank=True, null=True)
     volume = models.FloatField(blank=True, null=True)
-    activity = models.ForeignKey(EVERamActivity, blank=True, null=True)
+    activity = models.ForeignKey(RamActivity, blank=True, null=True)
     min_cost_per_hour = models.FloatField(blank=True, null=True)
     
     class Meta:
@@ -43,15 +50,17 @@ class EVERamAssemblyLineType(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERamAssemblyLine(models.Model):
+class RamAssemblyLine(models.Model):
     """
+    These represent individual assembly lines in stations.
+    
     ramAssemblyLines
     """
     # Just a denormalized assembly_line_type.name.
     name = models.CharField(max_length=255, blank=True)
-    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType, blank=True,
+    assembly_line_type = models.ForeignKey(RamAssemblyLineType, blank=True,
                                            null=True)
-    station = models.ForeignKey('EVEStation', blank=True, null=True)
+    station = models.ForeignKey('StaStation', blank=True, null=True)
     ui_grouping_id = models.IntegerField(blank=True, null=True)
     cost_install = models.FloatField(blank=True, null=True)
     cost_per_hour = models.FloatField(blank=True, null=True)
@@ -62,8 +71,8 @@ class EVERamAssemblyLine(models.Model):
     minimum_corp_security = models.FloatField(blank=True, null=True)
     maximum_char_security = models.FloatField(blank=True, null=True)
     maximum_corp_security = models.FloatField(blank=True, null=True)
-    owner = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
-    activity = models.ForeignKey('EVERamActivity', blank=True, null=True)
+    owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
+    activity = models.ForeignKey('RamActivity', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -77,9 +86,14 @@ class EVERamAssemblyLine(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERamAssemblyLineTypeDetailPerCategory(models.Model):
-    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType)
-    category = models.ForeignKey('EVEInventoryCategory')
+class RamAssemblyLineTypeDetailPerCategory(models.Model):
+    """
+    Assembly line multipliers per produced item category. 
+    
+    ramAssemblyLineTypeDetailPerCategory
+    """
+    assembly_line_type = models.ForeignKey(RamAssemblyLineType)
+    category = models.ForeignKey('InvCategory')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
     
@@ -95,9 +109,14 @@ class EVERamAssemblyLineTypeDetailPerCategory(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERamAssemblyLineTypeDetailPerGroup(models.Model):
-    assembly_line_type = models.ForeignKey(EVERamAssemblyLineType)
-    group = models.ForeignKey('EVEInventoryGroup')
+class RamAssemblyLineTypeDetailPerGroup(models.Model):
+    """
+    Assembly line multipliers per produced item group. 
+    
+    ramAssemblyLineTypeDetailPerGroup
+    """
+    assembly_line_type = models.ForeignKey(RamAssemblyLineType)
+    group = models.ForeignKey('InvGroup')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
     
@@ -113,14 +132,19 @@ class EVERamAssemblyLineTypeDetailPerGroup(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVERamAssemblyLineStations(models.Model):
-    station = models.ForeignKey('EVEStation')
-    assembly_line_type = models.ForeignKey('EVERamAssemblyLineType')
+class RamAssemblyLineStations(models.Model):
+    """
+    Denotes assembly line types on individual stations.
+    
+    ramAssemblyLineStations
+    """
+    station = models.ForeignKey('StaStation')
+    assembly_line_type = models.ForeignKey('RamAssemblyLineType')
     quantity = models.IntegerField(blank=True, null=True)
-    station_type = models.ForeignKey('EVEStationType', blank=True, null=True)
-    owner = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
-    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
-    region = models.ForeignKey('EVERegion', blank=True, null=True)
+    station_type = models.ForeignKey('StaStationType', blank=True, null=True)
+    owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
+    solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
+    region = models.ForeignKey('MapRegion', blank=True, null=True)
     
     class Meta:
         app_label = 'eve_db'
@@ -134,8 +158,10 @@ class EVERamAssemblyLineStations(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEStationService(models.Model):
+class StaService(models.Model):
     """
+    Entries for all services available at stations.
+    
     staServices
     """
     name = models.CharField(max_length=100)
@@ -153,8 +179,10 @@ class EVEStationService(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEStationType(models.Model):
+class StaStationType(models.Model):
     """
+    Details for the different types of stations.
+    
     staStationTypes
     """
     docking_bay_graphic = models.ForeignKey('EVEGraphic',
@@ -169,7 +197,7 @@ class EVEStationType(models.Model):
     dock_orientation_y = models.FloatField(blank=True, null=True)
     dock_entry_z = models.FloatField(blank=True, null=True)
     dock_orientation_z = models.FloatField(blank=True, null=True)
-    operation = models.ForeignKey('EVEStationOperation', blank=True, null=True)
+    operation = models.ForeignKey('StaOperation', blank=True, null=True)
     office_slots = models.IntegerField(blank=True, null=True)
     reprocessing_efficiency = models.FloatField(blank=True, null=True)
     is_conquerable = models.BooleanField(default=False)    
@@ -186,8 +214,10 @@ class EVEStationType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEStationOperation(models.Model):
+class StaOperation(models.Model):
     """
+    Operation types for stations. 
+    
     staOperations
     """
     activity_id = models.IntegerField(blank=True, null=True)
@@ -198,19 +228,19 @@ class EVEStationOperation(models.Model):
     hub = models.IntegerField(blank=True, null=True)
     border = models.IntegerField(blank=True, null=True)
     ratio = models.IntegerField(blank=True, null=True)
-    caldari_station_type = models.ForeignKey(EVEStationType,
+    caldari_station_type = models.ForeignKey(StaStationType,
                                              related_name='caldari_station_operation_set', 
                                              blank=True, null=True)
-    minmatar_station_type = models.ForeignKey(EVEStationType,
+    minmatar_station_type = models.ForeignKey(StaStationType,
                                               related_name='minmatar_station_operation_set', 
                                               blank=True, null=True)
-    amarr_station_type = models.ForeignKey(EVEStationType,
+    amarr_station_type = models.ForeignKey(StaStationType,
                                            related_name='amarr_station_operation_set', 
                                            blank=True, null=True)
-    gallente_station_type = models.ForeignKey(EVEStationType,
+    gallente_station_type = models.ForeignKey(StaStationType,
                                               related_name='gallente_station_operation_set', 
                                               blank=True, null=True)
-    jove_station_type = models.ForeignKey(EVEStationType,
+    jove_station_type = models.ForeignKey(StaStationType,
                                           related_name='jove_station_operation_set',
                                           blank=True, null=True)
     
@@ -227,20 +257,22 @@ class EVEStationOperation(models.Model):
     def __str__(self):
         return self.__unicode__()
         
-class EVEStation(models.Model):
+class StaStation(models.Model):
     """
+    Represents an individual station out in a system. 
+    
     staStations
     """
     security = models.IntegerField(blank=True, null=True)
     docking_cost_per_volume = models.FloatField(blank=True, null=True)
     max_ship_volume_dockable = models.FloatField(blank=True, null=True)
     office_rental_cost = models.IntegerField(blank=True, null=True)
-    operation = models.ForeignKey(EVEStationOperation, blank=True, null=True)
-    type = models.ForeignKey(EVEStationType, blank=True, null=True)
-    corporation = models.ForeignKey('EVENPCCorporation', blank=True, null=True)
-    solar_system = models.ForeignKey('EVESolarSystem', blank=True, null=True)
-    constellation = models.ForeignKey('EVEConstellation', blank=True, null=True)
-    region = models.ForeignKey('EVERegion', blank=True, null=True)
+    operation = models.ForeignKey(StaOperation, blank=True, null=True)
+    type = models.ForeignKey(StaStationType, blank=True, null=True)
+    corporation = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
+    solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
+    constellation = models.ForeignKey('MapConstellation', blank=True, null=True)
+    region = models.ForeignKey('MapRegion', blank=True, null=True)
     name = models.CharField(max_length=100, blank=True)
     x = models.FloatField(blank=True, null=True)
     y = models.FloatField(blank=True, null=True)
@@ -261,14 +293,14 @@ class EVEStation(models.Model):
     def __str__(self):
         return self.__unicode__()
     
-class EVEStationOperationServices(models.Model):
+class StaOperationServices(models.Model):
     """
-    staOperationServices
-    
     Services per operations. 
+    
+    staOperationServices
     """
-    operation = models.ForeignKey(EVEStationOperation)
-    service = models.ForeignKey(EVEStationService)
+    operation = models.ForeignKey(StaOperation)
+    service = models.ForeignKey(StaService)
 
     class Meta:
         app_label = 'eve_db'

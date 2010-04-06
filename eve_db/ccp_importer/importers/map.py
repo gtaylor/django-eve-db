@@ -6,7 +6,7 @@ from importer_classes import SQLImporter
 
 class Importer_mapUniverse(SQLImporter):
     def import_row(self, row):
-        imp_obj, created = EVEUniverse.objects.get_or_create(id=row['universeID'])
+        imp_obj, created = MapUniverse.objects.get_or_create(id=row['universeID'])
         if row['universeName']:
             imp_obj.name = row['universeName']
         imp_obj.x = row['x']
@@ -25,7 +25,7 @@ class Importer_mapRegions(SQLImporter):
     DEPENDENCIES = ['chrFactions']
 
     def import_row(self, row):
-        imp_obj, created = EVERegion.objects.get_or_create(id=row['regionID'])
+        imp_obj, created = MapRegion.objects.get_or_create(id=row['regionID'])
         imp_obj.name = row['regionName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -38,7 +38,7 @@ class Importer_mapRegions(SQLImporter):
         imp_obj.z_max = row['zMax']
         
         if row['factionID']:
-            faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
+            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.radius = row['radius']
@@ -48,16 +48,16 @@ class Importer_mapRegionJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions']
 
     def import_row(self, row):
-        from_region = EVERegion.objects.get(id=row['fromRegionID'])
-        to_region = EVERegion.objects.get(id=row['toRegionID'])
-        imp_obj, created = EVERegionJump.objects.get_or_create(from_region=from_region,
+        from_region = MapRegion.objects.get(id=row['fromRegionID'])
+        to_region = MapRegion.objects.get(id=row['toRegionID'])
+        imp_obj, created = MapRegionJump.objects.get_or_create(from_region=from_region,
                                                                to_region=to_region)
         
 class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
 
     def import_row(self, row):
-        imp_obj, created = EVEConstellation.objects.get_or_create(id=row['constellationID'])
+        imp_obj, created = MapConstellation.objects.get_or_create(id=row['constellationID'])
         imp_obj.name = row['constellationName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -71,11 +71,11 @@ class Importer_mapConstellations(SQLImporter):
         imp_obj.radius = row['radius']
 
         if row['regionID']:
-            region, region_created = EVERegion.objects.get_or_create(id=row['regionID'])
+            region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
             imp_obj.region = region
             
         if row['factionID']:
-            faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
+            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.save()
@@ -84,11 +84,11 @@ class Importer_mapConstellationJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations']
 
     def import_row(self, row):
-        from_constellation = EVEConstellation.objects.get(id=row['fromConstellationID'])
-        from_region = EVERegion.objects.get(id=row['fromRegionID'])
-        to_constellation = EVEConstellation.objects.get(id=row['toConstellationID'])
-        to_region = EVERegion.objects.get(id=row['toRegionID'])
-        imp_obj, created = EVEConstellationJump.objects.get_or_create(from_constellation=from_constellation,
+        from_constellation = MapConstellation.objects.get(id=row['fromConstellationID'])
+        from_region = MapRegion.objects.get(id=row['fromRegionID'])
+        to_constellation = MapConstellation.objects.get(id=row['toConstellationID'])
+        to_region = MapRegion.objects.get(id=row['toRegionID'])
+        imp_obj, created = MapConstellationJump.objects.get_or_create(from_constellation=from_constellation,
                                                                from_region=from_region,
                                                                to_constellation=to_constellation,
                                                                to_region=to_region)
@@ -98,7 +98,7 @@ class Importer_mapSolarSystems(SQLImporter):
                     'invTypes']
 
     def import_row(self, row):
-        imp_obj, created = EVESolarSystem.objects.get_or_create(id=row['solarSystemID'])
+        imp_obj, created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
         imp_obj.name = row['solarSystemName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -138,18 +138,18 @@ class Importer_mapSolarSystems(SQLImporter):
             imp_obj.has_interconstellational_link = True
 
         if row['regionID']:
-            region, region_created = EVERegion.objects.get_or_create(id=row['regionID'])
+            region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
             imp_obj.region = region
             
         if row['constellationID']:
-            constellation, constellation_created = EVEConstellation.objects.get_or_create(id=row['constellationID'])
+            constellation, constellation_created = MapConstellation.objects.get_or_create(id=row['constellationID'])
             imp_obj.constellation = constellation
             
         if row['sunTypeID']:
-            imp_obj.sun_type = EVEInventoryType.objects.get(id=row['sunTypeID'])
+            imp_obj.sun_type = InvType.objects.get(id=row['sunTypeID'])
             
         if row['factionID']:
-            faction, faction_created = EVEFaction.objects.get_or_create(id=row['factionID'])
+            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.save()
@@ -158,13 +158,13 @@ class Importer_mapSolarSystemJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations', 'mapSolarSystems']
 
     def import_row(self, row):
-        from_constellation = EVEConstellation.objects.get(id=row['fromConstellationID'])
-        from_region = EVERegion.objects.get(id=row['fromRegionID'])
-        from_solar_system = EVESolarSystem.objects.get(id=row['fromSolarSystemID'])
-        to_constellation = EVEConstellation.objects.get(id=row['toConstellationID'])
-        to_region = EVERegion.objects.get(id=row['toRegionID'])
-        to_solar_system = EVESolarSystem.objects.get(id=row['toSolarSystemID'])
-        imp_obj, created = EVESolarSystemJump.objects.get_or_create(from_constellation=from_constellation,
+        from_constellation = MapConstellation.objects.get(id=row['fromConstellationID'])
+        from_region = MapRegion.objects.get(id=row['fromRegionID'])
+        from_solar_system = MapSolarSystem.objects.get(id=row['fromSolarSystemID'])
+        to_constellation = MapConstellation.objects.get(id=row['toConstellationID'])
+        to_region = MapRegion.objects.get(id=row['toRegionID'])
+        to_solar_system = MapSolarSystem.objects.get(id=row['toSolarSystemID'])
+        imp_obj, created = MapSolarSystemJump.objects.get_or_create(from_constellation=from_constellation,
                                                                     from_region=from_region,
                                                                     to_constellation=to_constellation,
                                                                     to_region=to_region,
@@ -175,9 +175,9 @@ class Importer_mapJumps(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
 
     def import_row(self, row):
-        origin_gate = EVEMapDenormalize.objects.get(id=row['stargateID'])
-        destination_gate = EVEMapDenormalize.objects.get(id=row['celestialID'])
-        imp_obj, created = EVEStargateJump.objects.get_or_create(origin_gate=origin_gate,
+        origin_gate = MapDenormalize.objects.get(id=row['stargateID'])
+        destination_gate = MapDenormalize.objects.get(id=row['celestialID'])
+        imp_obj, created = MapJump.objects.get_or_create(origin_gate=origin_gate,
                                                                  destination_gate=destination_gate)
         
 class Importer_mapDenormalize(SQLImporter):
@@ -185,7 +185,7 @@ class Importer_mapDenormalize(SQLImporter):
                         'mapConstellations', 'mapRegions']
 
     def import_row(self, row):
-        mapdenorm, created = EVEMapDenormalize.objects.get_or_create(id=row['itemID'])
+        mapdenorm, created = MapDenormalize.objects.get_or_create(id=row['itemID'])
         mapdenorm.orbit_id = row['orbitID']
         mapdenorm.x = row['x']
         mapdenorm.y = row['y']
@@ -197,19 +197,19 @@ class Importer_mapDenormalize(SQLImporter):
         mapdenorm.orbit_index = row['orbitIndex']
             
         if row['typeID']:
-            mapdenorm.type = EVEInventoryType.objects.get(id=row['typeID'])
+            mapdenorm.type = InvType.objects.get(id=row['typeID'])
                 
         if row['groupID']:
-            mapdenorm.group = EVEInventoryGroup.objects.get(id=row['groupID'])
+            mapdenorm.group = InvGroup.objects.get(id=row['groupID'])
                 
         if row['solarSystemID']:
-            mapdenorm.solar_system = EVESolarSystem.objects.get(id=row['solarSystemID'])
+            mapdenorm.solar_system = MapSolarSystem.objects.get(id=row['solarSystemID'])
                 
         if row['constellationID']:
-            mapdenorm.constellation = EVEConstellation.objects.get(id=row['constellationID'])
+            mapdenorm.constellation = MapConstellation.objects.get(id=row['constellationID'])
                 
         if row['regionID']:
-            mapdenorm.region = EVERegion.objects.get(id=row['regionID'])
+            mapdenorm.region = MapRegion.objects.get(id=row['regionID'])
             
         mapdenorm.save()
 
@@ -217,7 +217,7 @@ class Importer_mapLandmarks(SQLImporter):
     DEPENDENCIES = ['mapSolarSystems', 'eveGraphics']
 
     def import_row(self, row):
-        imp_obj, created = EVELandmark.objects.get_or_create(id=row['landmarkID'])
+        imp_obj, created = MapLandmark.objects.get_or_create(id=row['landmarkID'])
         imp_obj.name = row['landmarkName']
         imp_obj.description = row['description']
         imp_obj.x = row['x']
@@ -230,7 +230,7 @@ class Importer_mapLandmarks(SQLImporter):
             imp_obj.url_2d = row['url2d']
 
         if row['locationID']:
-            imp_obj.solar_system = EVESolarSystem.objects.get(id=row['locationID'])
+            imp_obj.solar_system = MapSolarSystem.objects.get(id=row['locationID'])
             
         if row['graphicID']:
             imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
@@ -241,8 +241,8 @@ class Importer_mapCelestialStatistics(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
 
     def import_row(self, row):
-        celestial = EVEMapDenormalize.objects.get(id=row['celestialID'])
-        imp_obj, created = EVECelestialStatistic.objects.get_or_create(celestial=celestial)
+        celestial = MapDenormalize.objects.get(id=row['celestialID'])
+        imp_obj, created = MapCelestialStatistic.objects.get_or_create(celestial=celestial)
         imp_obj.temperature = row['temperature']
         imp_obj.spectral_class = row['spectralClass']
         imp_obj.luminosity = row['luminosity']
