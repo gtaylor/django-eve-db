@@ -149,24 +149,19 @@ class Importer_staOperations(SQLImporter):
         operation.ratio = row['ratio']        
         
         if row['caldariStationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['caldariStationTypeID'])
-            operation.caldari_station_type, created = StaStationType.objects.get_or_create(type=invtype)
+            operation.caldari_station_type, created = StaStationType.objects.get_or_create(id=row['caldariStationTypeID'])
         
         if row['minmatarStationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['minmatarStationTypeID'])
-            operation.minmatar_station_type, created = StaStationType.objects.get_or_create(type=invtype)
+            operation.minmatar_station_type, created = StaStationType.objects.get_or_create(id=row['minmatarStationTypeID'])
         
         if row['amarrStationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['amarrStationTypeID'])
-            operation.amarr_station_type, created = StaStationType.objects.get_or_create(type=invtype)
+            operation.amarr_station_type, created = StaStationType.objects.get_or_create(id=row['amarrStationTypeID'])
         
         if row['gallenteStationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['gallenteStationTypeID'])
-            operation.gallente_station_type, created = StaStationType.objects.get_or_create(type=invtype)
+            operation.gallente_station_type, created = StaStationType.objects.get_or_create(id=row['gallenteStationTypeID'])
         
         if row['joveStationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['joveStationTypeID'])
-            operation.jove_station_type, created = StaStationType.objects.get_or_create(type=invtype)
+            operation.jove_station_type, created = StaStationType.objects.get_or_create(id=row['joveStationTypeID'])
         
         operation.save()
 
@@ -210,8 +205,7 @@ class Importer_staStations(SQLImporter):
             station.operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
         
         if row['stationTypeID']:
-            invtype, created = InvType.objects.get_or_create(id=row['stationTypeID'])
-            station.type, created = StaStationType.objects.get_or_create(type=invtype)
+            station.type, created = StaStationType.objects.get_or_create(id=row['stationTypeID'])
             
         if row['corporationID']:
             station.corporation, created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
