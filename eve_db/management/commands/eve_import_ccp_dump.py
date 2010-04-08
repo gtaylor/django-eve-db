@@ -2,6 +2,21 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from optparse import make_option
 import sys
+
+# Make sure we have all of the dependencies.
+try:
+    from eve_proxy.models import CachedDocument
+except ImportError:
+    print "\n\rFAIL: You have not installed django-eve-proxy. Please see:\n\r"
+    print "   http://code.google.com/p/django-eve-proxy/\n\r"
+    sys.exit(1)
+try:
+    from eve_api import app_defines
+except ImportError:
+    print "\n\rFAIL: You have not installed django-eve-api. Please see:\n\r"
+    print "   http://code.google.com/p/django-eve-api/\n\r"
+    sys.exit(1)
+
 from eve_db.ccp_importer import util
 from eve_db.ccp_importer import importers
 
