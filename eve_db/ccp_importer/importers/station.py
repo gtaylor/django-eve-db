@@ -182,6 +182,27 @@ class Importer_ramAssemblyLineStations(SQLImporter):
         imp_obj.quantity = row['quantity']
         imp_obj.save()
 
+class Importer_ramTypeRequirements(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'ramActivities']
+    
+    def import_row(self, row):
+        type = InvType.objects.get(id=row['typeID'])
+        required_type = InvType.objects.get(id=row['requiredTypeID'])
+        activity_type = RamActivity.objects.get(id=row['activityID'])
+        imp_obj, created = RamTypeRequirement.objects.get_or_create(type=type, activity_type=activity_type,
+                                                                    required_type=required_type)
+        imp_obj.quantity = row['quantity']
+        imp_obj.damage_per_job = row['damagePerJob']
+        
+        if row['recycle'] == 0:
+            imp_obj.recycle = False
+        if row['recycle'] == 1:
+            imp_obj.recycle = True
+        
+        imp_obj.save()
+        
+        
+
 class Importer_staStations(SQLImporter):
     DEPENDENCIES = ['invTypes', 'staOperations', 'staStationTypes',
                     'chrNPCCorporations', 'mapSolarSystems', 

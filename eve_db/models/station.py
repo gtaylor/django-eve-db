@@ -158,6 +158,32 @@ class RamAssemblyLineStations(models.Model):
     def __str__(self):
         return self.__unicode__()
 
+class RamTypeRequirement(models.Model):
+    """
+    
+    
+    ramTypeRequirements
+    """
+    type = models.ForeignKey('InvType', related_name='type_requirement')
+    activity_type = models.ForeignKey('RamActivity')
+    required_type = models.ForeignKey('InvType', related_name='required_type')
+    quantity = models.IntegerField(blank=True, null=True)
+    damage_per_job = models.FloatField(blank=True, null=True)
+    recycle = models.BooleanField(blank=True)
+    
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Type Requirement'
+        verbose_name_plural = 'Type Requirements'
+        
+    def __unicode__(self):
+        return "%s: %s (%s)" % (self.type.name, self.required_type.name, self.activity_type.name)
+        
+    def __str__(self):
+        return self.__unicode__()
+
+
 class StaService(models.Model):
     """
     Entries for all services available at stations.

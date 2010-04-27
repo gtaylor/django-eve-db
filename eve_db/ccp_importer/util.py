@@ -70,6 +70,7 @@ IMPORT_LIST = [Importer_chrFactions,
                Importer_crtCertificates,
                Importer_crtRelationships,
                Importer_crtRecommendations,
+               Importer_ramTypeRequirements,
                ]
 
 def order_importers(importer_classes):
