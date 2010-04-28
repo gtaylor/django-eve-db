@@ -10,6 +10,7 @@ class InvMarketGroup(models.Model):
     
     invMarketGroups
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
@@ -36,6 +37,7 @@ class InvCategory(models.Model):
     
     invCategories
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     is_published = models.BooleanField(default=True)
@@ -61,6 +63,7 @@ class InvGroup(models.Model):
     
     invGroups
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     category = models.ForeignKey(InvCategory, blank=True, null=True)
     name = models.CharField(max_length=150)
     description = models.TextField()
@@ -91,6 +94,7 @@ class InvMetaGroup(models.Model):
     
     invMetaGroups
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
@@ -116,6 +120,7 @@ class InvType(models.Model):
     
     invTypes
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     group = models.ForeignKey(InvGroup, blank=True, null=True)
@@ -209,6 +214,7 @@ class InvFlag(models.Model):
     
     invFlags
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     # Short name for the flag.
     name = models.CharField(max_length=255)
     # Full, descriptive name for the flag.
@@ -236,6 +242,7 @@ class DgmAttributeCategory(models.Model):
     
     dgmAttributeCategories
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=100, blank=True)
 
@@ -257,6 +264,7 @@ class DgmAttributeType(models.Model):
     
     dgmAttributeTypes
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=75)
     category = models.ForeignKey(DgmAttributeCategory, blank=True, null=True)
     description = models.TextField(blank=True)
@@ -345,6 +353,7 @@ class DgmEffect(models.Model):
     
     dgmTypeEffects
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=150)
     # Not sure what this is. Internal category of effect.
     category = models.IntegerField(blank=True, null=True)
