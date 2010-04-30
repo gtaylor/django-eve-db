@@ -26,7 +26,7 @@ class InvMetaGroupAdmin(admin.ModelAdmin):
 admin.site.register(InvMetaGroup, InvMetaGroupAdmin)
 
 class InvMetaTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'parent_type', 'meta_group')
+    list_display = ('type', 'parent_type', 'meta_group')
 admin.site.register(InvMetaType, InvMetaTypeAdmin)
 
 class InvGroupAdmin(admin.ModelAdmin):
@@ -69,7 +69,7 @@ class InvContrabandTypeAdmin(admin.ModelAdmin):
 admin.site.register(InvContrabandType, InvContrabandTypeAdmin)
 
 class InvBlueprintTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'blueprint_type', 'product_type', 'tech_level')
+    list_display = ('blueprint_type', 'product_type', 'tech_level')
 admin.site.register(InvBlueprintType, InvBlueprintTypeAdmin)
 
 class RamActivityAdmin(admin.ModelAdmin):
@@ -145,7 +145,7 @@ class MapSolarSystemJumpAdmin(admin.ModelAdmin):
 admin.site.register(MapSolarSystemJump, MapSolarSystemJumpAdmin)
 
 class MapJumpAdmin(admin.ModelAdmin):
-    list_display = ('id', 'origin_gate', 'destination_gate')
+    list_display = ('origin_gate', 'destination_gate')
 admin.site.register(MapJump, MapJumpAdmin)
  
 class DgmAttributeCategoryAdmin(admin.ModelAdmin):
@@ -225,7 +225,7 @@ class MapDenormalizeAdmin(admin.ModelAdmin):
 admin.site.register(MapDenormalize, MapDenormalizeAdmin)
 
 class MapCelestialStatisticAdmin(admin.ModelAdmin):
-    list_display = ('id', 'celestial')
+    list_display = ('celestial',)
 admin.site.register(MapCelestialStatistic, MapCelestialStatisticAdmin)
 
 class MapLandmarkAdmin(admin.ModelAdmin):
