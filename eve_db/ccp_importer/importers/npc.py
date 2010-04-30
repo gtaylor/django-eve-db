@@ -44,7 +44,8 @@ class Importer_crpNPCCorporationResearchFields(SQLImporter):
         
 class Importer_agtAgentTypes(SQLImporter):
     def import_row(self, row):
-        imp_obj, created = AgtAgentType.objects.get_or_create(name=row['agentType'])
+        imp_obj, created = AgtAgentType.objects.get_or_create(id=row['agentTypeID'])
+        imp_obj.name = name=row['agentType']
         imp_obj.save()
     
 class Importer_crpNPCCorporations(SQLImporter):
