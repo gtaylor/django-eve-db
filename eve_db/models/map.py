@@ -5,8 +5,10 @@ from django.db import models
 
 class MapUniverse(models.Model):
     """
-    mapUniverse
+    CCP Table: mapUniverse
+    CCP Primary key: "universeID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     x = models.FloatField(blank=True, null=True)
     x_min = models.FloatField(blank=True, null=True)
@@ -34,8 +36,10 @@ class MapUniverse(models.Model):
     
 class MapRegion(models.Model):
     """
-    mapRegions
+    CCP Table: mapRegions
+    CCP Primary key: "regionID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
@@ -64,7 +68,8 @@ class MapRegion(models.Model):
     
 class MapRegionJump(models.Model):
     """
-    mapRegionJumps
+    CCP Table: mapRegionJumps
+    CCP Primary key: ("fromRegionID" int(11), "toRegionID" int(11))
     """
     from_region = models.ForeignKey(MapRegion, 
                                     related_name='region_jumps_from_region_set')
@@ -76,6 +81,7 @@ class MapRegionJump(models.Model):
         ordering = ['id']
         verbose_name = 'Region Jump'
         verbose_name_plural = 'Region Jumps'
+        unique_together = ('from_region', 'to_region')
         
     def __unicode__(self):
         return "%s -> %s" % (self.from_region.name,
@@ -90,8 +96,10 @@ class MapConstellation(models.Model):
     to change, and is held in an external model. django-eve-api has a few
     of these for your convenience.
     
-    mapConstellations
+    CCP Table: mapConstellations
+    CCP Primary key: "constellationID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     region = models.ForeignKey(MapRegion, blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
@@ -124,7 +132,8 @@ class MapConstellation(models.Model):
     
 class MapConstellationJump(models.Model):
     """
-    mapConstellationJumps
+    CCP Table: mapConstellationJumps
+    CCP Primary key: ("fromConstellationID" int(11), "toConstellationID" int(11))
     """
     from_region = models.ForeignKey(MapRegion, 
                                     related_name='constellation_jumps_from_region_set')
@@ -140,6 +149,7 @@ class MapConstellationJump(models.Model):
         ordering = ['id']
         verbose_name = 'Constellation Jump'
         verbose_name_plural = 'Constellation Jumps'
+        unique_together = ('from_constellation', 'to_constellation')
         
     def __unicode__(self):
         return "%s -> %s" % (self.from_constellation.name,
@@ -150,8 +160,10 @@ class MapConstellationJump(models.Model):
     
 class MapSolarSystem(models.Model):
     """
-    mapSolarSystems
+    CCP Table: mapSolarSystems
+    CCP Primary key: "solarSystemID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     region = models.ForeignKey(MapRegion, blank=True, null=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     constellation = models.ForeignKey(MapConstellation, blank=True, null=True)
@@ -200,7 +212,8 @@ class MapSolarSystem(models.Model):
     
 class MapSolarSystemJump(models.Model):
     """
-    mapSolarSystemJumps
+    CCP Table: mapSolarSystemJumps
+    CCP Primary key: ("fromSolarSystemID" int(11), "toSolarSystemID" int(11))
     """
     from_region = models.ForeignKey(MapRegion, blank=True, null=True,
                                     related_name='solar_system_jumps_from_region_set')
@@ -222,6 +235,7 @@ class MapSolarSystemJump(models.Model):
         ordering = ['id']
         verbose_name = 'Solar System Jump'
         verbose_name_plural = 'Solar System Jumps'
+        unique_together = ('from_solar_system', 'to_solar_system')
         
     def __unicode__(self):
         return "%s -> %s" % (self.from_solar_system.name,
@@ -234,16 +248,18 @@ class MapJump(models.Model):
     """
     Jumps between stargates.
     
-    mapJumps
+    CCP Table: mapJumps
+    CCP Primary key: "stargateID" int(11)
     """
     origin_gate = models.ForeignKey('MapDenormalize',
+                                    unique=True, primary_key=True,
                                     related_name='stargate_jump_origin_set')
     destination_gate = models.ForeignKey('MapDenormalize',
                                          related_name='stargate_jump_destination_set')
     
     class Meta:
         app_label = 'eve_db'
-        ordering = ['id']
+        ordering = ['origin_gate']
         verbose_name = 'Stargate Jump'
         verbose_name_plural = 'Stargate Jumps'
         
@@ -255,9 +271,10 @@ class MapJump(models.Model):
     
 class MapCelestialStatistic(models.Model):
     """
-    mapCelestialStatistics
+    CCP Table: mapCelestialStatistics
+    CCP Primary key: "celestialID" int(11)
     """
-    celestial = models.ForeignKey('MapDenormalize')
+    celestial = models.ForeignKey('MapDenormalize', unique=True, primary_key=True)
     temperature = models.FloatField(blank=True, null=True)
     spectral_class = models.CharField(max_length=255, blank=True)
     luminousity = models.FloatField(blank=True, null=True)
@@ -280,7 +297,7 @@ class MapCelestialStatistic(models.Model):
     
     class Meta:
         app_label = 'eve_db'
-        ordering = ['id']
+        ordering = ['celestial']
         verbose_name = 'Celestial Statistic'
         verbose_name_plural = 'Celestial Statistics'
         
@@ -292,8 +309,10 @@ class MapCelestialStatistic(models.Model):
         
 class MapDenormalize(models.Model):
     """
-    mapDenormalize
+    CCP Table: mapDenormalize
+    CCP Primary key: "itemID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     type = models.ForeignKey('InvType', blank=True, null=True)
     group = models.ForeignKey('InvGroup', blank=True, null=True)
     solar_system = models.ForeignKey(MapSolarSystem, blank=True, null=True)
@@ -323,8 +342,10 @@ class MapDenormalize(models.Model):
     
 class MapLandmark(models.Model):
     """
-    mapLandmarks
+    CCP Table: mapLandmarks
+    CCP Primary key: "landmarkID" smallint(6)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)

@@ -5,8 +5,10 @@ from django.db import models
 
 class CrtCategory(models.Model):
     """
-    crtCategories
+    CCP Table: crtCategories
+    CCP Primary key: "categoryID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     
@@ -24,8 +26,10 @@ class CrtCategory(models.Model):
     
 class CrtClass(models.Model):
     """
-    crtClasses
+    CCP Table: crtClasses
+    CCP Primary key: "classID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     
@@ -43,8 +47,10 @@ class CrtClass(models.Model):
     
 class CrtCertificate(models.Model):
     """
-    CrtCertificate
+    CCP Table: crtCertificates
+    CCP Primary key: "certificateID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     category = models.ForeignKey(CrtCategory, blank=True, null=True)
     # Can't call this 'class', that's a reserved keyword.
     cert_class = models.ForeignKey(CrtClass, blank=True, null=True)
@@ -69,8 +75,10 @@ class CrtCertificate(models.Model):
     
 class CrtRelationship(models.Model):
     """
-    crtRelationships
+    CCP Table: crtRelationships
+    CCP Primary key: "relationshipID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     parent = models.ForeignKey(CrtCertificate, blank=True, null=True,
                                related_name='parent_crtrelationship_set')
     parent_type = models.ForeignKey('InvType', blank=True, null=True)
@@ -92,8 +100,10 @@ class CrtRelationship(models.Model):
     
 class CrtRecommendation(models.Model):
     """
-    crtRecommendations
+    CCP Table: crtRecommendations
+    CCP Primary key: "recommendationID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     ship_type = models.ForeignKey('InvType', blank=True, null=True)
     certificate = models.ForeignKey(CrtCertificate, blank=True, null=True)
     recommendation_level = models.IntegerField(blank=True, null=True)

@@ -8,7 +8,8 @@ class InvMarketGroup(models.Model):
     """
     Market groups are used to group items together in the market browser.
     
-    invMarketGroups
+    CCP Table: invMarketGroups
+    CCP Primary key: "marketGroupID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
@@ -16,7 +17,7 @@ class InvMarketGroup(models.Model):
     parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
     has_items = models.BooleanField(default=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -35,7 +36,8 @@ class InvCategory(models.Model):
     it planets, moons, modules, ships, or any other entity within the game
     that physically exists.
     
-    invCategories
+    CCP Table: invCategories
+    CCP Primary key: "categoryID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
@@ -61,7 +63,8 @@ class InvGroup(models.Model):
     InvCategory. For example, the 'MapRegion' inventory group's
     category is 'Celestial'.
     
-    invGroups
+    CCP Table: invGroups
+    CCP Primary key: "groupID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     category = models.ForeignKey(InvCategory, blank=True, null=True)
@@ -92,7 +95,8 @@ class InvMetaGroup(models.Model):
     """
     Names of variants of items.
     
-    invMetaGroups
+    CCP Table: invMetaGroups
+    CCP Primary key: "metaGroupID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
@@ -118,7 +122,8 @@ class InvType(models.Model):
     market items, along with some basic attributes of each that are common
     to all items. 
     
-    invTypes
+    CCP Table: invTypes
+    CCP Primary key: "typeID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100, blank=True)
@@ -156,7 +161,8 @@ class InvTypeMaterial(models.Model):
     These are materials required to produce an item type. Used for calculating
     build requirements.
     
-    invTypeMaterials
+    CCP Table: invTypeMaterials
+    CCP Primary key: ("typeID" smallint(6), "materialTypeID" smallint(6))
     """
     type = models.ForeignKey(InvType, related_name='material_set')
     material_type = models.ForeignKey(InvType, 
@@ -168,6 +174,7 @@ class InvTypeMaterial(models.Model):
         ordering = ['id']
         verbose_name = 'Inventory Type Material'
         verbose_name_plural = 'Inventory Type Materials'
+        unique_together = ('type', 'material_type')
         
     def __unicode__(self):
         if self.name:
@@ -186,9 +193,11 @@ class InvMetaType(models.Model):
     For that information see Attribute metaLevel (attributeID=633) in table 
     dgmTypeAttributes linked with type in question.
     
-    invMetaTypes
+    CCP Table: invMetaTypes
+    CCP Primary key: "typeID" smallint(6)
     """
-    type = models.ForeignKey(InvType, 
+    type = models.ForeignKey(InvType,
+                            unique=True, primary_key=True,
                             related_name='inventorymetatype_type_set')
     parent_type = models.ForeignKey(InvType, 
                             related_name='inventorymetatype_parent_type_set')
@@ -196,7 +205,7 @@ class InvMetaType(models.Model):
     
     class Meta:
         app_label = 'eve_db'
-        ordering = ['id']
+        ordering = ['type']
         verbose_name = 'Inventory Meta Type'
         verbose_name_plural = 'Inventory Meta Types'
         
@@ -212,7 +221,8 @@ class InvFlag(models.Model):
     item within an office, station, ship, module or other container for the 
     API calls APIv2 Char AssetList XML and APIv2 Corp AssetList XML. 
     
-    invFlags
+    CCP Table: invFlags
+    CCP Primary key: "flagID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     # Short name for the flag.
@@ -240,7 +250,8 @@ class DgmAttributeCategory(models.Model):
     """
     Attribute Categories and their descriptions. 
     
-    dgmAttributeCategories
+    CCP Table: dgmAttributeCategories
+    CCP Primary key: "categoryID" tinyint(3)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=30)
@@ -262,7 +273,8 @@ class DgmAttributeType(models.Model):
     """
     Names and descriptions of attributes. 
     
-    dgmAttributeTypes
+    CCP Table: dgmAttributeTypes
+    CCP Primary key: "attributeID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=75)
@@ -292,7 +304,8 @@ class InvTypeAttribute(models.Model):
     """
     All attributes for items.
     
-    dgmTypeAttributes
+    CCP Table: dgmTypeAttributes
+    CCP Primary key: ("typeID" smallint(6), "attributeID" smallint(6))
     """
     inventory_type = models.ForeignKey(InvType)
     attribute = models.ForeignKey(DgmAttributeType)
@@ -304,6 +317,7 @@ class InvTypeAttribute(models.Model):
         ordering = ['id']
         verbose_name = 'Inventory Type Attribute'
         verbose_name_plural = 'Inventory Type Attributes'
+        unique_together = ('inventory_type', 'attribute')
 
     def __unicode__(self):
         return self.inventory_type.name + ' - ' + self.attribute.name
@@ -315,9 +329,11 @@ class InvBlueprintType(models.Model):
     """
     Stores info about each kind of blueprint.
     
-    invBlueprintTypes
+    CCP Table: invBlueprintTypes
+    CCP Primary key: "blueprintTypeID" smallint(6)
     """
     blueprint_type = models.ForeignKey(InvType,
+                                       unique=True, primary_key=True,
                                        related_name='blueprint_type_set')
     product_type = models.ForeignKey(InvType,
                                      related_name='blueprint_product_type_set')
@@ -337,7 +353,7 @@ class InvBlueprintType(models.Model):
 
     class Meta:
         app_label = 'eve_db'
-        ordering = ['id']
+        ordering = ['blueprint_type']
         verbose_name = 'Inventory Blueprint Type'
         verbose_name_plural = 'Inventory Blueprint Types'
         
@@ -351,7 +367,8 @@ class DgmEffect(models.Model):
     """
     Name and descriptions of effects.
     
-    dgmTypeEffects
+    CCP Table: dgmTypeEffects
+    CCP Primary key: "effectID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=150)
@@ -422,7 +439,8 @@ class DgmTypeEffect(models.Model):
     an effect listed, it's subject to this effect with the specified
     parameters, listed as per the DgmEffect.
     
-    dgmTypeEffects
+    CCP Table: dgmTypeEffects
+    CCP Primary key: ("typeID" smallint(6), "effectID" smallint(6))
     """
     type = models.ForeignKey(InvType)
     effect = models.ForeignKey(DgmEffect)
@@ -433,6 +451,7 @@ class DgmTypeEffect(models.Model):
         ordering = ['id']
         verbose_name = 'Inventory Type Effect'
         verbose_name_plural = 'Inventory Type Effect'
+        unique_together = ('type', 'effect')
         
     def __unicode__(self):
         return self.type
@@ -444,8 +463,12 @@ class InvPOSResourcePurpose(models.Model):
     """
     Types of tasks for which POS need resources, i.e. Online, Reinforced. 
     
-    invControlTowerResourcePurposes
+    CCP Table: invControlTowerResourcePurposes
+    CCP Primary key: "purpose" tinyint(4)
     """
+    # The id field maps to the CCP column purpose
+    id = models.IntegerField(unique=True, primary_key=True)
+    # The purpose field maps to the CCP column purposeText
     purpose = models.CharField(max_length=75, blank=True)
     
     class Meta:
@@ -464,7 +487,8 @@ class InvPOSResource(models.Model):
     """
     Fuel needed to support POSes. 
     
-    invControlTowerResources
+    CCP Table: invControlTowerResources
+    CCP Primary key: ("controlTowerTypeID" smallint(6), "resourceTypeID" smallint(6))
     """
     control_tower_type = models.ForeignKey(InvType,
                                            related_name='tower_resource_set')
@@ -480,6 +504,7 @@ class InvPOSResource(models.Model):
         ordering = ['id']
         verbose_name = 'POS Resource'
         verbose_name_plural = 'POS Resources'
+        unique_together = ('control_tower_type', 'resource_type')
         
     def __unicode__(self):
         return "POS Resource #%d" % self.id
@@ -491,7 +516,8 @@ class InvTypeReaction(models.Model):
     """
     Reaction recipes for POSes.
     
-    invTypeReactions
+    CCP Table: invTypeReactions
+    CCP Primary key: ("reactionTypeID" smallint(6), "input" tinyint(1), "typeID" smallint(6))
     """
     INPUT_TYPES = ((0, 'Result of reaction'), 
                    (1, 'Reaction material'))
@@ -509,6 +535,7 @@ class InvTypeReaction(models.Model):
         ordering = ['id']
         verbose_name = 'Inventory Type Reaction'
         verbose_name_plural = 'Inventory Type Reactions'
+        unique_together = ('reaction_type', 'input', 'type')
         
     def __unicode__(self):
         return self.name
@@ -520,7 +547,8 @@ class InvContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
     
-    invContrabandTypes
+    CCP Table: invContrabandTypes
+    CCP Primary key: ("factionID" int(11), "typeID" smallint(6))
     """
     faction = models.ForeignKey('ChrFaction')
     type = models.ForeignKey(InvType)
@@ -534,6 +562,7 @@ class InvContrabandType(models.Model):
         ordering = ['id']
         verbose_name = 'Contraband'
         verbose_name_plural = 'Contraband'
+        unique_together = ('faction', 'type')
 
     def __unicode__(self):
         return self.type

@@ -7,8 +7,10 @@ class ChrRace(models.Model):
     """
     Table lists available races. Races are numbered like bitmask - 1,2,4,8,16... 
     
-    chrRaces
+    CCP Table: chrRaces
+    CCP Primary key: "raceID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=30)
     short_description = models.TextField(blank=True)
     description = models.TextField(blank=True)
@@ -31,8 +33,10 @@ class ChrBloodline(models.Model):
     """
     Bloodlines for newly created characters with starting attributes. 
 
-    chrBloodlines
+    CCP Table: chrBloodlines
+    CCP Primary key: "bloodlineID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     race = models.ForeignKey(ChrRace,blank=True, null=True, 
                              related_name='bloodline_set')
@@ -69,8 +73,10 @@ class ChrAncestry(models.Model):
     """
     Available Ancestries with bonus skills and items. 
 
-    chrAncestries
+    CCP Table: chrAncestries
+    CCP Primary key: "ancestryID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     bloodline = models.ForeignKey(ChrBloodline,blank=True, null=True)
     description = models.TextField(blank=True)
@@ -98,8 +104,10 @@ class ChrAttribute(models.Model):
     """
     Five base Attrinutes annotated. 
     
-    chrAttributes
+    CCP Table: chrAttributes
+    CCP Primary key: "attributeID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     short_description = models.TextField(blank=True)
@@ -122,8 +130,10 @@ class ChrFaction(models.Model):
     """
     All main Factions found in game. 
 
-    chrFactions
+    CCP Table: chrFactions
+    CCP Primary key: "factionID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True,

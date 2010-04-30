@@ -12,8 +12,10 @@ class EveName(models.Model):
     Things covered by this model include space objects, corporations, and
     people.
     
-    eveNames
+    CCP Table: eveNames
+    CCP Primary key: "itemID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
     category = models.ForeignKey('InvCategory', blank=True, null=True)
     group = models.ForeignKey('InvGroup', blank=True, null=True)
@@ -35,8 +37,10 @@ class EVEUnit(models.Model):
     """
     Units of measurement.
     
-    eveUnits
+    CCP Table: eveUnits
+    CCP Primary key: "unitID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=75)
     display_name = models.CharField(max_length=30, blank=True)
     description = models.CharField(max_length=100, blank=True)
@@ -56,7 +60,11 @@ class EVEUnit(models.Model):
 class EVEGraphic(models.Model):
     """
     Stored graphic model.
+
+    CCP Table: eveGraphics
+    CCP Primary key: "graphicID" smallint(6)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     # Name of the file, should be two numbers separated by underscore, no extension.

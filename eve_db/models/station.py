@@ -4,8 +4,10 @@ class RamActivity(models.Model):
     """
     Research and Manufacturing activities.
     
-    ramActivities
+    CCP Table: ramActivities
+    CCP Primary key: "activityID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=75, blank=True)
     description = models.CharField(max_length=100, blank=True)
     # Name of the file, should be two numbers separated by underscore, no extension.
@@ -28,8 +30,10 @@ class RamAssemblyLineType(models.Model):
     """
     Various assembly line types.
     
-    ramAssemblyLineTypes
+    CCP Table: ramAssemblyLineTypes
+    CCP Primary key: "assemblyLineTypeID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100, blank=True)
     description = models.CharField(max_length=100, blank=True)
     base_time_multiplier = models.FloatField(blank=True, null=True)
@@ -54,8 +58,10 @@ class RamAssemblyLine(models.Model):
     """
     These represent individual assembly lines in stations.
     
-    ramAssemblyLines
+    CCP Table: ramAssemblyLines
+    CCP Primary key: "assemblyLineID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     # Just a denormalized assembly_line_type.name.
     name = models.CharField(max_length=255, blank=True)
     assembly_line_type = models.ForeignKey(RamAssemblyLineType, blank=True,
@@ -90,7 +96,8 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
     """
     Assembly line multipliers per produced item category. 
     
-    ramAssemblyLineTypeDetailPerCategory
+    CCP Table: ramAssemblyLineTypeDetailPerCategory
+    CCP Primary key: ("assemblyLineTypeID" tinyint(3), "categoryID" tinyint(3))
     """
     assembly_line_type = models.ForeignKey(RamAssemblyLineType)
     category = models.ForeignKey('InvCategory')
@@ -102,6 +109,7 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
         ordering = ['id']
         verbose_name = 'Assembly Line Detail per Category'
         verbose_name_plural = 'Assembly Line Details per Category'
+        unique_together = ('assembly_line_type', 'category')
         
     def __unicode__(self):
         return self.assembly_line_type.name
@@ -113,7 +121,8 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
     """
     Assembly line multipliers per produced item group. 
     
-    ramAssemblyLineTypeDetailPerGroup
+    CCP Table: ramAssemblyLineTypeDetailPerGroup
+    CCP Primary key: ("assemblyLineTypeID" tinyint(3), "groupID" smallint(6))
     """
     assembly_line_type = models.ForeignKey(RamAssemblyLineType)
     group = models.ForeignKey('InvGroup')
@@ -125,6 +134,7 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
         ordering = ['id']
         verbose_name = 'Assembly Line Detail per Group'
         verbose_name_plural = 'Assembly Line Details per Group'
+        unique_together = ('assembly_line_type', 'group')
         
     def __unicode__(self):
         return self.assembly_line_type.name
@@ -136,7 +146,8 @@ class RamAssemblyLineStations(models.Model):
     """
     Denotes assembly line types on individual stations.
     
-    ramAssemblyLineStations
+    CCP Table: ramAssemblyLineStations
+    CCP Primary key: ("stationID" int(11), "assemblyLineTypeID" tinyint(3))
     """
     station = models.ForeignKey('StaStation')
     assembly_line_type = models.ForeignKey('RamAssemblyLineType')
@@ -151,6 +162,7 @@ class RamAssemblyLineStations(models.Model):
         ordering = ['id']
         verbose_name = 'Assembly Line Station'
         verbose_name_plural = 'Assembly Line Stations'
+        unique_together = ('station', 'assembly_line_type')
         
     def __unicode__(self):
         return "%s: %s" % (self.station, self.assembly_line_type.name)
@@ -160,9 +172,8 @@ class RamAssemblyLineStations(models.Model):
 
 class RamTypeRequirement(models.Model):
     """
-    
-    
-    ramTypeRequirements
+    CCP Table: ramTypeRequirements
+    CCP Primary key: ("typeID" smallint(6), "activityID" tinyint(3), "requiredTypeID" smallint(6))
     """
     type = models.ForeignKey('InvType', related_name='type_requirement')
     activity_type = models.ForeignKey('RamActivity')
@@ -176,6 +187,7 @@ class RamTypeRequirement(models.Model):
         ordering = ['id']
         verbose_name = 'Type Requirement'
         verbose_name_plural = 'Type Requirements'
+        unique_together = ('type', 'activity_type', 'required_type')
         
     def __unicode__(self):
         return "%s: %s (%s)" % (self.type.name, self.required_type.name, self.activity_type.name)
@@ -188,8 +200,10 @@ class StaService(models.Model):
     """
     Entries for all services available at stations.
     
-    staServices
+    CCP Table: staServices
+    CCP Primary key: "serviceID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     
@@ -209,8 +223,10 @@ class StaStationType(models.Model):
     """
     Details for the different types of stations.
     
-    staStationTypes
+    CCP Table: staStationTypes
+    CCP Primary key: "stationTypeID" smallint(6)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     docking_bay_graphic = models.ForeignKey('EVEGraphic',
                                             related_name='docking_bay_graphic', 
                                             blank=True, null=True)
@@ -244,8 +260,10 @@ class StaOperation(models.Model):
     """
     Operation types for stations. 
     
-    staOperations
+    CCP Table: staOperations
+    CCP Primary key: "operationID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     activity_id = models.IntegerField(blank=True, null=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -287,8 +305,10 @@ class StaStation(models.Model):
     """
     Represents an individual station out in a system. 
     
-    staStations
+    CCP Table: staStations
+    CCP Primary key: "stationID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     security = models.IntegerField(blank=True, null=True)
     docking_cost_per_volume = models.FloatField(blank=True, null=True)
     max_ship_volume_dockable = models.FloatField(blank=True, null=True)
@@ -323,7 +343,8 @@ class StaOperationServices(models.Model):
     """
     Services per operations. 
     
-    staOperationServices
+    CCP Table: staOperationServices
+    CCP Primary key: ("operationID" tinyint(3), "serviceID" int(11))
     """
     operation = models.ForeignKey(StaOperation)
     service = models.ForeignKey(StaService)
@@ -333,6 +354,7 @@ class StaOperationServices(models.Model):
         ordering = ['id']
         verbose_name = 'Station Operation Service'
         verbose_name_plural = 'Station Operation Services'
+        unique_together = ('operation', 'service')
         
     def __unicode__(self):
         return "%s: %s" % (self.operation, self.service)

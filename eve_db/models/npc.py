@@ -7,8 +7,10 @@ class CrpActivity(models.Model):
     """
     Activity types of corporations. 
     
-    crpActivities
+    CCP Table: crpActivities
+    CCP Primary key: "activityID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     
@@ -26,8 +28,10 @@ class CrpActivity(models.Model):
 
 class CrpNPCCorporation(models.Model):
     """
-    crpNPCCorporations
+    CCP Table: crpNPCCorporations
+    CCP Primary key: "corporationID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     
@@ -97,8 +101,10 @@ class CrpNPCDivision(models.Model):
     """
     Agent division types.
     
-    crpNPCDivisions
+    CCP Table: crpNPCDivisions
+    CCP Primary key: "divisionID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     leader_type = models.CharField(max_length=100, blank=True)
@@ -119,7 +125,8 @@ class CrpNPCCorporationDivision(models.Model):
     """
     Agent divisions available in corporations.
     
-    crpNPCCorporationDivisions
+    CCP Table: crpNPCCorporationDivisions
+    CCP Primary key: ("corporationID" int(11), "divisionID" tinyint(3))
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     division = models.ForeignKey(CrpNPCDivision)
@@ -130,6 +137,7 @@ class CrpNPCCorporationDivision(models.Model):
         ordering = ['id']
         verbose_name = 'NPC Corporation Division'
         verbose_name_plural = 'NPC Corporation Divisions'
+        unique_together = ('corporation', 'division')
         
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.division)
@@ -143,7 +151,8 @@ class CrpNPCCorporationTrade(models.Model):
     from dumps, see:
     http://www.eveonline.com/ingameboard.asp?a=topic&threadID=835467&page=2#32. 
     
-    crpNPCCorporationTrades
+    CCP Table: crpNPCCorporationTrades
+    CCP Primary key: ("corporationID" int(11), "typeID" smallint(6))
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     type = models.ForeignKey('InvType', blank=True, null=True)
@@ -153,6 +162,7 @@ class CrpNPCCorporationTrade(models.Model):
         ordering = ['id']
         verbose_name = 'NPC Corporation Trade'
         verbose_name_plural = 'NPC Corporation Trades'
+        unique_together = ('corporation', 'type')
         
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.type)
@@ -164,7 +174,8 @@ class CrpNPCCorporationResearchField(models.Model):
     """
     Research fields for R&D agents in corporations. 
     
-    crpNPCCorporationResearchFields
+    CCP Table: crpNPCCorporationResearchFields
+    CCP Primary key: ("skillID" smallint(6), "corporationID" int(11))
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     skill = models.ForeignKey('InvType', blank=True, null=True)
@@ -174,6 +185,7 @@ class CrpNPCCorporationResearchField(models.Model):
         ordering = ['id']
         verbose_name = 'NPC Corporation Research Field'
         verbose_name_plural = 'NPC Corporation Research Fields'
+        unique_together = ('skill', 'corporation')
         
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.skill)
@@ -183,8 +195,10 @@ class CrpNPCCorporationResearchField(models.Model):
 
 class AgtAgentType(models.Model):
     """
-    agtAgentTypes
+    CCP Table: agtAgentTypes
+    CCP Primary key: "agentTypeID" tinyint(3)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
     
     class Meta:
@@ -201,8 +215,10 @@ class AgtAgentType(models.Model):
     
 class AgtAgent(models.Model):
     """
-    agtAgents
+    CCP Table: agtAgents
+    CCP Primary key: "agentID" int(11)
     """
+    id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     division = models.ForeignKey(CrpNPCDivision, blank=True,
                                  null=True)
@@ -226,7 +242,8 @@ class AgtAgent(models.Model):
     
 class AgtConfig(models.Model):
     """
-    agtConfig
+    CCP Table: agtConfig
+    CCP Primary key: ("agentID" int(11), "k" varchar(50))
     """
     agent = models.ForeignKey(AgtAgent)
     key = models.CharField(max_length=255)
@@ -237,6 +254,7 @@ class AgtConfig(models.Model):
         ordering = ['id']
         verbose_name = 'Agent Config'
         verbose_name_plural = 'Agent Configs'
+        unique_together = ('agent', 'key')
         
     def __unicode__(self):
         return "%s %s=%s" % (self.agent.name, self.key, self.value)
