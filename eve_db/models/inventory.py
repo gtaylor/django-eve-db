@@ -217,7 +217,7 @@ class InvMetaType(models.Model):
         verbose_name_plural = 'Inventory Meta Types'
         
     def __unicode__(self):
-        return self.name
+        return self.meta_group.name
     
     def __str__(self):
         return self.__unicode__()
