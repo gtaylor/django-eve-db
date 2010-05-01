@@ -18,6 +18,13 @@ class InvMarketGroup(models.Model):
     has_items = models.BooleanField(default=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
 
+    def full_name(self, delimiter='/'):
+        """ Return a full name, including parents, recursively """
+        if self.parent:
+            return self.parent.full_name() + delimiter + self.name
+        else:
+            return self.name
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
