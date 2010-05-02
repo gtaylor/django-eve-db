@@ -180,7 +180,7 @@ class Importer_dgmTypeAttributes(SQLImporter):
     def import_row(self, row):    
         inventory_type = InvType.objects.get(id=row['typeid'])
         attribute = DgmAttributeType.objects.get(id=row['attributeid'])
-        imp_obj, created = InvTypeAttribute.objects.get_or_create(inventory_type=inventory_type,
+        imp_obj, created = DgmTypeAttribute.objects.get_or_create(inventory_type=inventory_type,
                                                                             attribute=attribute)
 
         if row['valueint']:

@@ -156,9 +156,9 @@ class DgmAttributeTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description')
 admin.site.register(DgmAttributeType, DgmAttributeTypeAdmin)
  
-class InvTypeAttributeAdmin(admin.ModelAdmin):
+class DgmTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
-admin.site.register(InvTypeAttribute, InvTypeAttributeAdmin)
+admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
 
 class EVEGraphicAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'name', 'icon_filename')

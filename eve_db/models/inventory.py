@@ -307,7 +307,7 @@ class DgmAttributeType(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class InvTypeAttribute(models.Model):
+class DgmTypeAttribute(models.Model):
     """
     All attributes for items.
     
