@@ -184,11 +184,8 @@ class InvTypeMaterial(models.Model):
         unique_together = ('type', 'material_type')
         
     def __unicode__(self):
-        if self.name:
-            return self.name
-        else:
-            return "%s: (%dx %s)" % (self.type.name, self.quantity,
-                                     self.material_type.name)
+        return "%s: (%dx %s)" % (self.type.name, self.quantity,
+                                 self.material_type.name)
     
     def __str__(self):
         return self.__unicode__()
