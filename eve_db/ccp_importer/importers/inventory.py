@@ -301,7 +301,7 @@ class Importer_invBlueprintTypes(SQLImporter):
         invtype, created = InvBlueprintType.objects.get_or_create(blueprint_type=blueprint_type,
                                                                            product_type=product_type)
         if row['parentBlueprintTypeID']:
-            invtype.parent_blueprint_Type = InvType.objects.get(id=row['parentBlueprintTypeID'])
+            invtype.parent_blueprint_type = InvType.objects.get(id=row['parentBlueprintTypeID'])
             
         invtype.tech_level = row['techLevel']
         invtype.research_productivity_time = row['researchProductivityTime']
