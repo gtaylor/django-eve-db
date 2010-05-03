@@ -99,6 +99,7 @@ class Importer_invTypes(SQLImporter):
         invtype.volume = row['volume']
         invtype.capacity = row['capacity']
         invtype.portion_size = row['portionSize']
+        invtype.base_price = row['basePrice']
         
         if row['marketGroupID']:
             invtype.market_group = InvMarketGroup.objects.get(id=row['marketGroupID'])
