@@ -28,8 +28,8 @@ class Importer_crpNPCCorporationTrades(SQLImporter):
     def import_row(self, row):
         corporation = CrpNPCCorporation.objects.get(id=row['corporationID'])
         type = InvType.objects.get(id=row['typeID'])
-        imp_obj, created = CrpNPCCorporationTrade.objects.get_or_create(corporation=corporation)
-        imp_obj.type = type
+        imp_obj, created = CrpNPCCorporationTrade.objects.get_or_create(corporation=corporation,
+                                                                        type=type)
         imp_obj.save()
         
 class Importer_crpNPCCorporationResearchFields(SQLImporter):
