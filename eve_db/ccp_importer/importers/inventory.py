@@ -90,7 +90,7 @@ class Importer_invTypes(SQLImporter):
                     'invGroups']
 
     def import_row(self, row):
-        invtype, created = InvType.objects.get_or_create(id=row['typeID'])
+        invtype = InvType(id=row['typeID'])
         invtype.name = row['typeName']
         invtype.description = row['description']
         invtype.group = InvGroup.objects.get(id=row['groupID'])

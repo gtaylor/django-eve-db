@@ -185,7 +185,7 @@ class Importer_mapDenormalize(SQLImporter):
                         'mapConstellations', 'mapRegions']
 
     def import_row(self, row):
-        mapdenorm, created = MapDenormalize.objects.get_or_create(id=row['itemID'])
+        mapdenorm = MapDenormalize(id=row['itemID'])
         mapdenorm.orbit_id = row['orbitID']
         mapdenorm.x = row['x']
         mapdenorm.y = row['y']
@@ -242,7 +242,7 @@ class Importer_mapCelestialStatistics(SQLImporter):
 
     def import_row(self, row):
         celestial = MapDenormalize.objects.get(id=row['celestialID'])
-        imp_obj, created = MapCelestialStatistic.objects.get_or_create(celestial=celestial)
+        imp_obj = MapCelestialStatistic(celestial=celestial)
         imp_obj.temperature = row['temperature']
         imp_obj.spectral_class = row['spectralClass']
         imp_obj.luminosity = row['luminosity']

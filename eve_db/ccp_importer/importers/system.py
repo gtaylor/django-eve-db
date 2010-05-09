@@ -17,7 +17,7 @@ class Importer_eveNames(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
 
     def import_row(self, row):
-        imp_obj, created = EveName.objects.get_or_create(id=row['itemID'])
+        imp_obj = EveName(id=row['itemID'])
         imp_obj.name = row['itemName']
         imp_obj.category = InvCategory.objects.get(id=row['categoryID'])
         imp_obj.group = InvGroup.objects.get(id=row['groupID'])
