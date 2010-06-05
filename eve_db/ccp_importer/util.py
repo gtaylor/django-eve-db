@@ -71,6 +71,9 @@ IMPORT_LIST = [Importer_chrFactions,
                Importer_crtRelationships,
                Importer_crtRecommendations,
                Importer_ramTypeRequirements,
+               Importer_planetSchematics,
+               Importer_planetSchematicsPinMap,
+               Importer_planetSchematicsTypeMap
                ]
 
 def order_importers(importer_classes):
