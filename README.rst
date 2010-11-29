@@ -30,7 +30,6 @@ This software and all related projects are primarily developed by
 Blackman Industries, a software consulting and development EVE Corporation. 
 Please consider sending ISK if this software has saved you time or benefited you.
 
-
 -------
 Support
 -------
