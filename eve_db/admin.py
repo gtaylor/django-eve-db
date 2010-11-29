@@ -64,7 +64,7 @@ class InvPOSResourceAdmin(admin.ModelAdmin):
 admin.site.register(InvPOSResource, InvPOSResourceAdmin)
 
 class InvContrabandTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'faction', 'standing_loss', 
+    list_display = ('id', 'type', 'faction', 'standing_loss',
                     'confiscate_min_sec', 'attack_min_sec', 'fine_by_value')
 admin.site.register(InvContrabandType, InvContrabandTypeAdmin)
 
@@ -103,7 +103,7 @@ class RamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
                     'time_multiplier', 'material_multiplier')
 admin.site.register(RamAssemblyLineTypeDetailPerGroup,
                     RamAssemblyLineTypeDetailPerGroupAdmin)
- 
+
 class EVEUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
 admin.site.register(EVEUnit, EVEUnitAdmin)
@@ -121,7 +121,7 @@ class MapRegionJumpAdmin(admin.ModelAdmin):
 admin.site.register(MapRegionJump, MapRegionJumpAdmin)
 
 class MapConstellationJumpAdmin(admin.ModelAdmin):
-    list_display = ('id', 'from_constellation', 'from_region', 
+    list_display = ('id', 'from_constellation', 'from_region',
                     'to_constellation', 'to_region')
 admin.site.register(MapConstellationJump, MapConstellationJumpAdmin)
 
@@ -134,28 +134,28 @@ class MapConstellationAdmin(admin.ModelAdmin):
 admin.site.register(MapConstellation, MapConstellationAdmin)
 
 class MapSolarSystemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'constellation', 'region', 'faction', 
+    list_display = ('id', 'name', 'constellation', 'region', 'faction',
                     'alliance', 'security_class', 'security_level')
 admin.site.register(MapSolarSystem, MapSolarSystemAdmin)
 
 class MapSolarSystemJumpAdmin(admin.ModelAdmin):
-    list_display = ('id', 'from_solar_system', 'from_constellation', 
-                    'from_region', 'to_solar_system', 'to_constellation', 
+    list_display = ('id', 'from_solar_system', 'from_constellation',
+                    'from_region', 'to_solar_system', 'to_constellation',
                     'to_region')
 admin.site.register(MapSolarSystemJump, MapSolarSystemJumpAdmin)
 
 class MapJumpAdmin(admin.ModelAdmin):
     list_display = ('origin_gate', 'destination_gate')
 admin.site.register(MapJump, MapJumpAdmin)
- 
+
 class DgmAttributeCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
 admin.site.register(DgmAttributeCategory, DgmAttributeCategoryAdmin)
- 
+
 class DgmAttributeTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'description')
 admin.site.register(DgmAttributeType, DgmAttributeTypeAdmin)
- 
+
 class DgmTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
 admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
@@ -181,7 +181,7 @@ class CrpNPCCorporationDivisionAdmin(admin.ModelAdmin):
 admin.site.register(CrpNPCCorporationDivision, CrpNPCCorporationDivisionAdmin)
 
 class CrpNPCCorporationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'faction', 'description', 'station_count', 
+    list_display = ('id', 'name', 'faction', 'description', 'station_count',
                     'size', 'extent')
 admin.site.register(CrpNPCCorporation, CrpNPCCorporationAdmin)
 
@@ -212,12 +212,12 @@ class StaStationTypeAdmin(admin.ModelAdmin):
                     'dock_orientation_y', 'dock_entry_z', 'dock_orientation_z',
                     'operation', 'office_slots', 'reprocessing_efficiency', 'is_conquerable')
 admin.site.register(StaStationType, StaStationTypeAdmin)
- 
+
 class StaOperationAdmin(admin.ModelAdmin):
     list_display = ('id', 'activity_id', 'name', 'description',
                     'fringe', 'corridor', 'hub', 'border', 'ratio')
 admin.site.register(StaOperation, StaOperationAdmin)
- 
+
 class MapDenormalizeAdmin(admin.ModelAdmin):
     list_display = ('id', 'type', 'group', 'constellation', 'region',
                     'orbit_id', 'x', 'y', 'z', 'radius', 'name',
@@ -242,7 +242,7 @@ admin.site.register(StaStation, StaStationAdmin)
 
 class AgtAgentAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'division', 'corporation', 'location',
-                    'quality', 'level') 
+                    'quality', 'level')
 admin.site.register(AgtAgent, AgtAgentAdmin)
 
 class AgtAgentTypeAdmin(admin.ModelAdmin):
@@ -273,3 +273,15 @@ admin.site.register(CrtRelationship, CrtRelationshipAdmin)
 class CrtRecommendationAdmin(admin.ModelAdmin):
     list_display = ('id', 'ship_type', 'certificate', 'recommendation_level')
 admin.site.register(CrtRecommendation, CrtRecommendationAdmin)
+
+class PlanetSchematicAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'cycle_time')
+admin.site.register(PlanetSchematic, PlanetSchematicAdmin)
+
+class PlanetSchematicsPinMapAdmin(admin.ModelAdmin):
+    list_display = ('id', 'schematic', 'type')
+admin.site.register(PlanetSchematicsPinMap, PlanetSchematicsPinMapAdmin)
+
+class PlanetSchematicsTypeMapAdmin(admin.ModelAdmin):
+    list_display = ('id', 'schematic', 'type', 'quantity', 'is_input')
+admin.site.register(PlanetSchematicsTypeMap, PlanetSchematicsTypeMapAdmin)
