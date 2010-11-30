@@ -20,7 +20,7 @@ class Importer_mapUniverse(SQLImporter):
         imp_obj.z_max = row['zMax']
         imp_obj.radius = row['radius']
         imp_obj.save()
-    
+
 class Importer_mapRegions(SQLImporter):
     DEPENDENCIES = ['chrFactions']
 
@@ -36,14 +36,14 @@ class Importer_mapRegions(SQLImporter):
         imp_obj.z = row['z']
         imp_obj.z_min = row['zMin']
         imp_obj.z_max = row['zMax']
-        
+
         if row['factionID']:
             faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.radius = row['radius']
         imp_obj.save()
-        
+
 class Importer_mapRegionJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions']
 
@@ -52,7 +52,7 @@ class Importer_mapRegionJumps(SQLImporter):
         to_region = MapRegion.objects.get(id=row['toRegionID'])
         imp_obj, created = MapRegionJump.objects.get_or_create(from_region=from_region,
                                                                to_region=to_region)
-        
+
 class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
 
@@ -73,13 +73,13 @@ class Importer_mapConstellations(SQLImporter):
         if row['regionID']:
             region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
             imp_obj.region = region
-            
+
         if row['factionID']:
             faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.save()
-        
+
 class Importer_mapConstellationJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations']
 
@@ -92,7 +92,7 @@ class Importer_mapConstellationJumps(SQLImporter):
                                                                from_region=from_region,
                                                                to_constellation=to_constellation,
                                                                to_region=to_region)
-    
+
 class Importer_mapSolarSystems(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions', 'mapConstellations',
                     'invTypes']
@@ -115,45 +115,45 @@ class Importer_mapSolarSystems(SQLImporter):
 
         if row['securityClass']:
             imp_obj.security_class = row['securityClass']
-        
+
         if row['border'] == 1:
             imp_obj.is_border_system = True
-            
+
         if row['fringe'] == 1:
             imp_obj.is_fringe_system = True
-            
+
         if row['corridor'] == 1:
             imp_obj.is_corridor_system = True
-            
+
         if row['hub'] == 1:
             imp_obj.is_hub_system = True
-            
+
         if row['international'] == 1:
             imp_obj.is_international = True
-            
+
         if row['regional'] == 1:
             imp_obj.has_interregional_link = True
-            
+
         if row['constellation'] == 1:
             imp_obj.has_interconstellational_link = True
 
         if row['regionID']:
             region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
             imp_obj.region = region
-            
+
         if row['constellationID']:
             constellation, constellation_created = MapConstellation.objects.get_or_create(id=row['constellationID'])
             imp_obj.constellation = constellation
-            
+
         if row['sunTypeID']:
             imp_obj.sun_type = InvType.objects.get(id=row['sunTypeID'])
-            
+
         if row['factionID']:
             faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
             imp_obj.faction = faction
 
         imp_obj.save()
-        
+
 class Importer_mapSolarSystemJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations', 'mapSolarSystems']
 
@@ -179,7 +179,7 @@ class Importer_mapJumps(SQLImporter):
         destination_gate = MapDenormalize.objects.get(id=row['celestialID'])
         imp_obj, created = MapJump.objects.get_or_create(origin_gate=origin_gate,
                                                                  destination_gate=destination_gate)
-        
+
 class Importer_mapDenormalize(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invGroups', 'mapSolarSystems',
                         'mapConstellations', 'mapRegions']
@@ -195,26 +195,26 @@ class Importer_mapDenormalize(SQLImporter):
         mapdenorm.security = row['security']
         mapdenorm.celestial_index = row['celestialIndex']
         mapdenorm.orbit_index = row['orbitIndex']
-            
+
         if row['typeID']:
             mapdenorm.type = InvType.objects.get(id=row['typeID'])
-                
+
         if row['groupID']:
             mapdenorm.group = InvGroup.objects.get(id=row['groupID'])
-                
+
         if row['solarSystemID']:
             mapdenorm.solar_system = MapSolarSystem.objects.get(id=row['solarSystemID'])
-                
+
         if row['constellationID']:
             mapdenorm.constellation = MapConstellation.objects.get(id=row['constellationID'])
-                
+
         if row['regionID']:
             mapdenorm.region = MapRegion.objects.get(id=row['regionID'])
-            
+
         mapdenorm.save()
 
 class Importer_mapLandmarks(SQLImporter):
-    DEPENDENCIES = ['mapSolarSystems', 'eveGraphics']
+    DEPENDENCIES = ['mapSolarSystems', 'eveIcons']
 
     def import_row(self, row):
         imp_obj, created = MapLandmark.objects.get_or_create(id=row['landmarkID'])
@@ -225,15 +225,15 @@ class Importer_mapLandmarks(SQLImporter):
         imp_obj.z = row['z']
         imp_obj.radius = row['radius']
         imp_obj.importance = row['importance']
-        
+
         if row['url2d']:
             imp_obj.url_2d = row['url2d']
 
         if row['locationID']:
             imp_obj.solar_system = MapSolarSystem.objects.get(id=row['locationID'])
-            
-        if row['graphicID']:
-            imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+
+        if row['iconID']:
+            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
 
         imp_obj.save()
 
@@ -260,10 +260,10 @@ class Importer_mapCelestialStatistics(SQLImporter):
         imp_obj.pressure = row['pressure']
         imp_obj.radius = row['radius']
         imp_obj.mass = row['mass']
-        
+
         if row['locked'] == 1:
             imp_obj.is_locked = True
-        
+
         if row['fragmented'] == 1:
             imp_obj.is_fragmented = True
 

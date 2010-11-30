@@ -5,27 +5,25 @@ from eve_db.models import *
 from importer_classes import SQLImporter
 
 class Importer_invCategories(SQLImporter):
-    DEPENDENCIES = ['eveGraphics']
+    DEPENDENCIES = ['eveIcons']
 
     def import_row(self, row):
         category, created = InvCategory.objects.get_or_create(id=row['categoryID'])
         category.name = row['categoryName']
         category.description = row['description']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            category.graphic = EVEGraphic.objects.get(id=graphic_id)
-            
+
+        icon_id = row['iconID']
+        if icon_id:
+            category.icon_id = EveIcon.objects.get(id=icon_id)
+
         # Handle boolean.
-        if row['published'] == 1:
-            category.is_published = True
-        else:
+        if row['published'] != 1:
             category.is_published = False
 
         category.save()
-    
+
 class Importer_invGroups(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'invCategories']
+    DEPENDENCIES = ['eveIcons', 'invCategories']
 
     def import_row(self, row):
         category_id = row['categoryID']
@@ -35,11 +33,11 @@ class Importer_invGroups(SQLImporter):
                                                                  category=category)
         group.name = row['groupName']
         group.description = row['description']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            group.graphic = EVEGraphic.objects.get(id=graphic_id)
-            
+
+        icon_id = row['iconID']
+        if icon_id:
+            group.icon = EveIcon.objects.get(id=icon_id)
+
         # Handle boolean.
         group.use_base_price = self.parse_int_bool(row['useBasePrice'])
         group.allow_manufacture = self.parse_int_bool(row['allowManufacture'])
@@ -52,41 +50,41 @@ class Importer_invGroups(SQLImporter):
         group.save()
 
 class Importer_invMetaGroups(SQLImporter):
-    DEPENDENCIES = ['eveGraphics']
+    DEPENDENCIES = ['eveIcons']
 
     def import_row(self, row):
         imp_obj, created = InvMetaGroup.objects.get_or_create(id=row['metaGroupID'])
         imp_obj.name = row['metaGroupName']
         imp_obj.description = row['description']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
 
         imp_obj.save()
 
 class Importer_invMarketGroups(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'invMarketGroups']
+    DEPENDENCIES = ['eveIcons', 'invMarketGroups']
 
     def import_row(self, row):
         group, created = InvMarketGroup.objects.get_or_create(id=row['marketGroupID'])
         group.name = row['marketGroupName']
         group.description = row['description']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            group.graphic = EVEGraphic.objects.get(id=graphic_id)
-            
+
+        icon_id = row['iconID']
+        if icon_id:
+            group.icon = EveIcon.objects.get(id=icon_id)
+
         parent_id = row['parentGroupID']
         if parent_id:
             parent, created = InvMarketGroup.objects.get_or_create(id=parent_id)
             group.parent = parent
-            
+
         group.has_items = self.parse_int_bool(row['hasTypes'])
         group.save()
-    
+
 class Importer_invTypes(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'invMarketGroups', 'chrRaces',
+    DEPENDENCIES = ['eveGraphics', 'eveIcons', 'invMarketGroups', 'chrRaces',
                     'invGroups']
 
     def import_row(self, row):
@@ -100,23 +98,25 @@ class Importer_invTypes(SQLImporter):
         invtype.capacity = row['capacity']
         invtype.portion_size = row['portionSize']
         invtype.base_price = row['basePrice']
-        
+
         if row['marketGroupID']:
             invtype.market_group = InvMarketGroup.objects.get(id=row['marketGroupID'])
-        
+
         if row['published'] == 1:
             invtype.is_published = True
-        
+
         if row['raceID']:
             invtype.race = ChrRace.objects.get(id=row['raceID'])
-            
+
         if row['graphicID']:
-            #print row['graphicID']
             invtype.graphic = EVEGraphic.objects.get(id=row['graphicID'])
-            
+
+        if row['iconID']:
+            invtype.icon = EveIcon.objects.get(id=row['iconID'])
+
         invtype.chance_of_duplicating = row['chanceOfDuplicating']
         invtype.save()
-        
+
 class Importer_invTypeMaterials(SQLImporter):
     DEPENDENCIES = ['invTypes']
 
@@ -127,7 +127,7 @@ class Importer_invTypeMaterials(SQLImporter):
                                                                          material_type=material_type)
         invmat.quantity = row['quantity']
         invmat.save()
-    
+
 class Importer_invMetaTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invMetaGroups']
 
@@ -135,7 +135,7 @@ class Importer_invMetaTypes(SQLImporter):
         type = InvType.objects.get(id=row['typeID'])
         parent_type = InvType.objects.get(id=row['parentTypeID'])
         meta_group = InvMetaGroup.objects.get(id=row['metaGroupID'])
-        
+
         imp_obj, created = InvMetaType.objects.get_or_create(type=type,
                                                 parent_type=parent_type,
                                                 meta_group=meta_group)
@@ -149,8 +149,8 @@ class Importer_dgmAttributeCategories(SQLImporter):
         imp_obj.save()
 
 class Importer_dgmAttributeTypes(SQLImporter):
-    DEPENDENCIES = ['dgmAttributeCategories', 'eveGraphics', 'eveUnits']
-    
+    DEPENDENCIES = ['dgmAttributeCategories', 'eveIcons', 'eveUnits']
+
     def import_row(self, row):
         imp_obj, created = DgmAttributeType.objects.get_or_create(id=row['attributeid'])
         imp_obj.name = row['attributename']
@@ -173,12 +173,16 @@ class Importer_dgmAttributeTypes(SQLImporter):
         if graphic_id:
             imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
 
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
+
         imp_obj.save()
 
 class Importer_dgmTypeAttributes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmAttributeTypes', 'dgmTypeAttributes']
 
-    def import_row(self, row):    
+    def import_row(self, row):
         inventory_type = InvType.objects.get(id=row['typeid'])
         attribute = DgmAttributeType.objects.get(id=row['attributeid'])
         imp_obj, created = DgmTypeAttribute.objects.get_or_create(inventory_type=inventory_type,
@@ -191,9 +195,9 @@ class Importer_dgmTypeAttributes(SQLImporter):
             imp_obj.value_float = row['valuefloat']
 
         imp_obj.save()
-    
+
 class Importer_dgmEffects(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'dgmAttributeTypes']
+    DEPENDENCIES = ['eveIcons', 'dgmAttributeTypes']
 
     def import_row(self, row):
         imp_obj, created = DgmEffect.objects.get_or_create(id=row['effectID'])
@@ -202,62 +206,65 @@ class Importer_dgmEffects(SQLImporter):
         imp_obj.pre_expression = row['preExpression']
         imp_obj.post_expression = row['postExpression']
         imp_obj.description = row['description']
-        
+
         if row['guid']:
             imp_obj.guid = row['guid']
-        
+
         if row['graphicID']:
             imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
-            
+
+        if row['iconID']:
+            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
+
         if row['isOffensive'] == 1:
             imp_obj.is_offensive = True
-            
+
         if row['isAssistance'] == 1:
             imp_obj.is_assistance = True
-            
+
         if row['durationAttributeID']:
             imp_obj.duration_attribute = DgmAttributeType.objects.get(id=row['durationAttributeID'])
-            
+
         if row['trackingSpeedAttributeID']:
             imp_obj.tracking_speed_attribute = DgmAttributeType.objects.get(id=row['trackingSpeedAttributeID'])
-            
+
         if row['dischargeAttributeID']:
             imp_obj.discharge_attribute = DgmAttributeType.objects.get(id=row['dischargeAttributeID'])
-            
+
         if row['rangeAttributeID']:
             imp_obj.range_attribute = DgmAttributeType.objects.get(id=row['rangeAttributeID'])
-            
+
         if row['falloffAttributeID']:
-            imp_obj.falloff_attribute = DgmAttributeType.objects.get(id=row['falloffAttributeID'])            
-            
+            imp_obj.falloff_attribute = DgmAttributeType.objects.get(id=row['falloffAttributeID'])
+
         if row['disallowAutoRepeat'] == 1:
             imp_obj.disallow_autorepeat = True
-            
+
         if row['published'] == 1:
             imp_obj.is_published = True
-            
+
         imp_obj.display_name = row['displayName']
-        
+
         if row['isWarpSafe'] == 1:
             imp_obj.is_warp_safe = True
-            
+
         if row['rangeChance'] == 1:
             imp_obj.has_range_chance = True
-            
+
         if row['electronicChance'] == 1:
             imp_obj.has_electronic_chance = True
-            
+
         if row['propulsionChance'] == 1:
             imp_obj.has_propulsion_chance = True
-            
+
         imp_obj.distribution = row['distribution']
-        
+
         if row['sfxName']:
             imp_obj.sfx_name = row['sfxName']
-        
+
         if row['npcUsageChanceAttributeID']:
             imp_obj.npc_usage_chance_attribute = DgmAttributeType.objects.get(id=row['npcUsageChanceAttributeID'])
-    
+
         if row['npcActivationChanceAttributeID']:
             imp_obj.npc_activation_chance_attribute = DgmAttributeType.objects.get(id=row['npcActivationChanceAttributeID'])
 
@@ -265,7 +272,7 @@ class Importer_dgmEffects(SQLImporter):
             imp_obj.fitting_usage_chance_attribute = DgmAttributeType.objects.get(id=row['fittingUsageChanceAttributeID'])
 
         imp_obj.save()
-    
+
 class Importer_dgmTypeEffects(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmEffects', 'dgmTypeEffects']
 
@@ -278,21 +285,21 @@ class Importer_dgmTypeEffects(SQLImporter):
                                                          effect=effect)
         except DgmTypeEffect.DoesNotExist:
             imp_obj = DgmTypeEffect(type=type, effect=effect)
-            
-        imp_obj.is_default = row['isDefault'] 
+
+        imp_obj.is_default = row['isDefault']
         imp_obj.save()
-    
+
 class Importer_invFlags(SQLImporter):
     DEPENDENCIES = ['invFlags']
 
-    def import_row(self, row):        
+    def import_row(self, row):
         imp_obj, created = InvFlag.objects.get_or_create(id=row['flagID'])
         imp_obj.name = row['flagName']
         imp_obj.text = row['flagText']
         imp_obj.type_text = row['flagType']
         imp_obj.order = row['orderID']
         imp_obj.save()
-    
+
 class Importer_invBlueprintTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
 
@@ -303,7 +310,7 @@ class Importer_invBlueprintTypes(SQLImporter):
                                                                            product_type=product_type)
         if row['parentBlueprintTypeID']:
             invtype.parent_blueprint_type = InvType.objects.get(id=row['parentBlueprintTypeID'])
-            
+
         invtype.tech_level = row['techLevel']
         invtype.research_productivity_time = row['researchProductivityTime']
         invtype.research_material_time = row['researchMaterialTime']
@@ -314,7 +321,7 @@ class Importer_invBlueprintTypes(SQLImporter):
         invtype.waste_factor = row['wasteFactor']
         invtype.max_production_limit = row['maxProductionLimit']
         invtype.save()
-    
+
 class Importer_invControlTowerResourcePurposes(SQLImporter):
     DEPENDENCIES = ['invControlTowerResourcePurposes']
 
@@ -322,7 +329,7 @@ class Importer_invControlTowerResourcePurposes(SQLImporter):
         imp_obj, created = InvPOSResourcePurpose.objects.get_or_create(id=row['purpose'])
         imp_obj.purpose = row['purposeText']
         imp_obj.save()
-    
+
 class Importer_invControlTowerResources(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invControlTowerResourcePurposes']
 
@@ -337,7 +344,7 @@ class Importer_invControlTowerResources(SQLImporter):
         imp_obj.quantity = row['quantity']
         imp_obj.min_security_level = row['minSecurityLevel']
         imp_obj.save()
-    
+
 class Importer_invTypeReactions(SQLImporter):
     DEPENDENCIES = ['invTypes']
 
@@ -349,7 +356,7 @@ class Importer_invTypeReactions(SQLImporter):
         imp_obj.input = row['input']
         imp_obj.quantity = row['quantity']
         imp_obj.save()
-    
+
 class Importer_invContrabandTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'chrFactions']
 
@@ -362,5 +369,5 @@ class Importer_invContrabandTypes(SQLImporter):
         imp_obj.confiscate_min_sec = row['confiscateMinSec']
         imp_obj.fine_by_value = row['fineByValue']
         imp_obj.attack_min_sec = row['attackMinSec']
-        
+
         imp_obj.save()

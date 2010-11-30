@@ -20,16 +20,16 @@ class EveName(models.Model):
     category = models.ForeignKey('InvCategory', blank=True, null=True)
     group = models.ForeignKey('InvGroup', blank=True, null=True)
     type = models.ForeignKey('InvType', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Name'
         verbose_name_plural = 'Names'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -56,7 +56,30 @@ class EVEUnit(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
+class EveIcon(models.Model):
+    """
+    An icon.
+
+    CCP Table: eveIcons
+    CCP Primary key: "iconID" smallint(6)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    file = models.TextField(blank=True)
+    description = models.CharField(max_length=255)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Icon'
+        verbose_name_plural = 'Icons'
+
+    def __unicode__(self):
+        return self.file
+
+    def __str__(self):
+        return self.__unicode__()
+
 class EVEGraphic(models.Model):
     """
     Stored graphic model.
@@ -67,19 +90,17 @@ class EVEGraphic(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
-    # Name of the file, should be two numbers separated by underscore, no extension.
-    icon_filename = models.CharField(max_length=50)
-    is_published = models.BooleanField(default=True)
+    file = models.TextField(blank=True)
     is_obsolete = models.BooleanField(default=False)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Graphic'
         verbose_name_plural = 'Graphics'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()

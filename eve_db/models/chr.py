@@ -14,21 +14,21 @@ class ChrRace(models.Model):
     name = models.CharField(max_length=30)
     short_description = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     # TODO: Add allegiance to a Faction here.
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Race'
         verbose_name_plural = 'Races'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class ChrBloodline(models.Model):
     """
     Bloodlines for newly created characters with starting attributes. 
@@ -38,7 +38,7 @@ class ChrBloodline(models.Model):
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
-    race = models.ForeignKey(ChrRace,blank=True, null=True, 
+    race = models.ForeignKey(ChrRace, blank=True, null=True,
                              related_name='bloodline_set')
     description = models.TextField(blank=True)
     male_description = models.TextField(blank=True)
@@ -52,23 +52,23 @@ class ChrBloodline(models.Model):
     starting_charisma = models.IntegerField(default=0)
     starting_memory = models.IntegerField(default=0)
     starting_intelligence = models.IntegerField(default=0)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     short_description = models.TextField(blank=True)
     short_male_description = models.TextField(blank=True)
     short_female_description = models.TextField(blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Bloodline'
         verbose_name_plural = 'Bloodlines'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class ChrAncestry(models.Model):
     """
     Available Ancestries with bonus skills and items. 
@@ -78,28 +78,28 @@ class ChrAncestry(models.Model):
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
-    bloodline = models.ForeignKey(ChrBloodline,blank=True, null=True)
+    bloodline = models.ForeignKey(ChrBloodline, blank=True, null=True)
     description = models.TextField(blank=True)
     perception_bonus = models.IntegerField(default=0)
     willpower_bonus = models.IntegerField(default=0)
     charisma_bonus = models.IntegerField(default=0)
     memory_bonus = models.IntegerField(default=0)
     intelligence_bonus = models.IntegerField(default=0)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     short_description = models.TextField(blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Ancestry'
         verbose_name_plural = 'Ancestries'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class ChrAttribute(models.Model):
     """
     Five base Attrinutes annotated. 
@@ -112,17 +112,17 @@ class ChrAttribute(models.Model):
     description = models.TextField(blank=True)
     short_description = models.TextField(blank=True)
     notes = models.TextField(blank=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
-    
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Character Attribute'
         verbose_name_plural = 'Character Attributes'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -143,6 +143,7 @@ class ChrFaction(models.Model):
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
