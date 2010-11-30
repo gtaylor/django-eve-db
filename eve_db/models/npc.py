@@ -13,16 +13,16 @@ class CrpActivity(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Corporate Activity'
         verbose_name_plural = 'Corporate Activities'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -34,16 +34,16 @@ class CrpNPCCorporation(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    
+
     CORP_SIZE_CHOICES = (('H', 'Huge'),
                          ('L', 'Large'),
                          ('M', 'Medium'),
                          ('S', 'Small'),
                          ('T', 'Tiny'))
 
-    size = models.CharField(choices=CORP_SIZE_CHOICES, max_length=1, 
+    size = models.CharField(choices=CORP_SIZE_CHOICES, max_length=1,
                             blank=True)
-    
+
     EXTENT_CHOICES = (('G', 'Global'),
                       ('N', 'National'),
                       ('R', 'Regional'),
@@ -51,7 +51,7 @@ class CrpNPCCorporation(models.Model):
                       ('L', 'Local'))
     extent = models.CharField(choices=EXTENT_CHOICES, max_length=1,
                               blank=True)
-    
+
     solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
     investor1 = models.ForeignKey('self', blank=True, null=True,
                                   related_name='invested1_set')
@@ -81,19 +81,20 @@ class CrpNPCCorporation(models.Model):
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
-    
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'NPC Corporation'
         verbose_name_plural = 'NPC Corporations'
-        
+
     def __unicode__(self):
         if self.name:
             return self.name
         else:
             return "Corporation #%d" % self.id
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -108,16 +109,16 @@ class CrpNPCDivision(models.Model):
     name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     leader_type = models.CharField(max_length=100, blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'NPC Division'
         verbose_name_plural = 'NPC Divisions'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -131,20 +132,20 @@ class CrpNPCCorporationDivision(models.Model):
     corporation = models.ForeignKey(CrpNPCCorporation)
     division = models.ForeignKey(CrpNPCDivision)
     size = models.IntegerField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'NPC Corporation Division'
         verbose_name_plural = 'NPC Corporation Divisions'
         unique_together = ('corporation', 'division')
-        
+
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.division)
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class CrpNPCCorporationTrade(models.Model):
     """
     Market items the corporation buys or sells. Supply/demand has been removed 
@@ -156,20 +157,20 @@ class CrpNPCCorporationTrade(models.Model):
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     type = models.ForeignKey('InvType', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'NPC Corporation Trade'
         verbose_name_plural = 'NPC Corporation Trades'
         unique_together = ('corporation', 'type')
-        
+
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.type)
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class CrpNPCCorporationResearchField(models.Model):
     """
     Research fields for R&D agents in corporations. 
@@ -179,17 +180,17 @@ class CrpNPCCorporationResearchField(models.Model):
     """
     corporation = models.ForeignKey(CrpNPCCorporation)
     skill = models.ForeignKey('InvType', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'NPC Corporation Research Field'
         verbose_name_plural = 'NPC Corporation Research Fields'
         unique_together = ('skill', 'corporation')
-        
+
     def __unicode__(self):
         return "%s: %s" % (self.corporation, self.skill)
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -200,19 +201,19 @@ class AgtAgentType(models.Model):
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Agent Type'
         verbose_name_plural = 'Agent Types'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class AgtAgent(models.Model):
     """
     CCP Table: agtAgents
@@ -227,19 +228,19 @@ class AgtAgent(models.Model):
     level = models.IntegerField(blank=True, null=True)
     quality = models.IntegerField(blank=True, null=True)
     type = models.ForeignKey(AgtAgentType, blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Agent'
         verbose_name_plural = 'Agents'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class AgtConfig(models.Model):
     """
     CCP Table: agtConfig
@@ -248,16 +249,16 @@ class AgtConfig(models.Model):
     agent = models.ForeignKey(AgtAgent)
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=255, blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Agent Config'
         verbose_name_plural = 'Agent Configs'
         unique_together = ('agent', 'key')
-        
+
     def __unicode__(self):
         return "%s %s=%s" % (self.agent.name, self.key, self.value)
-    
+
     def __str__(self):
         return self.__unicode__()

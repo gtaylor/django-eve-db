@@ -3,7 +3,7 @@ This module holds inventory/item-related models.
 """
 from xml.dom import minidom
 from django.db import models
-    
+
 class InvMarketGroup(models.Model):
     """
     Market groups are used to group items together in the market browser.
@@ -16,27 +16,29 @@ class InvMarketGroup(models.Model):
     description = models.CharField(max_length=255)
     parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
     has_items = models.BooleanField(default=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
-
-    def full_name(self, delimiter='/'):
-        """ Return a full name, including parents, recursively """
-        if self.parent:
-            return self.parent.full_name() + delimiter + self.name
-        else:
-            return self.name
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Market Group'
         verbose_name_plural = 'Market Groups'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
+    def full_name(self, delimiter='/'):
+        """
+        Return a full name, including parents, recursively.
+        """
+        if self.parent:
+            return self.parent.full_name() + delimiter + self.name
+        else:
+            return self.name
+
 class InvCategory(models.Model):
     """
     Inventory categories are the top level classification for all items, be
@@ -50,20 +52,20 @@ class InvCategory(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     is_published = models.BooleanField(default=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
-    
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Category'
         verbose_name_plural = 'Inventory Categories'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvGroup(models.Model):
     """
     Inventory groups are a further sub-classification within an 
@@ -77,7 +79,7 @@ class InvGroup(models.Model):
     category = models.ForeignKey(InvCategory, blank=True, null=True)
     name = models.CharField(max_length=150)
     description = models.TextField()
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     use_base_price = models.BooleanField(default=False)
     allow_manufacture = models.BooleanField(default=True)
     allow_recycle = models.BooleanField(default=True)
@@ -85,19 +87,19 @@ class InvGroup(models.Model):
     is_anchored = models.BooleanField(default=False)
     is_fittable_non_singleton = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Group'
         verbose_name_plural = 'Inventory Groups'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvMetaGroup(models.Model):
     """
     Names of variants of items.
@@ -108,20 +110,20 @@ class InvMetaGroup(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
-    
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Meta Group'
         verbose_name_plural = 'Inventory Meta Groups'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvType(models.Model):
     """
     Inventory types are generally objects that can be carried in your
@@ -138,6 +140,7 @@ class InvType(models.Model):
     group = models.ForeignKey(InvGroup, blank=True, null=True)
     market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
     graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
     volume = models.FloatField(blank=True, null=True)
@@ -147,22 +150,22 @@ class InvType(models.Model):
     base_price = models.FloatField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     chance_of_duplicating = models.FloatField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Type'
         verbose_name_plural = 'Inventory Types'
-        
+
     def __unicode__(self):
         if self.name:
             return self.name
         else:
             return "Inventory Type #%d" % self.id
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvTypeMaterial(models.Model):
     """
     These are materials required to produce an item type. Used for calculating
@@ -172,24 +175,24 @@ class InvTypeMaterial(models.Model):
     CCP Primary key: ("typeID" smallint(6), "materialTypeID" smallint(6))
     """
     type = models.ForeignKey(InvType, related_name='material_set')
-    material_type = models.ForeignKey(InvType, 
+    material_type = models.ForeignKey(InvType,
                                       related_name='itemtype_set')
     quantity = models.IntegerField(default=0)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Type Material'
         verbose_name_plural = 'Inventory Type Materials'
         unique_together = ('type', 'material_type')
-        
+
     def __unicode__(self):
         return "%s: (%dx %s)" % (self.type.name, self.quantity,
                                  self.material_type.name)
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvMetaType(models.Model):
     """
     Relation between different variants of item (i.e. Tech-I, Faction, Tech-II). 
@@ -203,22 +206,22 @@ class InvMetaType(models.Model):
     type = models.ForeignKey(InvType,
                             unique=True, primary_key=True,
                             related_name='inventorymetatype_type_set')
-    parent_type = models.ForeignKey(InvType, 
+    parent_type = models.ForeignKey(InvType,
                             related_name='inventorymetatype_parent_type_set')
-    meta_group = models.ForeignKey(InvMetaGroup) 
-    
+    meta_group = models.ForeignKey(InvMetaGroup)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['type']
         verbose_name = 'Inventory Meta Type'
         verbose_name_plural = 'Inventory Meta Types'
-        
+
     def __unicode__(self):
         return self.meta_group.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvFlag(models.Model):
     """
     The invFlags table is used to identify the location and/or status of an 
@@ -237,19 +240,19 @@ class InvFlag(models.Model):
     type_text = models.CharField(max_length=255, blank=True)
     # Have no idea what this is.
     order = models.IntegerField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Flag'
         verbose_name_plural = 'Inventory Flags'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class DgmAttributeCategory(models.Model):
     """
     Attribute Categories and their descriptions. 
@@ -284,7 +287,7 @@ class DgmAttributeType(models.Model):
     name = models.CharField(max_length=75)
     category = models.ForeignKey(DgmAttributeCategory, blank=True, null=True)
     description = models.TextField(blank=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     defaultvalue = models.IntegerField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     display_name = models.CharField(max_length=100, blank=True)
@@ -328,7 +331,7 @@ class DgmTypeAttribute(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvBlueprintType(models.Model):
     """
     Stores info about each kind of blueprint.
@@ -360,13 +363,13 @@ class InvBlueprintType(models.Model):
         ordering = ['blueprint_type']
         verbose_name = 'Inventory Blueprint Type'
         verbose_name_plural = 'Inventory Blueprint Types'
-        
+
     def __unicode__(self):
         return "BP: %s" % self.product_type
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class DgmEffect(models.Model):
     """
     Name and descriptions of effects.
@@ -385,24 +388,24 @@ class DgmEffect(models.Model):
     description = models.TextField(blank=True)
     # Unknown
     guid = models.CharField(max_length=255, blank=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     # If True, applied to enemy.
     is_offensive = models.BooleanField(default=False)
     # If True, applied to ally.
     is_assistance = models.BooleanField(default=False)
-    duration_attribute = models.ForeignKey(DgmAttributeType, 
+    duration_attribute = models.ForeignKey(DgmAttributeType,
                                            blank=True, null=True,
                                            related_name='inventoryeffectdurationeattribute')
-    tracking_speed_attribute = models.ForeignKey(DgmAttributeType, 
+    tracking_speed_attribute = models.ForeignKey(DgmAttributeType,
                                                  blank=True, null=True,
                                                  related_name='inventoryeffecttrackingspeedattribute')
-    discharge_attribute = models.ForeignKey(DgmAttributeType, 
+    discharge_attribute = models.ForeignKey(DgmAttributeType,
                                             blank=True, null=True,
                                             related_name='inventoryeffectdischargeattribute')
-    range_attribute = models.ForeignKey(DgmAttributeType, 
+    range_attribute = models.ForeignKey(DgmAttributeType,
                                         blank=True, null=True,
                                         related_name='inventoryeffectrangeattribute')
-    falloff_attribute = models.ForeignKey(DgmAttributeType, 
+    falloff_attribute = models.ForeignKey(DgmAttributeType,
                                           blank=True, null=True,
                                           related_name='inventoryeffectfalloffattribute')
     disallow_auto_repeat = models.BooleanField(default=False)
@@ -415,25 +418,25 @@ class DgmEffect(models.Model):
     has_propulsion_chance = models.BooleanField(default=False)
     distribution = models.IntegerField(blank=True, null=True)
     sfx_name = models.CharField(max_length=100, blank=True)
-    npc_usage_chance_attribute = models.ForeignKey(DgmAttributeType, 
+    npc_usage_chance_attribute = models.ForeignKey(DgmAttributeType,
                                                    blank=True, null=True,
                                                    related_name='inventoryeffectnpcusagechanceattribute')
-    npc_activation_chance_attribute = models.ForeignKey(DgmAttributeType, 
+    npc_activation_chance_attribute = models.ForeignKey(DgmAttributeType,
                                                         blank=True, null=True,
                                                         related_name='inventoryeffectnpcactivationchanceattribute')
-    fitting_usage_chance_attribute = models.ForeignKey(DgmAttributeType, 
+    fitting_usage_chance_attribute = models.ForeignKey(DgmAttributeType,
                                                        blank=True, null=True,
                                                        related_name='inventoryeffectfittingusagechanceattribute')
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Effect'
         verbose_name_plural = 'Inventory Effects'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -449,20 +452,20 @@ class DgmTypeEffect(models.Model):
     type = models.ForeignKey(InvType)
     effect = models.ForeignKey(DgmEffect)
     is_default = models.BooleanField(default=False)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Type Effect'
         verbose_name_plural = 'Inventory Type Effect'
         unique_together = ('type', 'effect')
-        
+
     def __unicode__(self):
         return self.type
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvPOSResourcePurpose(models.Model):
     """
     Types of tasks for which POS need resources, i.e. Online, Reinforced. 
@@ -474,16 +477,16 @@ class InvPOSResourcePurpose(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     # The purpose field maps to the CCP column purposeText
     purpose = models.CharField(max_length=75, blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'POS Resource Purpose'
         verbose_name_plural = 'POS Resource Purposes'
-        
+
     def __unicode__(self):
         return self.purpose
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -502,20 +505,20 @@ class InvPOSResource(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     min_security_level = models.IntegerField(blank=True, null=True)
     faction = models.ForeignKey('ChrFaction', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'POS Resource'
         verbose_name_plural = 'POS Resources'
         unique_together = ('control_tower_type', 'resource_type')
-        
+
     def __unicode__(self):
         return "POS Resource #%d" % self.id
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvTypeReaction(models.Model):
     """
     Reaction recipes for POSes.
@@ -523,30 +526,30 @@ class InvTypeReaction(models.Model):
     CCP Table: invTypeReactions
     CCP Primary key: ("reactionTypeID" smallint(6), "input" tinyint(1), "typeID" smallint(6))
     """
-    INPUT_TYPES = ((0, 'Result of reaction'), 
+    INPUT_TYPES = ((0, 'Result of reaction'),
                    (1, 'Reaction material'))
-    
+
     reaction_type = models.ForeignKey(InvType,
                     related_name='inventorytypereactions_reaction_type_set')
     input = models.IntegerField(choices=INPUT_TYPES, blank=True, null=True)
     type = models.ForeignKey(InvType,
-                    related_name='inventorytypereactions_type_set', 
+                    related_name='inventorytypereactions_type_set',
                     help_text="Reaction result or material.")
     quantity = models.IntegerField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Inventory Type Reaction'
         verbose_name_plural = 'Inventory Type Reactions'
         unique_together = ('reaction_type', 'input', 'type')
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class InvContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.

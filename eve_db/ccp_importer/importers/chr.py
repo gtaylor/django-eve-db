@@ -5,22 +5,22 @@ from eve_db.models import *
 from importer_classes import SQLImporter
 
 class Importer_chrRaces(SQLImporter):
-    DEPENDENCIES = ['eveGraphics']
+    DEPENDENCIES = ['eveIcons']
 
     def import_row(self, row):
         imp_obj, created = ChrRace.objects.get_or_create(id=row['raceID'])
         imp_obj.name = row['raceName']
         imp_obj.short_description = row['shortDescription']
         imp_obj.description = row['description']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
 
         imp_obj.save()
-        
+
 class Importer_chrAttributes(SQLImporter):
-    DEPENDENCIES = ['eveGraphics']
+    DEPENDENCIES = ['eveIcons']
 
     def import_row(self, row):
         imp_obj, created = ChrAttribute.objects.get_or_create(id=row['attributeID'])
@@ -28,36 +28,39 @@ class Importer_chrAttributes(SQLImporter):
         imp_obj.short_description = row['shortDescription']
         imp_obj.description = row['description']
         imp_obj.notes = row['notes']
-        
-        graphic_id = row['graphicID']
-        if graphic_id:
-            imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
 
         imp_obj.save()
 
 class Importer_chrFactions(SQLImporter):
-    DEPENDENCIES = ['mapSolarSystems', 'crpNPCCorporations']
+    DEPENDENCIES = ['eveIcons', 'mapSolarSystems', 'crpNPCCorporations']
 
     def import_row(self, row):
         imp_obj, created = ChrFaction.objects.get_or_create(id=row['factionID'])
         imp_obj.name = row['factionName']
         imp_obj.description = row['description']
-        
+
         if row['solarSystemID']:
             solar_system, ss_created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
             imp_obj.solar_system = solar_system
-            
+
         if row['corporationID']:
             corp, corp_created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
             imp_obj.corporation = corp
-            
+
+        if row['iconID']:
+            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
+
         imp_obj.size_factor = row['sizeFactor']
         imp_obj.station_count = row['stationCount']
         imp_obj.station_system_count = row['stationSystemCount']
         imp_obj.save()
 
 class Importer_chrBloodlines(SQLImporter):
-    DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveGraphics']
+    DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveIcons']
 
     def import_row(self, row):
         imp_obj, created = ChrBloodline.objects.get_or_create(id=row['bloodlineID'])
@@ -77,13 +80,14 @@ class Importer_chrBloodlines(SQLImporter):
         imp_obj.short_male_description = row['shortMaleDescription']
         imp_obj.short_female_description = row['shortFemaleDescription']
 
-        if row['graphicID']:
-            imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
 
         imp_obj.save()
 
 class Importer_chrAncestries(SQLImporter):
-    DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveGraphics']
+    DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveIcons']
 
     def import_row(self, row):
         imp_obj, created = ChrAncestry.objects.get_or_create(id=row['ancestryID'])
@@ -97,7 +101,8 @@ class Importer_chrAncestries(SQLImporter):
         imp_obj.intelligence_bonus = row['intelligence']
         imp_obj.short_description = row['shortDescription']
 
-        if row['graphicID']:
-            imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+        icon_id = row['iconID']
+        if icon_id:
+            imp_obj.icon = EveIcon.objects.get(id=icon_id)
 
         imp_obj.save()
