@@ -139,7 +139,7 @@ class InvType(models.Model):
     description = models.TextField(blank=True)
     group = models.ForeignKey(InvGroup, blank=True, null=True)
     market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    graphic = models.ForeignKey('EveGraphic', blank=True, null=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
@@ -291,7 +291,7 @@ class DgmAttributeType(models.Model):
     defaultvalue = models.IntegerField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     display_name = models.CharField(max_length=100, blank=True)
-    unit = models.ForeignKey('EVEUnit', blank=True, null=True)
+    unit = models.ForeignKey('EveUnit', blank=True, null=True)
     is_stackable = models.BooleanField(default=False)
     high_is_good = models.BooleanField(default=True)
 

@@ -121,10 +121,10 @@ class Importer_staStationTypes(SQLImporter):
         imp_obj.reprocessing_efficiency = row['reprocessingEfficiency']
             
         if row['dockingBayGraphicID']:
-            imp_obj.docking_bay_graphic = EVEGraphic.objects.get(id=row['dockingBayGraphicID'])
+            imp_obj.docking_bay_graphic = EveGraphic.objects.get(id=row['dockingBayGraphicID'])
             
         if row['hangarGraphicID']:
-            imp_obj.hangar_graphic = EVEGraphic.objects.get(id=row['hangarGraphicID'])
+            imp_obj.hangar_graphic = EveGraphic.objects.get(id=row['hangarGraphicID'])
             
         if row['operationID']:
             imp_obj.operation, created = StaOperation.objects.get_or_create(id=row['operationID'])

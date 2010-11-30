@@ -109,7 +109,7 @@ class Importer_invTypes(SQLImporter):
             invtype.race = ChrRace.objects.get(id=row['raceID'])
 
         if row['graphicID']:
-            invtype.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+            invtype.graphic = EveGraphic.objects.get(id=row['graphicID'])
 
         if row['iconID']:
             invtype.icon = EveIcon.objects.get(id=row['iconID'])
@@ -167,11 +167,11 @@ class Importer_dgmAttributeTypes(SQLImporter):
 
         unit_id = row['unitid']
         if unit_id:
-            imp_obj.unit = EVEUnit.objects.get(id=unit_id)
+            imp_obj.unit = EveUnit.objects.get(id=unit_id)
 
         graphic_id = row['graphicID']
         if graphic_id:
-            imp_obj.graphic = EVEGraphic.objects.get(id=graphic_id)
+            imp_obj.graphic = EveGraphic.objects.get(id=graphic_id)
 
         icon_id = row['iconID']
         if icon_id:
@@ -211,7 +211,7 @@ class Importer_dgmEffects(SQLImporter):
             imp_obj.guid = row['guid']
 
         if row['graphicID']:
-            imp_obj.graphic = EVEGraphic.objects.get(id=row['graphicID'])
+            imp_obj.graphic = EveGraphic.objects.get(id=row['graphicID'])
 
         if row['iconID']:
             imp_obj.icon = EveIcon.objects.get(id=row['iconID'])

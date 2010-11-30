@@ -104,9 +104,9 @@ class RamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
 admin.site.register(RamAssemblyLineTypeDetailPerGroup,
                     RamAssemblyLineTypeDetailPerGroupAdmin)
 
-class EVEUnitAdmin(admin.ModelAdmin):
+class EveUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
-admin.site.register(EVEUnit, EVEUnitAdmin)
+admin.site.register(EveUnit, EveUnitAdmin)
 
 class MapUniverseAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
@@ -160,9 +160,9 @@ class DgmTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
 admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
 
-class EVEGraphicAdmin(admin.ModelAdmin):
+class EveGraphicAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'name', 'icon_filename')
-admin.site.register(EVEGraphic, EVEGraphicAdmin)
+admin.site.register(EveGraphic, EveGraphicAdmin)
 
 class EveNameAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'category', 'group', 'type')

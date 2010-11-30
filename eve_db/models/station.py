@@ -227,10 +227,10 @@ class StaStationType(models.Model):
     CCP Primary key: "stationTypeID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
-    docking_bay_graphic = models.ForeignKey('EVEGraphic',
+    docking_bay_graphic = models.ForeignKey('EveGraphic',
                                             related_name='docking_bay_graphic', 
                                             blank=True, null=True)
-    hangar_graphic = models.ForeignKey('EVEGraphic',
+    hangar_graphic = models.ForeignKey('EveGraphic',
                                        related_name='hangar_graphic', 
                                        blank=True, null=True)
     dock_entry_x = models.FloatField(blank=True, null=True)

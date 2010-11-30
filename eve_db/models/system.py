@@ -33,7 +33,7 @@ class EveName(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEUnit(models.Model):
+class EveUnit(models.Model):
     """
     Units of measurement.
     
@@ -80,7 +80,7 @@ class EveIcon(models.Model):
     def __str__(self):
         return self.__unicode__()
 
-class EVEGraphic(models.Model):
+class EveGraphic(models.Model):
     """
     Stored graphic model.
 
