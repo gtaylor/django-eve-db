@@ -33,7 +33,7 @@ class MapUniverse(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapRegion(models.Model):
     """
     CCP Table: mapRegions
@@ -65,31 +65,31 @@ class MapRegion(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapRegionJump(models.Model):
     """
     CCP Table: mapRegionJumps
     CCP Primary key: ("fromRegionID" int(11), "toRegionID" int(11))
     """
-    from_region = models.ForeignKey(MapRegion, 
+    from_region = models.ForeignKey(MapRegion,
                                     related_name='region_jumps_from_region_set')
     to_region = models.ForeignKey(MapRegion,
                                   related_name='region_jumps_to_region_set')
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Region Jump'
         verbose_name_plural = 'Region Jumps'
         unique_together = ('from_region', 'to_region')
-        
+
     def __unicode__(self):
         return "%s -> %s" % (self.from_region.name,
                              self.to_region.name)
-        
+
     def __str__(self):
         return self.__unicode__()
-        
+
 class MapConstellation(models.Model):
     """
     Represents a constellation. Note that all sovereignty data is subject
@@ -129,13 +129,13 @@ class MapConstellation(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapConstellationJump(models.Model):
     """
     CCP Table: mapConstellationJumps
     CCP Primary key: ("fromConstellationID" int(11), "toConstellationID" int(11))
     """
-    from_region = models.ForeignKey(MapRegion, 
+    from_region = models.ForeignKey(MapRegion,
                                     related_name='constellation_jumps_from_region_set')
     from_constellation = models.ForeignKey(MapConstellation,
                                            related_name='constellation_jumps_from_constellation_set')
@@ -143,21 +143,21 @@ class MapConstellationJump(models.Model):
                                   related_name='constellation_jumps_to_region_set')
     to_constellation = models.ForeignKey(MapConstellation,
                                          related_name='constellation_jumps_to_constellation_set')
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Constellation Jump'
         verbose_name_plural = 'Constellation Jumps'
         unique_together = ('from_constellation', 'to_constellation')
-        
+
     def __unicode__(self):
         return "%s -> %s" % (self.from_constellation.name,
                              self.to_constellation.name)
-        
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapSolarSystem(models.Model):
     """
     CCP Table: mapSolarSystems
@@ -194,7 +194,7 @@ class MapSolarSystem(models.Model):
     alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
     sovereignty_level = models.IntegerField(blank=True, null=True)
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -209,7 +209,7 @@ class MapSolarSystem(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapSolarSystemJump(models.Model):
     """
     CCP Table: mapSolarSystemJumps
@@ -217,33 +217,33 @@ class MapSolarSystemJump(models.Model):
     """
     from_region = models.ForeignKey(MapRegion, blank=True, null=True,
                                     related_name='solar_system_jumps_from_region_set')
-    from_constellation = models.ForeignKey(MapConstellation, blank=True, 
+    from_constellation = models.ForeignKey(MapConstellation, blank=True,
                                            null=True,
                                   related_name='solar_system_jumps_from_constellation_set')
     from_solar_system = models.ForeignKey(MapSolarSystem,
                                           related_name='solar_system_jumps_from_solar_system_set')
     to_region = models.ForeignKey(MapRegion, blank=True, null=True,
                                   related_name='solar_system_jumps_to_region_set')
-    to_constellation = models.ForeignKey(MapConstellation, blank=True, 
+    to_constellation = models.ForeignKey(MapConstellation, blank=True,
                                          null=True,
                                          related_name='solar_system_jumps_to_constellation_set')
     to_solar_system = models.ForeignKey(MapSolarSystem,
                                         related_name='solar_system_jumps_to_solar_system_set')
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Solar System Jump'
         verbose_name_plural = 'Solar System Jumps'
         unique_together = ('from_solar_system', 'to_solar_system')
-        
+
     def __unicode__(self):
         return "%s -> %s" % (self.from_solar_system.name,
                              self.to_solar_system.name)
-        
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapJump(models.Model):
     """
     Jumps between stargates.
@@ -256,19 +256,19 @@ class MapJump(models.Model):
                                     related_name='stargate_jump_origin_set')
     destination_gate = models.ForeignKey('MapDenormalize',
                                          related_name='stargate_jump_destination_set')
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['origin_gate']
         verbose_name = 'Stargate Jump'
         verbose_name_plural = 'Stargate Jumps'
-        
+
     def __unicode__(self):
         return "%s -> %s" % (self.origin_gate, self.destination_gate)
-        
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapCelestialStatistic(models.Model):
     """
     CCP Table: mapCelestialStatistics
@@ -294,19 +294,19 @@ class MapCelestialStatistic(models.Model):
     pressure = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['celestial']
         verbose_name = 'Celestial Statistic'
         verbose_name_plural = 'Celestial Statistics'
-        
+
     def __unicode__(self):
         return "%s stats" % self.celestial.name
-        
+
     def __str__(self):
         return self.__unicode__()
-        
+
 class MapDenormalize(models.Model):
     """
     CCP Table: mapDenormalize
@@ -327,7 +327,7 @@ class MapDenormalize(models.Model):
     security = models.FloatField(blank=True, null=True)
     celestial_index = models.IntegerField(blank=True, null=True)
     orbit_index = models.IntegerField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
@@ -339,7 +339,7 @@ class MapDenormalize(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-    
+
 class MapLandmark(models.Model):
     """
     CCP Table: mapLandmarks
@@ -353,10 +353,10 @@ class MapLandmark(models.Model):
     y = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
-    graphic = models.ForeignKey('EVEGraphic', blank=True, null=True)
+    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     importance = models.IntegerField(blank=True, null=True)
     url_2d = models.CharField(max_length=255, blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']

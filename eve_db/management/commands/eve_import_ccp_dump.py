@@ -8,13 +8,13 @@ try:
     from eve_proxy.models import CachedDocument
 except ImportError:
     print "\n\rFAIL: You have not installed django-eve-proxy. Please see:\n\r"
-    print "   http://code.google.com/p/django-eve-proxy/\n\r"
+    print "   https://github.com/gtaylor/django-eve-proxy\n\r"
     sys.exit(1)
 try:
     from eve_api import app_defines
 except ImportError:
     print "\n\rFAIL: You have not installed django-eve-api. Please see:\n\r"
-    print "   http://code.google.com/p/django-eve-api/\n\r"
+    print "   https://github.com/gtaylor/django-eve-api\n\r"
     sys.exit(1)
 
 from eve_db.ccp_importer import util
@@ -26,13 +26,13 @@ def exit_with_error(error_msg):
     """
     print error_msg
     sys.exit(1)
-    
+
 def exit_with_succ():
     """
     Nothing to see here, move along.
     """
     sys.exit(0)
-    
+
 def list_tables(option, opt, value, parser):
     """
     Prints a list of tables that are available for import.
@@ -44,7 +44,7 @@ def list_tables(option, opt, value, parser):
     print "-- %d tables --" % len(util.IMPORT_LIST)
     # The -l argument is just used for listing, proceed no further.
     exit_with_succ()
-    
+
 def check_for_eve_db():
     """
     Checks for the presence of the CCP EVE dump in SQLite format. Exit if
@@ -58,7 +58,7 @@ http://wiki.eve-id.net/CCP_Database_Dump_Resources#Conversions
 and download the latest SQLite conversion. Copy the SQLite .db file to the 
 same directory as your settings.py file and re-name it to ccp_dump.db. You 
 should then be able to run this command without issue.""")
-    
+
 def get_importer_classes_from_arg_list(arg_list):
     """
     Validates the user input for tables to import against the importer list.
@@ -108,7 +108,7 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
     args = '[table_name1] [table_name2] [...]'
 
     requires_model_validation = False
-            
+
     def handle(self, *args, **options):
         """
         This is where the user input is handled, and the appropriate
@@ -117,7 +117,7 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
         #print "OPTIONS", options
         #print "ARGS:", args
         check_for_eve_db()
-        
+
         try:
             if len(args) == 0:
                 print "No table names specified, importing all."
@@ -126,18 +126,18 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
                 specified_importers = get_importer_classes_from_arg_list(args)
                 start_at_import = options.get('start_at_import')
                 print "Importing: %s" % args
-                
+
                 include_deps = options.get('include_deps')
                 if include_deps and not start_at_import:
                     print "Including dependencies."
-                    
+
                 if start_at_import:
                     # User wishes to start the import process at a specific
                     # table name. Import the specified importer, and
                     # everything after it.
                     specified_importers = get_importers_for_start_at_import(specified_importers)
-                    
-                util.run_importers(specified_importers, 
+
+                util.run_importers(specified_importers,
                                    include_deps=include_deps)
         except KeyboardInterrupt:
             print "Terminating early..."
