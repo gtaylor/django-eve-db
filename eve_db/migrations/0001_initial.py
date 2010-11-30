@@ -22,14 +22,14 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('eve_db', ['EveName'])
 
-        # Adding model 'EVEUnit'
+        # Adding model 'EveUnit'
         db.create_table('eve_db_eveunit', (
             ('id', self.gf('django.db.models.fields.IntegerField')(unique=True, primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=75)),
             ('display_name', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
             ('description', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
         ))
-        db.send_create_signal('eve_db', ['EVEUnit'])
+        db.send_create_signal('eve_db', ['EveUnit'])
 
         # Adding model 'EveIcon'
         db.create_table('eve_db_eveicon', (
@@ -39,7 +39,7 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('eve_db', ['EveIcon'])
 
-        # Adding model 'EVEGraphic'
+        # Adding model 'EveGraphic'
         db.create_table('eve_db_evegraphic', (
             ('id', self.gf('django.db.models.fields.IntegerField')(unique=True, primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
@@ -47,7 +47,7 @@ class Migration(SchemaMigration):
             ('file', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('is_obsolete', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('eve_db', ['EVEGraphic'])
+        db.send_create_signal('eve_db', ['EveGraphic'])
 
         # Adding model 'InvMarketGroup'
         db.create_table('eve_db_invmarketgroup', (
@@ -103,7 +103,7 @@ class Migration(SchemaMigration):
             ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.InvGroup'], null=True, blank=True)),
             ('market_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.InvMarketGroup'], null=True, blank=True)),
-            ('graphic', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.EVEGraphic'], null=True, blank=True)),
+            ('graphic', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.EveGraphic'], null=True, blank=True)),
             ('icon', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.EveIcon'], null=True, blank=True)),
             ('radius', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('mass', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
@@ -165,7 +165,7 @@ class Migration(SchemaMigration):
             ('defaultvalue', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('is_published', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('display_name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('unit', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.EVEUnit'], null=True, blank=True)),
+            ('unit', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.EveUnit'], null=True, blank=True)),
             ('is_stackable', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('high_is_good', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
@@ -791,8 +791,8 @@ class Migration(SchemaMigration):
         # Adding model 'StaStationType'
         db.create_table('eve_db_stastationtype', (
             ('id', self.gf('django.db.models.fields.IntegerField')(unique=True, primary_key=True)),
-            ('docking_bay_graphic', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='docking_bay_graphic', null=True, to=orm['eve_db.EVEGraphic'])),
-            ('hangar_graphic', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='hangar_graphic', null=True, to=orm['eve_db.EVEGraphic'])),
+            ('docking_bay_graphic', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='docking_bay_graphic', null=True, to=orm['eve_db.EveGraphic'])),
+            ('hangar_graphic', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='hangar_graphic', null=True, to=orm['eve_db.EveGraphic'])),
             ('dock_entry_x', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('dock_orientation_x', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('dock_entry_y', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
@@ -1004,13 +1004,13 @@ class Migration(SchemaMigration):
         # Deleting model 'EveName'
         db.delete_table('eve_db_evename')
 
-        # Deleting model 'EVEUnit'
+        # Deleting model 'EveUnit'
         db.delete_table('eve_db_eveunit')
 
         # Deleting model 'EveIcon'
         db.delete_table('eve_db_eveicon')
 
-        # Deleting model 'EVEGraphic'
+        # Deleting model 'EveGraphic'
         db.delete_table('eve_db_evegraphic')
 
         # Deleting model 'InvMarketGroup'
@@ -1418,7 +1418,7 @@ class Migration(SchemaMigration):
             'is_published': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_stackable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '75'}),
-            'unit': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.EVEUnit']", 'null': 'True', 'blank': 'True'})
+            'unit': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.EveUnit']", 'null': 'True', 'blank': 'True'})
         },
         'eve_db.dgmeffect': {
             'Meta': {'ordering': "['id']", 'object_name': 'DgmEffect'},
@@ -1466,7 +1466,7 @@ class Migration(SchemaMigration):
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.InvType']"})
         },
         'eve_db.evegraphic': {
-            'Meta': {'ordering': "['id']", 'object_name': 'EVEGraphic'},
+            'Meta': {'ordering': "['id']", 'object_name': 'EveGraphic'},
             'description': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'file': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
@@ -1488,7 +1488,7 @@ class Migration(SchemaMigration):
             'type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.InvType']", 'null': 'True', 'blank': 'True'})
         },
         'eve_db.eveunit': {
-            'Meta': {'ordering': "['id']", 'object_name': 'EVEUnit'},
+            'Meta': {'ordering': "['id']", 'object_name': 'EveUnit'},
             'description': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'display_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
@@ -1593,7 +1593,7 @@ class Migration(SchemaMigration):
             'capacity': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'chance_of_duplicating': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'graphic': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.EVEGraphic']", 'null': 'True', 'blank': 'True'}),
+            'graphic': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.EveGraphic']", 'null': 'True', 'blank': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.InvGroup']", 'null': 'True', 'blank': 'True'}),
             'icon': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.EveIcon']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
@@ -1939,8 +1939,8 @@ class Migration(SchemaMigration):
             'dock_orientation_x': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'dock_orientation_y': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'dock_orientation_z': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'docking_bay_graphic': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'docking_bay_graphic'", 'null': 'True', 'to': "orm['eve_db.EVEGraphic']"}),
-            'hangar_graphic': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'hangar_graphic'", 'null': 'True', 'to': "orm['eve_db.EVEGraphic']"}),
+            'docking_bay_graphic': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'docking_bay_graphic'", 'null': 'True', 'to': "orm['eve_db.EveGraphic']"}),
+            'hangar_graphic': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'hangar_graphic'", 'null': 'True', 'to': "orm['eve_db.EveGraphic']"}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
             'is_conquerable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'office_slots': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
