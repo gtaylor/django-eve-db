@@ -8,3 +8,4 @@ dist
 *.swp
 *.tmp
 MANIFEST
+.DS_Store
