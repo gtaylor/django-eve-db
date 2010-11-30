@@ -30,8 +30,8 @@ setup(name='django-eve_db',
           'eve_db.migrations',
           'eve_db.models'
       ],
-      requires=['django', 'django-eve-api'],
-      provides=['django-eve-db'],
+      requires=['django', 'eve_api'],
+      provides=['eve_db'],
       classifiers=CLASSIFIERS,
       keywords=KEYWORDS,
  )
