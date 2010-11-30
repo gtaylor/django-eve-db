@@ -1,7 +1,7 @@
+import sys
+from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from optparse import make_option
-import sys
 
 # Make sure we have all of the dependencies.
 try:
