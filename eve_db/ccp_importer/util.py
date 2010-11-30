@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 from django.conf import settings
 # Import this way for brevity in IMPORT_LIST.
@@ -135,9 +136,19 @@ def run_importers(importer_classes, include_deps=False):
 
     ordered_importers = order_importers(importer_classes)
 
+    # Timestamp of when the imports started.
+    time_started = datetime.datetime.now()
+
     # Carry out the imports in order.
     for importer_class in ordered_importers:
         importer = importer_class()
         importer.prep_and_run_importer(conn)
 
-    print "Import complete."
+    # Print the total time, for the ricers.
+    time_elapsed = datetime.datetime.now() - time_started
+    hours = time_elapsed.seconds / 3600
+    minutes = (time_elapsed.seconds % 3600) / 60
+    seconds = (time_elapsed.seconds % 3600) % 60
+    print "Import completed in %0.2d:%0.2d:%0.2d" % (
+        hours, minutes, seconds
+    )
