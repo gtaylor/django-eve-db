@@ -1,5 +1,5 @@
 import datetime
-import sqlite3
+from django.db.backends.sqlite3.base import Database as sqlite3
 from django.conf import settings
 # Import this way for brevity in IMPORT_LIST.
 from importers import *
