@@ -9,17 +9,17 @@ class Importer_ramActivities(SQLImporter):
         imp_obj, created = RamActivity.objects.get_or_create(id=row['activityID'])
         imp_obj.name = row['activityName']
         imp_obj.description = row['description']
-        
+
         if row['iconNo']:
             imp_obj.icon_filename = row['iconNo']
-        
+
         if row['published'] == 1:
             imp_obj.is_published = True
         else:
             imp_obj.is_published = False
 
         imp_obj.save()
-        
+
 class Importer_ramAssemblyLineTypes(SQLImporter):
     DEPENDENCIES = ['ramActivities']
 
@@ -36,7 +36,7 @@ class Importer_ramAssemblyLineTypes(SQLImporter):
 
 class Importer_staOperationServices(SQLImporter):
     DEPENDENCIES = ['staOperations', 'staServices']
-    
+
     def import_row(self, row):
         operation = StaOperation.objects.get(id=row['operationID'])
         service = StaService.objects.get(id=row['serviceID'])
@@ -54,7 +54,7 @@ class Importer_ramAssemblyLines(SQLImporter):
         station = StaStation.objects.get(id=row['containerID'])
         owner = CrpNPCCorporation.objects.get(id=row['ownerID'])
         activity = RamActivity.objects.get(id=row['activityID'])
-        
+
         imp_obj, created = RamAssemblyLine.objects.get_or_create(id=row['assemblyLineID'])
         imp_obj.name = assembly_line_type.name
         imp_obj.assembly_line_type = assembly_line_type
@@ -72,10 +72,10 @@ class Importer_ramAssemblyLines(SQLImporter):
         imp_obj.owner = owner
         imp_obj.activity = activity
         imp_obj.save
-        
+
 class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes', 'invCategories']
-    
+
     def import_row(self, row):
         ass_type = RamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
         category = InvCategory.objects.get(id=row['categoryID'])
@@ -85,10 +85,10 @@ class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
         imp_obj.time_multiplier = row['timeMultiplier']
         imp_obj.material_multiplier = row['materialMultiplier']
         imp_obj.save()
-        
+
 class Importer_ramAssemblyLineTypeDetailPerGroup(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes', 'invGroups']
-    
+
     def import_row(self, row):
         ass_type = RamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
         group = InvGroup.objects.get(id=row['groupID'])
@@ -108,7 +108,7 @@ class Importer_staServices(SQLImporter):
 
 class Importer_staStationTypes(SQLImporter):
     DEPENDENCIES = ['eveGraphics', 'staOperations', 'invTypes']
-    
+
     def import_row(self, row):
         imp_obj, created = StaStationType.objects.get_or_create(id=row['stationTypeID'])
         imp_obj.dock_entry_x = row['dockEntryX']
@@ -119,24 +119,18 @@ class Importer_staStationTypes(SQLImporter):
         imp_obj.dock_orientation_z = row['dockOrientationZ']
         imp_obj.office_slots = row['officeSlots']
         imp_obj.reprocessing_efficiency = row['reprocessingEfficiency']
-            
-        if row['dockingBayGraphicID']:
-            imp_obj.docking_bay_graphic = EveGraphic.objects.get(id=row['dockingBayGraphicID'])
-            
-        if row['hangarGraphicID']:
-            imp_obj.hangar_graphic = EveGraphic.objects.get(id=row['hangarGraphicID'])
-            
+
         if row['operationID']:
             imp_obj.operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
-        
+
         if row['conquerable'] == 1:
             imp_obj.is_conquerable = True
-            
+
         imp_obj.save()
-        
+
 class Importer_staOperations(SQLImporter):
     DEPENDENCIES = ['staStationTypes']
-    
+
     def import_row(self, row):
         operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
         operation.activity_id = row['activityID']
@@ -146,28 +140,28 @@ class Importer_staOperations(SQLImporter):
         operation.corridor = row['corridor']
         operation.hub = row['hub']
         operation.border = row['border']
-        operation.ratio = row['ratio']        
-        
+        operation.ratio = row['ratio']
+
         if row['caldariStationTypeID']:
             operation.caldari_station_type, created = StaStationType.objects.get_or_create(id=row['caldariStationTypeID'])
-        
+
         if row['minmatarStationTypeID']:
             operation.minmatar_station_type, created = StaStationType.objects.get_or_create(id=row['minmatarStationTypeID'])
-        
+
         if row['amarrStationTypeID']:
             operation.amarr_station_type, created = StaStationType.objects.get_or_create(id=row['amarrStationTypeID'])
-        
+
         if row['gallenteStationTypeID']:
             operation.gallente_station_type, created = StaStationType.objects.get_or_create(id=row['gallenteStationTypeID'])
-        
+
         if row['joveStationTypeID']:
             operation.jove_station_type, created = StaStationType.objects.get_or_create(id=row['joveStationTypeID'])
-        
+
         operation.save()
 
 class Importer_ramAssemblyLineStations(SQLImporter):
     DEPENDENCIES = ['staStations', 'ramAssemblyLineTypes', 'staStationTypes',
-                    'chrNPCCorporations', 'mapSolarSystems', 
+                    'chrNPCCorporations', 'mapSolarSystems',
                     'mapRegions']
 
     def import_row(self, row):
@@ -184,7 +178,7 @@ class Importer_ramAssemblyLineStations(SQLImporter):
 
 class Importer_ramTypeRequirements(SQLImporter):
     DEPENDENCIES = ['invTypes', 'ramActivities']
-    
+
     def import_row(self, row):
         type = InvType.objects.get(id=row['typeID'])
         required_type = InvType.objects.get(id=row['requiredTypeID'])
@@ -193,19 +187,19 @@ class Importer_ramTypeRequirements(SQLImporter):
                                                                     required_type=required_type)
         imp_obj.quantity = row['quantity']
         imp_obj.damage_per_job = row['damagePerJob']
-        
+
         if row['recycle'] == 0:
             imp_obj.recycle = False
         if row['recycle'] == 1:
             imp_obj.recycle = True
-        
+
         imp_obj.save()
-        
-        
+
+
 
 class Importer_staStations(SQLImporter):
     DEPENDENCIES = ['invTypes', 'staOperations', 'staStationTypes',
-                    'chrNPCCorporations', 'mapSolarSystems', 
+                    'chrNPCCorporations', 'mapSolarSystems',
                     'mapConstellations', 'mapRegions']
 
     def import_row(self, row):
@@ -221,23 +215,23 @@ class Importer_staStations(SQLImporter):
         station.reprocessing_efficiency = row['reprocessingEfficiency']
         station.reprocessing_stations_take = row['reprocessingStationsTake']
         station.reprocessing_hangar_flag = row['reprocessingHangarFlag']
-        
+
         if row['operationID']:
             station.operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
-        
+
         if row['stationTypeID']:
             station.type, created = StaStationType.objects.get_or_create(id=row['stationTypeID'])
-            
+
         if row['corporationID']:
             station.corporation, created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
-            
+
         if row['solarSystemID']:
             station.solar_system = MapSolarSystem.objects.get(id=row['solarSystemID'])
-            
+
         if row['constellationID']:
             station.constellation = MapConstellation.objects.get(id=row['constellationID'])
-            
+
         if row['regionID']:
             station.region = MapRegion.objects.get(id=row['regionID'])
-            
+
         station.save()
