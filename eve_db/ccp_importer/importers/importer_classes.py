@@ -11,7 +11,7 @@ class SQLImporter(object):
     """
     # A list of other table names that this class depends on (strings).
     DEPENDENCIES = []
-        
+
     def prep_and_run_importer(self, conn):
         """
         Prepares the SQLite objects, progress bars, and other things and
@@ -23,7 +23,7 @@ class SQLImporter(object):
         self._setup_progressbar()
 
         self.itercount = 0
-        query_string = 'SELECT * FROM %s' % self.table_name 
+        query_string = 'SELECT * FROM %s' % self.table_name
         for row in self.cursor.execute(query_string):
             # Import the row as per the sub-classes import_row().
             self.import_row(row)
@@ -38,7 +38,7 @@ class SQLImporter(object):
         self.pbar.finish()
         # Clean up the cursor, free the memory.
         self.cursor.close()
-            
+
     def import_row(self, row):
         """
         This needs to be over-ridden on all sub-classes!
@@ -54,22 +54,24 @@ class SQLImporter(object):
         self.row_count = self.cursor.execute(count_query_string).fetchone()['count']
         # Every N number of iterations, update the progress bar. Do this
         # relative to query size.
-        self.progress_update_interval = max(1,self.row_count / 100)
+        self.progress_update_interval = max(1, self.row_count / 100)
+        # No more than 1000. Give the user more frequent updates.
+        self.progress_update_interval = min(500, self.progress_update_interval)
 
         bar_label = " - %s: " % self.table_name
-        widgets = [bar_label, 
-                   Percentage(), ' ', Bar(marker='=',left='[',right=']'), 
+        widgets = [bar_label,
+                   Percentage(), ' ', Bar(marker='=', left='[', right=']'),
                    ' ', ETA()]
         self.pbar = ProgressBar(widgets=widgets, maxval=self.row_count)
         self.pbar.start()
-        
+
     def _progress_handler(self):
         """
         Updates the progress bar based on the current row being imported
         in the SQLite queryset. Called at intervals relative to query size.
         """
         self.pbar.update(self.itercount)
-    
+
     def parse_int_bool(self, int_bool):
         """
         Takes an int and converts it to a bool in the basis of 1=True, 0=False.
@@ -78,7 +80,7 @@ class SQLImporter(object):
             return True
         else:
             return False
-        
+
     def get_importer_name(self):
         """
         Returns the name of the importer. Currently, this is just the
