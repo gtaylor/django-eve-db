@@ -197,19 +197,19 @@ class Importer_mapDenormalize(SQLImporter):
         mapdenorm.orbit_index = row['orbitIndex']
 
         if row['typeID']:
-            mapdenorm.type = InvType.objects.get(id=row['typeID'])
+            mapdenorm.type = InvType(id=row['typeID'])
 
         if row['groupID']:
-            mapdenorm.group = InvGroup.objects.get(id=row['groupID'])
+            mapdenorm.group = InvGroup(id=row['groupID'])
 
         if row['solarSystemID']:
-            mapdenorm.solar_system = MapSolarSystem.objects.get(id=row['solarSystemID'])
+            mapdenorm.solar_system = MapSolarSystem(id=row['solarSystemID'])
 
         if row['constellationID']:
-            mapdenorm.constellation = MapConstellation.objects.get(id=row['constellationID'])
+            mapdenorm.constellation = MapConstellation(id=row['constellationID'])
 
         if row['regionID']:
-            mapdenorm.region = MapRegion.objects.get(id=row['regionID'])
+            mapdenorm.region = MapRegion(id=row['regionID'])
 
         mapdenorm.save()
 
@@ -225,9 +225,6 @@ class Importer_mapLandmarks(SQLImporter):
         imp_obj.z = row['z']
         imp_obj.radius = row['radius']
         imp_obj.importance = row['importance']
-
-        if row['url2d']:
-            imp_obj.url_2d = row['url2d']
 
         if row['locationID']:
             imp_obj.solar_system = MapSolarSystem.objects.get(id=row['locationID'])

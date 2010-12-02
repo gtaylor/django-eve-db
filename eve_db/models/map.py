@@ -355,7 +355,6 @@ class MapLandmark(models.Model):
     radius = models.FloatField(blank=True, null=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
     importance = models.IntegerField(blank=True, null=True)
-    url_2d = models.CharField(max_length=255, blank=True)
 
     class Meta:
         app_label = 'eve_db'
