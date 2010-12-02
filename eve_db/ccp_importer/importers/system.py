@@ -19,9 +19,9 @@ class Importer_eveNames(SQLImporter):
     def import_row(self, row):
         imp_obj = EveName(id=row['itemID'])
         imp_obj.name = row['itemName']
-        imp_obj.category = InvCategory.objects.get(id=row['categoryID'])
-        imp_obj.group = InvGroup.objects.get(id=row['groupID'])
-        imp_obj.type = InvType.objects.get(id=row['typeID'])
+        imp_obj.category = InvCategory(id=row['categoryID'])
+        imp_obj.group = InvGroup(id=row['groupID'])
+        imp_obj.type = InvType(id=row['typeID'])
         imp_obj.save()
 
 class Importer_eveIcons(SQLImporter):
