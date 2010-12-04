@@ -95,7 +95,7 @@ class Importer_mapSolarSystems(SQLImporter):
                     'invTypes']
 
     def import_row(self, row):
-        imp_obj = MapSolarSystem(id=row['solarSystemID'])
+        imp_obj, created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
         imp_obj.name = row['solarSystemName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
