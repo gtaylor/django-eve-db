@@ -7,7 +7,7 @@ from importer_classes import SQLImporter
 
 class Importer_eveUnits(SQLImporter):
     def import_row(self, row):
-        imp_obj, created = EveUnit.objects.get_or_create(id=row['unitid'])
+        imp_obj = EveUnit(id=row['unitid'])
         imp_obj.name = row['unitname']
         imp_obj.display_name = row['displayname']
         imp_obj.description = row['description']
@@ -26,16 +26,15 @@ class Importer_eveNames(SQLImporter):
 
 class Importer_eveIcons(SQLImporter):
     def import_row(self, row):
-        graphic, created = EveIcon.objects.get_or_create(id=row['iconID'])
+        graphic = EveIcon(id=row['iconID'])
         graphic.file = row['iconFile']
         graphic.description = row['description']
-
         graphic.save()
 
 
 class Importer_eveGraphics(SQLImporter):
     def import_row(self, row):
-        graphic, created = EveGraphic.objects.get_or_create(id=row['graphicID'])
+        graphic = EveGraphic(id=row['graphicID'])
         graphic.name = row['graphicName']
         graphic.file = row['graphicFile']
         graphic.description = row['description']
