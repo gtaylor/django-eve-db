@@ -26,17 +26,13 @@ class Importer_invGroups(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'invCategories']
 
     def import_row(self, row):
-        category_id = row['categoryID']
-        category = InvCategory.objects.get(id=category_id)
-
-        group, created = InvGroup.objects.get_or_create(id=row['groupID'],
-                                                                 category=category)
+        group = InvGroup(id=row['groupID'])
+        group.category_id = row['categoryID']
         group.name = row['groupName']
         group.description = row['description']
 
-        icon_id = row['iconID']
-        if icon_id:
-            group.icon = EveIcon.objects.get(id=icon_id)
+        if row['iconID']:
+            group.icon_id = row['iconID']
 
         # Handle boolean.
         group.use_base_price = self.parse_int_bool(row['useBasePrice'])
@@ -67,18 +63,15 @@ class Importer_invMarketGroups(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'invMarketGroups']
 
     def import_row(self, row):
-        group, created = InvMarketGroup.objects.get_or_create(id=row['marketGroupID'])
+        group = InvMarketGroup(id=row['marketGroupID'])
         group.name = row['marketGroupName']
         group.description = row['description']
 
-        icon_id = row['iconID']
-        if icon_id:
-            group.icon = EveIcon.objects.get(id=icon_id)
+        if row['iconID']:
+            group.icon_id = row['iconID']
 
-        parent_id = row['parentGroupID']
-        if parent_id:
-            parent, created = InvMarketGroup.objects.get_or_create(id=parent_id)
-            group.parent = parent
+        if row['parentGroupID']:
+            group.parent_id = row['parentGroupID']
 
         group.has_items = self.parse_int_bool(row['hasTypes'])
         group.save()
@@ -91,7 +84,7 @@ class Importer_invTypes(SQLImporter):
         invtype = InvType(id=row['typeID'])
         invtype.name = row['typeName']
         invtype.description = row['description']
-        invtype.group = InvGroup.objects.get(id=row['groupID'])
+        invtype.group_id = row['groupID']
         invtype.radius = row['radius']
         invtype.mass = row['mass']
         invtype.volume = row['volume']
@@ -100,19 +93,19 @@ class Importer_invTypes(SQLImporter):
         invtype.base_price = row['basePrice']
 
         if row['marketGroupID']:
-            invtype.market_group = InvMarketGroup.objects.get(id=row['marketGroupID'])
+            invtype.market_group_id = row['marketGroupID']
 
         if row['published'] == 1:
             invtype.is_published = True
 
         if row['raceID']:
-            invtype.race = ChrRace.objects.get(id=row['raceID'])
+            invtype.race_id = row['raceID']
 
         if row['graphicID']:
-            invtype.graphic = EveGraphic.objects.get(id=row['graphicID'])
+            invtype.graphic_id = row['graphicID']
 
         if row['iconID']:
-            invtype.icon = EveIcon.objects.get(id=row['iconID'])
+            invtype.icon_id = row['iconID']
 
         invtype.chance_of_duplicating = row['chanceOfDuplicating']
         invtype.save()
@@ -121,10 +114,10 @@ class Importer_invTypeMaterials(SQLImporter):
     DEPENDENCIES = ['invTypes']
 
     def import_row(self, row):
-        item_type = InvType.objects.get(id=row['typeID'])
-        material_type = InvType.objects.get(id=row['materialTypeID'])
+        item_type = InvType(id=row['typeID'])
+        material_type = InvType(id=row['materialTypeID'])
         invmat, created = InvTypeMaterial.objects.get_or_create(type=item_type,
-                                                                         material_type=material_type)
+                                                                material_type=material_type)
         invmat.quantity = row['quantity']
         invmat.save()
 
@@ -327,13 +320,13 @@ class Importer_invControlTowerResources(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invControlTowerResourcePurposes']
 
     def import_row(self, row):
-        control_tower_type = InvType.objects.get(id=row['controlTowerTypeID'])
-        resource_type = InvType.objects.get(id=row['resourceTypeID'])
+        control_tower_type = InvType(id=row['controlTowerTypeID'])
+        resource_type = InvType(id=row['resourceTypeID'])
         imp_obj, created = InvPOSResource.objects.get_or_create(control_tower_type=control_tower_type,
                                                                 resource_type=resource_type)
         imp_obj.control_tower_type = control_tower_type
         imp_obj.resource_type = resource_type
-        imp_obj.purpose = InvPOSResourcePurpose.objects.get(id=row['purpose'])
+        imp_obj.purpose_id = row['purpose']
         imp_obj.quantity = row['quantity']
         imp_obj.min_security_level = row['minSecurityLevel']
         imp_obj.save()
