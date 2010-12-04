@@ -26,10 +26,9 @@ class Importer_crpNPCCorporationTrades(SQLImporter):
     DEPENDENCIES = ['invTypes', 'crpNPCCorporations']
 
     def import_row(self, row):
-        corporation = CrpNPCCorporation.objects.get(id=row['corporationID'])
-        type = InvType.objects.get(id=row['typeID'])
-        imp_obj, created = CrpNPCCorporationTrade.objects.get_or_create(corporation=corporation,
-                                                                        type=type)
+        imp_obj, created = CrpNPCCorporationTrade.objects.\
+            get_or_create(corporation=CrpNPCCorporation(id=row['corporationID']),
+                          type=InvType(id=row['typeID']))
         imp_obj.save()
 
 class Importer_crpNPCCorporationResearchFields(SQLImporter):
@@ -122,21 +121,21 @@ class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
                     'eveNames', 'agtAgentTypes']
     def import_row(self, row):
-        imp_obj, created = AgtAgent.objects.get_or_create(id=row['agentID'])
-        imp_obj.division = CrpNPCDivision.objects.get(id=row['divisionID'])
-        imp_obj.corporation = CrpNPCCorporation.objects.get(id=row['corporationID'])
-        imp_obj.location = MapDenormalize.objects.get(id=row['locationID'])
-        imp_obj.level = row['level']
-        imp_obj.quality = row['quality']
-        imp_obj.type = AgtAgentType.objects.get(id=row['agentTypeID'])
-        imp_obj.name = EveName.objects.get(id=row['agentID']).name
+        imp_obj = AgtAgent(id=row['agentID'],
+            division_id=row['divisionID'],
+            corporation_id=row['corporationID'],
+            location_id=row['locationID'],
+            level=row['level'],
+            quality=row['quality'],
+            type_id=row['agentTypeID'],
+            name=EveName.objects.get(id=row['agentID']).name)
         imp_obj.save()
 
 class Importer_agtConfig(SQLImporter):
     DEPENDENCIES = ['agtAgents']
     def import_row(self, row):
-        agent = AgtAgent.objects.get(id=row['agentID'])
-        imp_obj, created = AgtConfig.objects.get_or_create(agent=agent,
-                                                                key=row['k'])
+        imp_obj, created = AgtConfig.objects.\
+            get_or_create(agent=AgtAgent(id=row['agentID']),
+                          key=row['k'])
         imp_obj.value = row['v']
         imp_obj.save()
