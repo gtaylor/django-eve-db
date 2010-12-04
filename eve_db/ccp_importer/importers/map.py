@@ -191,19 +191,19 @@ class Importer_mapDenormalize(SQLImporter):
         mapdenorm.orbit_index = row['orbitIndex']
 
         if row['typeID']:
-            mapdenorm.type = InvType(id=row['typeID'])
+            mapdenorm.type_id = row['typeID']
 
         if row['groupID']:
-            mapdenorm.group = InvGroup(id=row['groupID'])
+            mapdenorm.group_id = row['groupID']
 
         if row['solarSystemID']:
-            mapdenorm.solar_system = MapSolarSystem(id=row['solarSystemID'])
+            mapdenorm.solar_system_id = row['solarSystemID']
 
         if row['constellationID']:
-            mapdenorm.constellation = MapConstellation(id=row['constellationID'])
+            mapdenorm.constellation_id = row['constellationID']
 
         if row['regionID']:
-            mapdenorm.region = MapRegion(id=row['regionID'])
+            mapdenorm.region_id = row['regionID']
 
         mapdenorm.save()
 
@@ -232,8 +232,8 @@ class Importer_mapCelestialStatistics(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
 
     def import_row(self, row):
-        celestial = MapDenormalize.objects.get(id=row['celestialID'])
-        imp_obj = MapCelestialStatistic(celestial=celestial)
+        imp_obj = MapCelestialStatistic()
+        imp_obj.celestial_id = row['celestialID']
         imp_obj.temperature = row['temperature']
         imp_obj.spectral_class = row['spectralClass']
         imp_obj.luminosity = row['luminosity']
