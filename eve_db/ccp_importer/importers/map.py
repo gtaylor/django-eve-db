@@ -25,7 +25,7 @@ class Importer_mapRegions(SQLImporter):
     DEPENDENCIES = ['chrFactions']
 
     def import_row(self, row):
-        imp_obj, created = MapRegion.objects.get_or_create(id=row['regionID'])
+        imp_obj = MapRegion(id=row['regionID'])
         imp_obj.name = row['regionName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -38,8 +38,7 @@ class Importer_mapRegions(SQLImporter):
         imp_obj.z_max = row['zMax']
 
         if row['factionID']:
-            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
-            imp_obj.faction = faction
+            imp_obj.faction_id = row['factionID']
 
         imp_obj.radius = row['radius']
         imp_obj.save()
@@ -48,8 +47,8 @@ class Importer_mapRegionJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions']
 
     def import_row(self, row):
-        from_region = MapRegion.objects.get(id=row['fromRegionID'])
-        to_region = MapRegion.objects.get(id=row['toRegionID'])
+        from_region = MapRegion(id=row['fromRegionID'])
+        to_region = MapRegion(id=row['toRegionID'])
         imp_obj, created = MapRegionJump.objects.get_or_create(from_region=from_region,
                                                                to_region=to_region)
 
@@ -57,7 +56,7 @@ class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
 
     def import_row(self, row):
-        imp_obj, created = MapConstellation.objects.get_or_create(id=row['constellationID'])
+        imp_obj = MapConstellation(id=row['constellationID'])
         imp_obj.name = row['constellationName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -71,12 +70,10 @@ class Importer_mapConstellations(SQLImporter):
         imp_obj.radius = row['radius']
 
         if row['regionID']:
-            region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
-            imp_obj.region = region
+            imp_obj.region_id = row['regionID']
 
         if row['factionID']:
-            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
-            imp_obj.faction = faction
+            imp_obj.faction_id = row['factionID']
 
         imp_obj.save()
 
@@ -84,10 +81,10 @@ class Importer_mapConstellationJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations']
 
     def import_row(self, row):
-        from_constellation = MapConstellation.objects.get(id=row['fromConstellationID'])
-        from_region = MapRegion.objects.get(id=row['fromRegionID'])
-        to_constellation = MapConstellation.objects.get(id=row['toConstellationID'])
-        to_region = MapRegion.objects.get(id=row['toRegionID'])
+        from_constellation = MapConstellation(id=row['fromConstellationID'])
+        from_region = MapRegion(id=row['fromRegionID'])
+        to_constellation = MapConstellation(id=row['toConstellationID'])
+        to_region = MapRegion(id=row['toRegionID'])
         imp_obj, created = MapConstellationJump.objects.get_or_create(from_constellation=from_constellation,
                                                                from_region=from_region,
                                                                to_constellation=to_constellation,
