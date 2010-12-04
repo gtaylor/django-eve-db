@@ -125,13 +125,9 @@ class Importer_invMetaTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invMetaGroups']
 
     def import_row(self, row):
-        type = InvType.objects.get(id=row['typeID'])
-        parent_type = InvType.objects.get(id=row['parentTypeID'])
-        meta_group = InvMetaGroup.objects.get(id=row['metaGroupID'])
-
-        imp_obj, created = InvMetaType.objects.get_or_create(type=type,
-                                                parent_type=parent_type,
-                                                meta_group=meta_group)
+        imp_obj = InvMetaType(type_id=row['typeID'],
+                              parent_type_id=row['parentTypeID'],
+                              meta_group_id=row['metaGroupID'])
         imp_obj.save()
 
 class Importer_dgmAttributeCategories(SQLImporter):
@@ -145,7 +141,7 @@ class Importer_dgmAttributeTypes(SQLImporter):
     DEPENDENCIES = ['dgmAttributeCategories', 'eveIcons', 'eveUnits']
 
     def import_row(self, row):
-        imp_obj, created = DgmAttributeType.objects.get_or_create(id=row['attributeid'])
+        imp_obj = DgmAttributeType(id=row['attributeid'])
         imp_obj.name = row['attributename']
         imp_obj.description = row['description']
         imp_obj.default_value = row['defaultvalue']
@@ -154,17 +150,14 @@ class Importer_dgmAttributeTypes(SQLImporter):
         imp_obj.is_stackable = self.parse_int_bool(row['stackable'])
         imp_obj.high_is_good = self.parse_int_bool(row['highisgood'])
 
-        category_id = row['categoryid']
-        if category_id:
-            imp_obj.category = DgmAttributeCategory.objects.get(id=category_id)
+        if row['categoryid']:
+            imp_obj.category_id = row['categoryid']
 
-        unit_id = row['unitid']
-        if unit_id:
-            imp_obj.unit = EveUnit.objects.get(id=unit_id)
+        if row['unitid']:
+            imp_obj.unit_id = row['unitid']
 
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
+        if row['iconID']:
+            imp_obj.icon_id = row['iconID']
 
         imp_obj.save()
 
@@ -172,10 +165,9 @@ class Importer_dgmTypeAttributes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmAttributeTypes', 'dgmTypeAttributes']
 
     def import_row(self, row):
-        inventory_type = InvType.objects.get(id=row['typeid'])
-        attribute = DgmAttributeType.objects.get(id=row['attributeid'])
-        imp_obj, created = DgmTypeAttribute.objects.get_or_create(inventory_type=inventory_type,
-                                                                            attribute=attribute)
+        imp_obj, created = DgmTypeAttribute.objects.\
+            get_or_create(inventory_type=InvType(id=row['typeid']),
+                          attribute=DgmAttributeType(id=row['attributeid']))
 
         if row['valueint']:
             imp_obj.value_int = row['valueint']
@@ -189,73 +181,33 @@ class Importer_dgmEffects(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'dgmAttributeTypes']
 
     def import_row(self, row):
-        imp_obj, created = DgmEffect.objects.get_or_create(id=row['effectID'])
-        imp_obj.name = row['effectName']
-        imp_obj.category = row['effectCategory']
-        imp_obj.pre_expression = row['preExpression']
-        imp_obj.post_expression = row['postExpression']
-        imp_obj.description = row['description']
-
-        if row['guid']:
-            imp_obj.guid = row['guid']
-
-        if row['iconID']:
-            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
-
-        if row['isOffensive'] == 1:
-            imp_obj.is_offensive = True
-
-        if row['isAssistance'] == 1:
-            imp_obj.is_assistance = True
-
-        if row['durationAttributeID']:
-            imp_obj.duration_attribute = DgmAttributeType.objects.get(id=row['durationAttributeID'])
-
-        if row['trackingSpeedAttributeID']:
-            imp_obj.tracking_speed_attribute = DgmAttributeType.objects.get(id=row['trackingSpeedAttributeID'])
-
-        if row['dischargeAttributeID']:
-            imp_obj.discharge_attribute = DgmAttributeType.objects.get(id=row['dischargeAttributeID'])
-
-        if row['rangeAttributeID']:
-            imp_obj.range_attribute = DgmAttributeType.objects.get(id=row['rangeAttributeID'])
-
-        if row['falloffAttributeID']:
-            imp_obj.falloff_attribute = DgmAttributeType.objects.get(id=row['falloffAttributeID'])
-
-        if row['disallowAutoRepeat'] == 1:
-            imp_obj.disallow_autorepeat = True
-
-        if row['published'] == 1:
-            imp_obj.is_published = True
-
-        imp_obj.display_name = row['displayName']
-
-        if row['isWarpSafe'] == 1:
-            imp_obj.is_warp_safe = True
-
-        if row['rangeChance'] == 1:
-            imp_obj.has_range_chance = True
-
-        if row['electronicChance'] == 1:
-            imp_obj.has_electronic_chance = True
-
-        if row['propulsionChance'] == 1:
-            imp_obj.has_propulsion_chance = True
-
-        imp_obj.distribution = row['distribution']
-
-        if row['sfxName']:
-            imp_obj.sfx_name = row['sfxName']
-
-        if row['npcUsageChanceAttributeID']:
-            imp_obj.npc_usage_chance_attribute = DgmAttributeType.objects.get(id=row['npcUsageChanceAttributeID'])
-
-        if row['npcActivationChanceAttributeID']:
-            imp_obj.npc_activation_chance_attribute = DgmAttributeType.objects.get(id=row['npcActivationChanceAttributeID'])
-
-        if row['fittingUsageChanceAttributeID']:
-            imp_obj.fitting_usage_chance_attribute = DgmAttributeType.objects.get(id=row['fittingUsageChanceAttributeID'])
+        imp_obj = DgmEffect(id=row['effectID'],
+                            name=row['effectName'],
+                            category=row['effectCategory'],
+                            pre_expression=row['preExpression'],
+                            post_expression=row['postExpression'],
+                            description=row['description'],
+                            guid=row['guid'] if row['guid'] else '',
+                            icon_id=row['iconID'],
+                            is_offensive=self.parse_int_bool(row['isOffensive']),
+                            is_assistance=self.parse_int_bool(row['isAssistance']),
+                            duration_attribute_id=row['durationAttributeID'],
+                            tracking_speed_attribute_id=row['trackingSpeedAttributeID'],
+                            discharge_attribute_id=row['dischargeAttributeID'],
+                            range_attribute_id=row['rangeAttributeID'],
+                            falloff_attribute_id=row['falloffAttributeID'],
+                            disallow_auto_repeat=self.parse_int_bool(row['disallowAutoRepeat']),
+                            is_published=self.parse_int_bool(row['published']),
+                            display_name=row['displayName'],
+                            is_warp_safe=self.parse_int_bool(row['isWarpSafe']),
+                            has_range_chance=self.parse_int_bool(row['rangeChance']),
+                            has_electronic_chance=self.parse_int_bool(row['electronicChance']),
+                            has_propulsion_chance=self.parse_int_bool(row['propulsionChance']),
+                            distribution=row['distribution'],
+                            sfx_name=row['sfxName'] if row['sfxName'] else '',
+                            npc_usage_chance_attribute_id=row['npcUsageChanceAttributeID'],
+                            npc_activation_chance_attribute_id=row['npcActivationChanceAttributeID'],
+                            fitting_usage_chance_attribute_id=row['fittingUsageChanceAttributeID'])
 
         imp_obj.save()
 
@@ -263,15 +215,9 @@ class Importer_dgmTypeEffects(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmEffects', 'dgmTypeEffects']
 
     def import_row(self, row):
-        type = InvType.objects.get(id=row['typeID'])
-        effect = DgmEffect.objects.get(id=row['effectID'])
-
-        try:
-            imp_obj = DgmTypeEffect.objects.get(type=type,
-                                                         effect=effect)
-        except DgmTypeEffect.DoesNotExist:
-            imp_obj = DgmTypeEffect(type=type, effect=effect)
-
+        imp_obj, created = DgmTypeEffect.objects.\
+            get_or_create(type=InvType(id=row['typeID']),
+                          effect=DgmEffect(id=row['effectID']))
         imp_obj.is_default = row['isDefault']
         imp_obj.save()
 
@@ -290,12 +236,10 @@ class Importer_invBlueprintTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
 
     def import_row(self, row):
-        blueprint_type = InvType.objects.get(id=row['blueprintTypeID'])
-        product_type = InvType.objects.get(id=row['productTypeID'])
-        invtype, created = InvBlueprintType.objects.get_or_create(blueprint_type=blueprint_type,
-                                                                           product_type=product_type)
+        invtype = InvBlueprintType(blueprint_type_id=row['blueprintTypeID'],
+                                   product_type_id=row['productTypeID'])
         if row['parentBlueprintTypeID']:
-            invtype.parent_blueprint_type = InvType.objects.get(id=row['parentBlueprintTypeID'])
+            invtype.parent_blueprint_type_id = row['parentBlueprintTypeID']
 
         invtype.tech_level = row['techLevel']
         invtype.research_productivity_time = row['researchProductivityTime']
