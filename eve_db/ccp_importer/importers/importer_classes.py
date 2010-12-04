@@ -3,6 +3,7 @@ This module holds all importer related classes.
 """
 from progressbar import ProgressBar, Percentage, Bar, ETA
 from django import db
+from django.db import transaction
 from django.conf import settings
 
 class SQLImporter(object):
@@ -12,6 +13,7 @@ class SQLImporter(object):
     # A list of other table names that this class depends on (strings).
     DEPENDENCIES = []
 
+    @transaction.commit_manually
     def prep_and_run_importer(self, conn):
         """
         Prepares the SQLite objects, progress bars, and other things and
@@ -21,24 +23,31 @@ class SQLImporter(object):
         # Right now, the importer name matches the table name.
         self.table_name = self.get_importer_name()
         self._setup_progressbar()
-
-        self.itercount = 0
-        query_string = 'SELECT * FROM %s' % self.table_name
-        for row in self.cursor.execute(query_string):
-            # Import the row as per the sub-classes import_row().
-            self.import_row(row)
-            if self.itercount % self.progress_update_interval == 0:
-                self._progress_handler()
-
-            self.itercount += 1
-            if settings.DEBUG:
-                db.reset_queries()
-
+        transaction.commit()
+        
+        try:
+            self.itercount = 0
+            query_string = 'SELECT * FROM %s' % self.table_name
+            for row in self.cursor.execute(query_string):
+                # Import the row as per the sub-classes import_row().
+                self.import_row(row)
+                if self.itercount % self.progress_update_interval == 0:
+                    self._progress_handler()
+    
+                self.itercount += 1
+                if settings.DEBUG:
+                    db.reset_queries()
+        except Exception:
+            transaction.rollback()
+            raise
+        else:
+            transaction.commit()
         # Progressbar to 100%.
         self.pbar.finish()
         # Clean up the cursor, free the memory.
         self.cursor.close()
 
+    @transaction.commit_manually
     def import_row(self, row):
         """
         This needs to be over-ridden on all sub-classes!
