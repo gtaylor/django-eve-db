@@ -47,12 +47,11 @@ class SQLImporter(object):
         # Clean up the cursor, free the memory.
         self.cursor.close()
 
-    @transaction.commit_manually
     def import_row(self, row):
         """
         This needs to be over-ridden on all sub-classes!
         """
-        pass
+        raise NotImplementedError
 
     def _setup_progressbar(self):
         """
