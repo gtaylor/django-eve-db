@@ -13,19 +13,19 @@ class RamActivity(models.Model):
     # Name of the file, should be two numbers separated by underscore, no extension.
     icon_filename = models.CharField(max_length=50, blank=True)
     is_published = models.BooleanField(default=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Research and Mfg activity'
         verbose_name_plural = 'Research and Mfg activities'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class RamAssemblyLineType(models.Model):
     """
     Various assembly line types.
@@ -41,19 +41,19 @@ class RamAssemblyLineType(models.Model):
     volume = models.FloatField(blank=True, null=True)
     activity = models.ForeignKey(RamActivity, blank=True, null=True)
     min_cost_per_hour = models.FloatField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Assembly Line Type'
         verbose_name_plural = 'Assembly Line Types'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class RamAssemblyLine(models.Model):
     """
     These represent individual assembly lines in stations.
@@ -79,19 +79,19 @@ class RamAssemblyLine(models.Model):
     maximum_corp_security = models.FloatField(blank=True, null=True)
     owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     activity = models.ForeignKey('RamActivity', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Assembly Line'
         verbose_name_plural = 'Assembly Lines'
-        
+
     def __unicode__(self):
         return self.assembly_line_type
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class RamAssemblyLineTypeDetailPerCategory(models.Model):
     """
     Assembly line multipliers per produced item category. 
@@ -103,20 +103,20 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
     category = models.ForeignKey('InvCategory')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Assembly Line Detail per Category'
         verbose_name_plural = 'Assembly Line Details per Category'
         unique_together = ('assembly_line_type', 'category')
-        
+
     def __unicode__(self):
         return self.assembly_line_type.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class RamAssemblyLineTypeDetailPerGroup(models.Model):
     """
     Assembly line multipliers per produced item group. 
@@ -128,20 +128,20 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
     group = models.ForeignKey('InvGroup')
     time_multiplier = models.FloatField(blank=True, null=True)
     material_multiplier = models.FloatField(blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Assembly Line Detail per Group'
         verbose_name_plural = 'Assembly Line Details per Group'
         unique_together = ('assembly_line_type', 'group')
-        
+
     def __unicode__(self):
         return self.assembly_line_type.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class RamAssemblyLineStations(models.Model):
     """
     Denotes assembly line types on individual stations.
@@ -156,17 +156,17 @@ class RamAssemblyLineStations(models.Model):
     owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     solar_system = models.ForeignKey('MapSolarSystem', blank=True, null=True)
     region = models.ForeignKey('MapRegion', blank=True, null=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Assembly Line Station'
         verbose_name_plural = 'Assembly Line Stations'
         unique_together = ('station', 'assembly_line_type')
-        
+
     def __unicode__(self):
         return "%s: %s" % (self.station, self.assembly_line_type.name)
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -181,17 +181,17 @@ class RamTypeRequirement(models.Model):
     quantity = models.IntegerField(blank=True, null=True)
     damage_per_job = models.FloatField(blank=True, null=True)
     recycle = models.BooleanField(blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Type Requirement'
         verbose_name_plural = 'Type Requirements'
         unique_together = ('type', 'activity_type', 'required_type')
-        
+
     def __unicode__(self):
         return "%s: %s (%s)" % (self.type.name, self.required_type.name, self.activity_type.name)
-        
+
     def __str__(self):
         return self.__unicode__()
 
@@ -206,16 +206,16 @@ class StaService(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Station Service'
         verbose_name_plural = 'Station Services'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -227,12 +227,6 @@ class StaStationType(models.Model):
     CCP Primary key: "stationTypeID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
-    docking_bay_graphic = models.ForeignKey('EveGraphic',
-                                            related_name='docking_bay_graphic', 
-                                            blank=True, null=True)
-    hangar_graphic = models.ForeignKey('EveGraphic',
-                                       related_name='hangar_graphic', 
-                                       blank=True, null=True)
     dock_entry_x = models.FloatField(blank=True, null=True)
     dock_orientation_x = models.FloatField(blank=True, null=True)
     dock_entry_y = models.FloatField(blank=True, null=True)
@@ -242,17 +236,17 @@ class StaStationType(models.Model):
     operation = models.ForeignKey('StaOperation', blank=True, null=True)
     office_slots = models.IntegerField(blank=True, null=True)
     reprocessing_efficiency = models.FloatField(blank=True, null=True)
-    is_conquerable = models.BooleanField(default=False)    
-    
+    is_conquerable = models.BooleanField(default=False)
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Station Type'
         verbose_name_plural = 'Station Types'
-        
+
     def __unicode__(self):
         return "Station Type %d" % self.id
-    
+
     def __str__(self):
         return self.__unicode__()
 
@@ -273,34 +267,34 @@ class StaOperation(models.Model):
     border = models.IntegerField(blank=True, null=True)
     ratio = models.IntegerField(blank=True, null=True)
     caldari_station_type = models.ForeignKey(StaStationType,
-                                             related_name='caldari_station_operation_set', 
+                                             related_name='caldari_station_operation_set',
                                              blank=True, null=True)
     minmatar_station_type = models.ForeignKey(StaStationType,
-                                              related_name='minmatar_station_operation_set', 
+                                              related_name='minmatar_station_operation_set',
                                               blank=True, null=True)
     amarr_station_type = models.ForeignKey(StaStationType,
-                                           related_name='amarr_station_operation_set', 
+                                           related_name='amarr_station_operation_set',
                                            blank=True, null=True)
     gallente_station_type = models.ForeignKey(StaStationType,
-                                              related_name='gallente_station_operation_set', 
+                                              related_name='gallente_station_operation_set',
                                               blank=True, null=True)
     jove_station_type = models.ForeignKey(StaStationType,
                                           related_name='jove_station_operation_set',
                                           blank=True, null=True)
-    
-  
+
+
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Station Operation'
         verbose_name_plural = 'Station Operations'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-        
+
 class StaStation(models.Model):
     """
     Represents an individual station out in a system. 
@@ -332,13 +326,13 @@ class StaStation(models.Model):
         ordering = ['id']
         verbose_name = 'Station'
         verbose_name_plural = 'Stations'
-        
+
     def __unicode__(self):
         return self.name
-    
+
     def __str__(self):
         return self.__unicode__()
-    
+
 class StaOperationServices(models.Model):
     """
     Services per operations. 
@@ -355,9 +349,9 @@ class StaOperationServices(models.Model):
         verbose_name = 'Station Operation Service'
         verbose_name_plural = 'Station Operation Services'
         unique_together = ('operation', 'service')
-        
+
     def __unicode__(self):
         return "%s: %s" % (self.operation, self.service)
-    
+
     def __str__(self):
         return self.__unicode__()
