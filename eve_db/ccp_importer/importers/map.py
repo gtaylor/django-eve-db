@@ -95,7 +95,7 @@ class Importer_mapSolarSystems(SQLImporter):
                     'invTypes']
 
     def import_row(self, row):
-        imp_obj, created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
+        imp_obj = MapSolarSystem(id=row['solarSystemID'])
         imp_obj.name = row['solarSystemName']
         imp_obj.x = row['x']
         imp_obj.x_min = row['xMin']
@@ -135,19 +135,16 @@ class Importer_mapSolarSystems(SQLImporter):
             imp_obj.has_interconstellational_link = True
 
         if row['regionID']:
-            region, region_created = MapRegion.objects.get_or_create(id=row['regionID'])
-            imp_obj.region = region
+            imp_obj.region_id = row['regionID']
 
         if row['constellationID']:
-            constellation, constellation_created = MapConstellation.objects.get_or_create(id=row['constellationID'])
-            imp_obj.constellation = constellation
+            imp_obj.constellation_id = row['constellationID']
 
         if row['sunTypeID']:
-            imp_obj.sun_type = InvType.objects.get(id=row['sunTypeID'])
+            imp_obj.sun_type_id = row['sunTypeID']
 
         if row['factionID']:
-            faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
-            imp_obj.faction = faction
+            imp_obj.faction_id = row['factionID']
 
         imp_obj.save()
 
@@ -155,12 +152,12 @@ class Importer_mapSolarSystemJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations', 'mapSolarSystems']
 
     def import_row(self, row):
-        from_constellation = MapConstellation.objects.get(id=row['fromConstellationID'])
-        from_region = MapRegion.objects.get(id=row['fromRegionID'])
-        from_solar_system = MapSolarSystem.objects.get(id=row['fromSolarSystemID'])
-        to_constellation = MapConstellation.objects.get(id=row['toConstellationID'])
-        to_region = MapRegion.objects.get(id=row['toRegionID'])
-        to_solar_system = MapSolarSystem.objects.get(id=row['toSolarSystemID'])
+        from_constellation = MapConstellation(id=row['fromConstellationID'])
+        from_region = MapRegion(id=row['fromRegionID'])
+        from_solar_system = MapSolarSystem(id=row['fromSolarSystemID'])
+        to_constellation = MapConstellation(id=row['toConstellationID'])
+        to_region = MapRegion(id=row['toRegionID'])
+        to_solar_system = MapSolarSystem(id=row['toSolarSystemID'])
         imp_obj, created = MapSolarSystemJump.objects.get_or_create(from_constellation=from_constellation,
                                                                     from_region=from_region,
                                                                     to_constellation=to_constellation,
