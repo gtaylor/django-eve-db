@@ -18,7 +18,7 @@ class MapUniverse(models.Model):
     y_max = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
     z_min = models.FloatField(blank=True, null=True)
-    z_min = models.FloatField(blank=True, null=True)
+    z_max = models.FloatField(blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
 
@@ -50,7 +50,7 @@ class MapRegion(models.Model):
     y_max = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
     z_min = models.FloatField(blank=True, null=True)
-    z_min = models.FloatField(blank=True, null=True)
+    z_max = models.FloatField(blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
 
@@ -110,7 +110,7 @@ class MapConstellation(models.Model):
     y_max = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
     z_min = models.FloatField(blank=True, null=True)
-    z_min = models.FloatField(blank=True, null=True)
+    z_max = models.FloatField(blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
