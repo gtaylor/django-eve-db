@@ -154,9 +154,9 @@ class Importer_mapSolarSystemJumps(SQLImporter):
     def import_row(self, row):
         from_constellation = MapConstellation(id=row['fromConstellationID'])
         from_region = MapRegion(id=row['fromRegionID'])
-        from_solar_system = MapSolarSystem(id=row['fromSolarSystemID'])
         to_constellation = MapConstellation(id=row['toConstellationID'])
         to_region = MapRegion(id=row['toRegionID'])
+        from_solar_system = MapSolarSystem(id=row['fromSolarSystemID'])
         to_solar_system = MapSolarSystem(id=row['toSolarSystemID'])
         imp_obj, created = MapSolarSystemJump.objects.get_or_create(from_constellation=from_constellation,
                                                                     from_region=from_region,
@@ -164,6 +164,15 @@ class Importer_mapSolarSystemJumps(SQLImporter):
                                                                     to_region=to_region,
                                                                     from_solar_system=from_solar_system,
                                                                     to_solar_system=to_solar_system)
+        
+    def import_new_row(self, row):
+        imp_obj = MapSolarSystemJump(from_constellation_id=row['fromConstellationID'],
+                                    from_region_id=row['fromRegionID'],
+                                    to_constellation_id=row['toConstellationID'],
+                                    to_region_id=row['toRegionID'],
+                                    from_solar_system_id=row['fromSolarSystemID'],
+                                    to_solar_system_id=row['toSolarSystemID'])
+        imp_obj.save()
 
 class Importer_mapJumps(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
@@ -173,6 +182,11 @@ class Importer_mapJumps(SQLImporter):
         destination_gate = MapDenormalize.objects.get(id=row['celestialID'])
         imp_obj, created = MapJump.objects.get_or_create(origin_gate=origin_gate,
                                                                  destination_gate=destination_gate)
+        
+    def import_new_row(self, row):
+        imp_obj = MapJump(origin_gate_id=row['stargateID'],
+                          destination_gate_id=row['celestialID'])
+        imp_obj.save()
 
 class Importer_mapDenormalize(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invGroups', 'mapSolarSystems',
@@ -204,8 +218,8 @@ class Importer_mapDenormalize(SQLImporter):
 
         if row['regionID']:
             mapdenorm.region_id = row['regionID']
-
-        mapdenorm.save()
+            
+        return mapdenorm
 
 class Importer_mapLandmarks(SQLImporter):
     DEPENDENCIES = ['mapSolarSystems', 'eveIcons']

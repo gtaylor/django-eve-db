@@ -2,44 +2,77 @@
 """
 Import various important system tables.
 """
-from eve_db.models import *
+from eve_db.models import EveUnit, EveName, EveGraphic, EveIcon
 from importer_classes import SQLImporter
 
 class Importer_eveUnits(SQLImporter):
+    model = EveUnit
+    
     def import_row(self, row):
-        imp_obj = EveUnit(id=row['unitid'])
-        imp_obj.name = row['unitname']
-        imp_obj.display_name = row['displayname']
-        imp_obj.description = row['description']
-        imp_obj.save()
+        new_instance = self.model(id=row['unitid'],
+                                  name=row['unitname'],
+                                  display_name=row['displayname'],
+                                  description=row['description'])
+        if self.insert_only:
+            return new_instance, True
+        
+        try:
+            old_instance = self.model.objects.get(id=row['unitid'])
+            old_instance.name = row['unitname']
+            old_instance.display_name = row['displayname']
+            old_instance.description = row['description']
+            return old_instance, False
+        except self.model.DoesNotExist:
+            return new_instance, True
 
 class Importer_eveNames(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
+    model = EveName
 
     def import_row(self, row):
-        imp_obj = EveName(id=row['itemID'])
-        imp_obj.name = row['itemName']
-        imp_obj.category = InvCategory(id=row['categoryID'])
-        imp_obj.group = InvGroup(id=row['groupID'])
-        imp_obj.type = InvType(id=row['typeID'])
-        imp_obj.save()
+        new_instance = self.model(id=row['itemID'],
+                                  name=row['itemName'],
+                                  category_id=row['categoryID'],
+                                  group_id=row['groupID'],
+                                  type_id=row['typeID'])
+        if self.insert_only:
+            return new_instance, True
+        
+        try:
+            old_instance = self.model.objects.get(id=row['itemID'])
+            old_instance.name = row['itemName']
+            old_instance.category_id = row['categoryID']
+            old_instance.group_id = row['groupID']
+            old_instance.type_id = row['typeID']
+            return old_instance, False
+        except self.model.DoesNotExist:
+            return new_instance, True
 
 class Importer_eveIcons(SQLImporter):
-    def import_row(self, row):
-        graphic = EveIcon(id=row['iconID'])
-        graphic.file = row['iconFile']
-        graphic.description = row['description']
-        graphic.save()
+    model = EveIcon
+    pks = (('id', 'iconID'),)
+    field_map = (('file', 'iconFile'),
+                 ('description', 'description'),) 
 
 
 class Importer_eveGraphics(SQLImporter):
+    model = EveGraphic
+    
     def import_row(self, row):
-        graphic = EveGraphic(id=row['graphicID'])
-        graphic.name = row['graphicName']
-        graphic.file = row['graphicFile']
-        graphic.description = row['description']
-
-        if row['obsolete'] == 1:
-            graphic.is_obsolete = True
-
-        graphic.save()
+        new_instance = self.model(id=row['graphicID'],
+                                  name=row['graphicName'],
+                                  file=row['graphicFile'],
+                                  description=row['description'],
+                                  is_obsolete=True if row['obsolete'] == 1 else False)
+        if self.insert_only:
+            return new_instance, True
+        
+        try:
+            old_instance = self.model.objects.get(id=row['graphicID'])
+            old_instance.name = row['graphicName']
+            old_instance.file = row['graphicFile']
+            old_instance.description = row['description']
+            old_instance.is_obsolete = True if row['obsolete'] == 1 else False
+            return old_instance, False
+        except self.model.DoesNotExist:
+            return new_instance, True

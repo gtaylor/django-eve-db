@@ -120,6 +120,12 @@ class Importer_invTypeMaterials(SQLImporter):
                                                                 material_type=material_type)
         invmat.quantity = row['quantity']
         invmat.save()
+        
+    def import_new_row(self, row):
+        invmat = InvTypeMaterial(type_id=row['typeID'],
+                                 material_type_id=row['materialTypeID'],
+                                 quantity=row['quantity'])
+        invmat.save()
 
 class Importer_invMetaTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invMetaGroups']

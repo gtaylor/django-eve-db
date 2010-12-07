@@ -2,6 +2,7 @@
 Import character data.
 """
 from eve_db.models import *
+from django.db import transaction
 from importer_classes import SQLImporter
 
 class Importer_chrRaces(SQLImporter):
@@ -37,27 +38,47 @@ class Importer_chrAttributes(SQLImporter):
 
 class Importer_chrFactions(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'mapSolarSystems', 'crpNPCCorporations']
+    model = ChrFaction
 
     def import_row(self, row):
-        imp_obj, created = ChrFaction.objects.get_or_create(id=row['factionID'])
-        imp_obj.name = row['factionName']
-        imp_obj.description = row['description']
-
+        # We need these queries because of circular dependencies
+        # chrFactions has few records so it has minimal impact
+        solar_system = None
         if row['solarSystemID']:
-            solar_system, ss_created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
-            imp_obj.solar_system = solar_system
-
+            solar_system = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])[0]
+        
+        corporation = None
         if row['corporationID']:
-            corp, corp_created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
-            imp_obj.corporation = corp
+            corporation = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])[0]
+        # Make sure to commit this or we'll get a transaction management error
+        if solar_system or corporation:
+            transaction.commit()
 
-        if row['iconID']:
-            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
-
-        imp_obj.size_factor = row['sizeFactor']
-        imp_obj.station_count = row['stationCount']
-        imp_obj.station_system_count = row['stationSystemCount']
-        imp_obj.save()
+        new_instance = self.model(id=row['factionID'],
+                                  name=row['factionName'],
+                                  description=row['description'],
+                                  solar_system=solar_system,
+                                  corporation=corporation,
+                                  icon_id=row['iconID'] if row['iconID'] else None,
+                                  size_factor=row['sizeFactor'],
+                                  station_count=row['stationCount'],
+                                  station_system_count=row['stationSystemCount'])
+        if self.insert_only:
+            return new_instance, True
+        
+        try:
+            old_instance = self.model.objects.get(id=row['factionID'])
+            old_instance.name = row['factionName']
+            old_instance.description = row['description']
+            old_instance.solar_system = solar_system
+            old_instance.corporation = corporation
+            old_instance.icon_id = row['iconID'] if row['iconID'] else None
+            old_instance.size_factor = row['sizeFactor']
+            old_instance.station_count = row['stationCount']
+            old_instance.station_system_count = row['stationSystemCount']
+            return old_instance, False
+        except self.model.DoesNotExist:
+            return new_instance, True
 
 class Importer_chrBloodlines(SQLImporter):
     DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveIcons']
