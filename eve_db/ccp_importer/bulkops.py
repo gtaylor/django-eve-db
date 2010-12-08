@@ -37,15 +37,12 @@ def insert_many(objects, using="default"):
     con = connections[using]
     
     model = objects[0].__class__
-#    print objects
-#    assert False, model
     fields = [f for f in model._meta.fields if not isinstance(f, django.db.models.AutoField)]
     parameters = []
     for o in objects:
         parameters.append(tuple(f.get_db_prep_save(f.pre_save(o, True), connection=con) for f in fields))
-
     table = model._meta.db_table
-    column_names = ",".join(f.column for f in fields)
+    column_names = ",".join(con.ops.quote_name(f.column) for f in fields)
     placeholders = ",".join(("%s",) * len(fields))
     con.cursor().executemany(
         "insert into %s (%s) values (%s)" % (table, column_names, placeholders),
@@ -76,7 +73,7 @@ def update_many(objects, fields=[], using="default"):
         parameters.append(tuple(f.get_db_prep_save(f.pre_save(o, True), connection=con) for f in fields_with_pk))
 
     table = meta.db_table
-    assignments = ",".join(("%s=%%s"% f.column) for f in fields)
+    assignments = ",".join(("%s=%%s"% con.ops.quote_name(f.column)) for f in fields)
     con.cursor().executemany(
         "update %s set %s where %s=%%s" % (table, assignments, meta.pk.column),
         parameters)
