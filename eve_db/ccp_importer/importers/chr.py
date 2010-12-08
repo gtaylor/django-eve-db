@@ -41,7 +41,7 @@ class Importer_chrFactions(SQLImporter):
         solar_system = None
         if row['solarSystemID']:
             solar_system = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])[0]
-        
+
         corporation = None
         if row['corporationID']:
             corporation = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])[0]
@@ -60,7 +60,7 @@ class Importer_chrFactions(SQLImporter):
                                   station_system_count=row['stationSystemCount'])
         if self.insert_only:
             return new_instance, True
-        
+
         try:
             old_instance = self.model.objects.get(id=row['factionID'])
             old_instance.name = row['factionName']
@@ -77,48 +77,36 @@ class Importer_chrFactions(SQLImporter):
 
 class Importer_chrBloodlines(SQLImporter):
     DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveIcons']
+    model = ChrBloodline
+    pks = (('id', 'bloodlineID'),)
+    field_map = (('name', 'bloodlineName'),
+                 ('race_id', 'raceID'),
+                 ('description', 'description'),
+                 ('male_description', 'maleDescription'),
+                 ('female_description', 'femaleDescription'),
+                 ('starter_ship_type_id', 'shipTypeID'),
+                 ('starting_perception', 'perception'),
+                 ('starting_willpower', 'willpower'),
+                 ('starting_charisma', 'charisma'),
+                 ('starting_memory', 'memory'),
+                 ('starting_intelligence', 'intelligence'),
+                 ('short_description', 'shortDescription'),
+                 ('short_male_description', 'shortMaleDescription'),
+                 ('short_female_description', 'shortFemaleDescription'),
+                 ('icon_id', 'iconID'))
 
-    def import_row(self, row):
-        imp_obj, created = ChrBloodline.objects.get_or_create(id=row['bloodlineID'])
-        imp_obj.name = row['bloodlineName']
-        imp_obj.race = ChrRace.objects.get(id=row['raceID'])
-        imp_obj.description = row['description']
-        imp_obj.male_description = row['maleDescription']
-        imp_obj.female_description = row['femaleDescription']
-        starter_ship, ship_created = InvType.objects.get_or_create(id=row['shipTypeID'])
-        imp_obj.starter_ship_type = starter_ship
-        imp_obj.starting_perception = row['perception']
-        imp_obj.starting_willpower = row['willpower']
-        imp_obj.starting_charisma = row['charisma']
-        imp_obj.starting_memory = row['memory']
-        imp_obj.starting_intelligence = row['intelligence']
-        imp_obj.short_description = row['shortDescription']
-        imp_obj.short_male_description = row['shortMaleDescription']
-        imp_obj.short_female_description = row['shortFemaleDescription']
-
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
-
-        imp_obj.save()
 
 class Importer_chrAncestries(SQLImporter):
     DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveIcons']
-
-    def import_row(self, row):
-        imp_obj, created = ChrAncestry.objects.get_or_create(id=row['ancestryID'])
-        imp_obj.name = row['ancestryName']
-        imp_obj.bloodline = ChrBloodline.objects.get(id=row['bloodlineID'])
-        imp_obj.description = row['description']
-        imp_obj.perception_bonus = row['perception']
-        imp_obj.willpower_bonus = row['willpower']
-        imp_obj.charisma_bonus = row['charisma']
-        imp_obj.memory_bonus = row['memory']
-        imp_obj.intelligence_bonus = row['intelligence']
-        imp_obj.short_description = row['shortDescription']
-
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
-
-        imp_obj.save()
+    model = ChrAncestry
+    pks = (('id', 'ancestryID'),)
+    field_map = (('name', 'ancestryName'),
+                 ('bloodline_id', 'bloodlineID'),
+                 ('description', 'description'),
+                 ('perception_bonus', 'perception'),
+                 ('willpower_bonus', 'willpower'),
+                 ('charisma_bonus', 'charisma'),
+                 ('memory_bonus', 'memory'),
+                 ('intelligence_bonus', 'intelligence'),
+                 ('short_description', 'shortDescription'),
+                 ('icon_id', 'iconID'))

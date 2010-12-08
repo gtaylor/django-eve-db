@@ -175,3 +175,11 @@ def parse_int_bool(int_bool):
     if int_bool == 1:
         return True
     return False
+
+def parse_char_notnull(value):
+    '''
+    Takes a nullable char and converts it to empty char if null
+    '''
+    if value is not None:
+        return value
+    return ''
