@@ -1,11 +1,13 @@
 """
 Import map data.
 """
-from eve_db.models import *
+from eve_db.models import map as map_models
 from importer_classes import SQLImporter, parse_int_bool, parse_char_notnull
 
+
+
 class Importer_mapUniverse(SQLImporter):
-    model = MapUniverse
+    model = map_models.MapUniverse
     pks = (('id', 'universeID'),)
     field_map = (('name', 'universeName'),
                  ('x', 'x'),
@@ -22,7 +24,7 @@ class Importer_mapUniverse(SQLImporter):
 
 class Importer_mapRegions(SQLImporter):
     DEPENDENCIES = ['chrFactions']
-    model = MapRegion
+    model = map_models.MapRegion
     pks = (('id', 'regionID'),)
     field_map = (('name', 'regionName'),
                  ('x', 'x'),
@@ -41,13 +43,13 @@ class Importer_mapRegions(SQLImporter):
 
 class Importer_mapRegionJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions']
-    model = MapRegionJump
+    model = map_models.MapRegionJump
     pks = (('from_region', 'fromRegionID'), ('to_region', 'toRegionID'))
 
 
 class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
-    model = MapConstellation
+    model = map_models.MapConstellation
     pks = (('id', 'constellationID'),)
     field_map = (('name', 'constellationName'),
                  ('x', 'x'),
@@ -66,7 +68,7 @@ class Importer_mapConstellations(SQLImporter):
 
 class Importer_mapConstellationJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations']
-    model = MapConstellationJump
+    model = map_models.MapConstellationJump
     pks = (('from_constellation', 'fromConstellationID'),
            ('to_constellation', 'toConstellationID'))
     field_map = (('from_region_id', 'fromRegionID'),
@@ -76,7 +78,7 @@ class Importer_mapConstellationJumps(SQLImporter):
 class Importer_mapSolarSystems(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions', 'mapConstellations',
                     'invTypes']
-    model = MapSolarSystem
+    model = map_models.MapSolarSystem
     pks = (('id', 'solarSystemID'),)
     field_map = (('name', 'solarSystemName'),
                  ('x', 'x'),
@@ -107,7 +109,7 @@ class Importer_mapSolarSystems(SQLImporter):
 
 class Importer_mapSolarSystemJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations', 'mapSolarSystems']
-    model = MapSolarSystemJump
+    model = map_models.MapSolarSystemJump
     pks = (('from_solar_system', 'fromSolarSystemID'),
            ('to_solar_system', 'toSolarSystemID'))
     field_map = (('from_region_id', 'fromRegionID'),
@@ -118,22 +120,15 @@ class Importer_mapSolarSystemJumps(SQLImporter):
 
 class Importer_mapJumps(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
+    model = map_models.MapJump
+    pks = (('origin_gate', 'stargateID'),)
+    field_map = (('destination_gate_id', 'celestialID'),)
 
-    def import_row(self, row):
-        origin_gate = MapDenormalize.objects.get(id=row['stargateID'])
-        destination_gate = MapDenormalize.objects.get(id=row['celestialID'])
-        imp_obj, created = MapJump.objects.get_or_create(origin_gate=origin_gate,
-                                                                 destination_gate=destination_gate)
-
-    def import_new_row(self, row):
-        imp_obj = MapJump(origin_gate_id=row['stargateID'],
-                          destination_gate_id=row['celestialID'])
-        imp_obj.save()
 
 class Importer_mapDenormalize(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invGroups', 'mapSolarSystems',
                     'mapConstellations', 'mapRegions']
-    model = MapDenormalize
+    model = map_models.MapDenormalize
     pks = (('id', 'itemID'),)
     field_map = (('orbit_id', 'orbitID'),
                  ('x', 'x'),
@@ -153,53 +148,38 @@ class Importer_mapDenormalize(SQLImporter):
 
 class Importer_mapLandmarks(SQLImporter):
     DEPENDENCIES = ['mapSolarSystems', 'eveIcons']
+    model = map_models.MapLandmark
+    pks = (('id', 'landmarkID'),)
+    field_map = (('name', 'landmarkName'),
+                 ('x', 'x'),
+                 ('y', 'y'),
+                 ('z', 'z'),
+                 ('radius', 'radius'),
+                 ('importance', 'importance'),
+                 ('solar_system_id', 'locationID'),
+                 ('icon_id', 'iconID'))
 
-    def import_row(self, row):
-        imp_obj, created = MapLandmark.objects.get_or_create(id=row['landmarkID'])
-        imp_obj.name = row['landmarkName']
-        imp_obj.description = row['description']
-        imp_obj.x = row['x']
-        imp_obj.y = row['y']
-        imp_obj.z = row['z']
-        imp_obj.radius = row['radius']
-        imp_obj.importance = row['importance']
-
-        if row['locationID']:
-            imp_obj.solar_system = MapSolarSystem.objects.get(id=row['locationID'])
-
-        if row['iconID']:
-            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
-
-        imp_obj.save()
 
 class Importer_mapCelestialStatistics(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
-
-    def import_row(self, row):
-        imp_obj = MapCelestialStatistic()
-        imp_obj.celestial_id = row['celestialID']
-        imp_obj.temperature = row['temperature']
-        imp_obj.spectral_class = row['spectralClass']
-        imp_obj.luminosity = row['luminosity']
-        imp_obj.age = row['age']
-        imp_obj.life = row['life']
-        imp_obj.orbit_radius = row['orbitRadius']
-        imp_obj.eccentricity = row['eccentricity']
-        imp_obj.mass_dust = row['massDust']
-        imp_obj.mass_gas = row['massGas']
-        imp_obj.density = row['density']
-        imp_obj.surface_gravity = row['surfaceGravity']
-        imp_obj.escape_velocity = row['escapeVelocity']
-        imp_obj.orbit_period = row['orbitPeriod']
-        imp_obj.rotation_rate = row['rotationRate']
-        imp_obj.pressure = row['pressure']
-        imp_obj.radius = row['radius']
-        imp_obj.mass = row['mass']
-
-        if row['locked'] == 1:
-            imp_obj.is_locked = True
-
-        if row['fragmented'] == 1:
-            imp_obj.is_fragmented = True
-
-        imp_obj.save()
+    model = map_models.MapCelestialStatistic
+    pks = (('celestial', 'celestialID'),)
+    field_map = (('temperature', 'temperature'),
+                 ('spectral_class', 'spectralClass'),
+                 ('luminosity', 'luminosity'),
+                 ('age', 'age'),
+                 ('life', 'life'),
+                 ('orbit_radius', 'orbitRadius'),
+                 ('eccentricity', 'eccentricity'),
+                 ('mass_dust', 'massDust'),
+                 ('mass_gas', 'massGas'),
+                 ('density', 'density'),
+                 ('surface_gravity', 'surfaceGravity'),
+                 ('escape_velocity', 'escapeVelocity'),
+                 ('orbit_period', 'orbitPeriod'),
+                 ('rotation_rate', 'rotationRate'),
+                 ('pressure', 'pressure'),
+                 ('radius', 'radius'),
+                 ('mass', 'mass'),
+                 ('is_locked', 'locked', parse_int_bool),
+                 ('is_fragmented', 'fragmented', parse_int_bool))

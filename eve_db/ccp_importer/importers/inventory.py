@@ -230,27 +230,17 @@ class Importer_invControlTowerResources(SQLImporter):
 
 class Importer_invTypeReactions(SQLImporter):
     DEPENDENCIES = ['invTypes']
+    model = InvTypeReaction
+    pks = (('reaction_type', 'reactionTypeID'), ('type', 'typeID'),
+           ('input', 'input', False))
+    field_map = (('quantity', 'quantity'),)
 
-    def import_row(self, row):
-        reaction_type = InvType.objects.get(id=row['reactionTypeID'])
-        type = InvType.objects.get(id=row['typeID'])
-        imp_obj, created = InvTypeReaction.objects.get_or_create(reaction_type=reaction_type,
-                                                                           type=type)
-        imp_obj.input = row['input']
-        imp_obj.quantity = row['quantity']
-        imp_obj.save()
 
 class Importer_invContrabandTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'chrFactions']
-
-    def import_row(self, row):
-        faction = ChrFaction.objects.get(id=row['factionID'])
-        type = InvType.objects.get(id=row['typeID'])
-        imp_obj, created = InvContrabandType.objects.get_or_create(faction=faction,
-                                                                type=type)
-        imp_obj.standing_loss = row['standingLoss']
-        imp_obj.confiscate_min_sec = row['confiscateMinSec']
-        imp_obj.fine_by_value = row['fineByValue']
-        imp_obj.attack_min_sec = row['attackMinSec']
-
-        imp_obj.save()
+    model = InvContrabandType
+    pks = (('faction', 'factionID'), ('type', 'typeID'))
+    field_map = (('standing_loss', 'standingLoss'),
+                 ('confiscate_min_sec', 'confiscateMinSec'),
+                 ('fine_by_value', 'fineByValue'),
+                 ('attack_min_sec', 'attackMinSec'))
