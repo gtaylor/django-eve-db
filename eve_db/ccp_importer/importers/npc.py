@@ -5,11 +5,11 @@ from eve_db.models import *
 from importer_classes import SQLImporter
 
 class Importer_crpActivities(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = CrpActivity.objects.get_or_create(id=row['activityID'])
-        imp_obj.name = row['activityName']
-        imp_obj.description = row['description']
-        imp_obj.save()
+    model = CrpActivity
+    pks = (('id', 'activityID'),)
+    field_map = (('name', 'activityName'),
+                 ('description', 'description')) 
+    
 
 class Importer_crpNPCCorporationDivisions(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'crpNPCCorporations']
@@ -42,10 +42,10 @@ class Importer_crpNPCCorporationResearchFields(SQLImporter):
         imp_obj.save()
 
 class Importer_agtAgentTypes(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = AgtAgentType.objects.get_or_create(id=row['agentTypeID'])
-        imp_obj.name = name = row['agentType']
-        imp_obj.save()
+    model = AgtAgentType
+    pks = (('id', 'agentTypeID'),)
+    field_map = (('name', 'agentType'),) 
+    
 
 class Importer_crpNPCCorporations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'eveIcons', 'eveNames', 'mapSolarSystems']
@@ -110,12 +110,12 @@ class Importer_crpNPCCorporations(SQLImporter):
         imp_obj.save()
 
 class Importer_crpNPCDivisions(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = CrpNPCDivision.objects.get_or_create(id=row['divisionID'])
-        imp_obj.name = row['divisionName']
-        imp_obj.description = row['description']
-        imp_obj.leader_type = row['leaderType']
-        imp_obj.save()
+    model = CrpNPCDivision
+    pks = (('id', 'divisionID'),)
+    field_map = (('name', 'divisionName'),
+                 ('description', 'description'),
+                 ('leader_type', 'leaderType'))
+    
 
 class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',

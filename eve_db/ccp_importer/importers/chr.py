@@ -7,18 +7,13 @@ from importer_classes import SQLImporter
 
 class Importer_chrRaces(SQLImporter):
     DEPENDENCIES = ['eveIcons']
+    model = ChrRace
+    pks = (('id', 'raceID'),)
+    field_map = (('name', 'raceName'),
+                 ('icon_id', 'iconID'),
+                 ('description', 'description'),
+                 ('short_description', 'shortDescription'))
 
-    def import_row(self, row):
-        imp_obj, created = ChrRace.objects.get_or_create(id=row['raceID'])
-        imp_obj.name = row['raceName']
-        imp_obj.short_description = row['shortDescription']
-        imp_obj.description = row['description']
-
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
-
-        imp_obj.save()
 
 class Importer_chrAttributes(SQLImporter):
     DEPENDENCIES = ['eveIcons']

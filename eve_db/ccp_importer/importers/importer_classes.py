@@ -15,8 +15,8 @@ class SQLImporter(object):
     DEPENDENCIES = []
     model = None
     # A mapping of model primary keys to CCP dump primary keys
-    # Django does not support multi-column PKs but you still need to
-    # specify each field that maps to multi-column PKs! 
+    # For multi-column PKs this is not actually the true Django PK but the 
+    # fields (presumably unique_together) that map to the CCP multi-column PKs! 
     pks = ()
     # A mapping of model fields to CCP dump columns. Without previously
     # specified PK fields!
@@ -41,9 +41,6 @@ class SQLImporter(object):
         # Right now, the importer name matches the table name.
         self._setup_progressbar()
         self.insert_only = self.model.objects.all().count() == 0
-        prepare_func = self.import_row
-        if self.insert_only:
-            prepare_func = self.import_new_row
         
         transaction.commit()
         
@@ -56,21 +53,23 @@ class SQLImporter(object):
         query_string = 'SELECT * FROM %s' % self.table_name
         
         try:
-            for new_obj, insert in (prepare_func(row) for row in self.cursor.execute(query_string)):
-                # Import the row as per the sub-classes import_row().
-                if insert:
-                    inserts_bucket.append(new_obj)
-                    inserts_counter += 1
-                    if inserts_counter % batch_size == 0:
-                        insert_many(inserts_bucket)
-                        inserts_bucket = []
-                else:
-                    updates_bucket.append(new_obj)
-                    updates_counter += 1
-                    if updates_counter % batch_size == 0:
-                        update_many(updates_bucket)
-                        updates_bucket = []
-                
+            for new_obj, insert in (self.import_row(row) for row in self.cursor.execute(query_string)):
+                # Now we have either a new model instance, an existing model
+                # instance with updated fields or None == skip
+                if new_obj:
+                    if insert:
+                        inserts_bucket.append(new_obj)
+                        inserts_counter += 1
+                        if inserts_counter % batch_size == 0:
+                            insert_many(inserts_bucket)
+                            inserts_bucket = []
+                    else:
+                        updates_bucket.append(new_obj)
+                        updates_counter += 1
+                        if updates_counter % batch_size == 0:
+                            update_many(updates_bucket)
+                            updates_bucket = []
+                    
                 if self.itercount % self.progress_update_interval == 0:
                     self._progress_handler()
     
@@ -92,43 +91,48 @@ class SQLImporter(object):
         # Clean up the cursor, free the memory.
         self.cursor.close()
 
-#    def import_row(self, row):
-#        """
-#        This needs to be over-ridden on all sub-classes!
-#        """
-#        raise NotImplementedError
-    
     def import_row(self, row):
-        row_params = self._get_row_param_dict(row, self.field_map)
-        pk_params = self._get_row_param_dict(row, self.pks)
-        row_params.update(pk_params)
-        new_instance = self.model(**row_params)
+        row_params = self._get_fields_param_dict(row)
+        pk_params_get = self._get_pk_param_dict(row)
+        pk_params_insert = self._get_pk_param_dict(row, suffix='_id')
         if self.insert_only:
-            return new_instance, True
+            # When creating a new instance we want both PK params and row params
+            return self.model(**dict(pk_params_insert, **row_params)), True
         
         try:
-            old_instance = self.model.objects.get(**pk_params)
+            old_instance = self.model.objects.get(**pk_params_get)
+        except self.model.DoesNotExist:
+            return self.model(**dict(pk_params_insert, **row_params)), True
+        else:
+            # If we don't have any fields that need to be updated,
+            # we should just skip an update.
+            if row_params == {}:
+                return None, None
+            # Update fields and return the instance for updating
             for field_name, value in row_params.items():
                 setattr(old_instance, field_name, value)
             return old_instance, False
-        except self.model.DoesNotExist:
-            return new_instance, True
         
-    def _get_row_param_dict(self, row, field_list):
+    def _get_fields_param_dict(self, row):
         param_dict = {}
-        for model_field, import_field in field_list:
-            param_dict[model_field] = row[import_field]
+        for field_info in self.field_map:
+            if len(field_info) == 3:
+                model_field, import_field, convert_func = field_info
+                param_dict[model_field] = convert_func(row[import_field])
+            else:
+                model_field, import_field = field_info
+                param_dict[model_field] = row[import_field]
         return param_dict
-            
     
-    def import_new_row(self, row):
-        '''
-        Inserts a row from CCP dump. We do not query for existing record.
-        This is not really needed on *every* importer so if it's not defined on 
-        subclasses we'll just call import_row 
-        '''
-        return self.import_row(row)
-
+    def _get_pk_param_dict(self, row, suffix=''):
+        pk_param_dict = {}
+        for model_field, import_field in self.pks:
+            if model_field == self.model._meta.pk.column:
+                pk_param_dict[model_field] = row[import_field]
+            else:
+                pk_param_dict["%s%s" % (model_field, suffix)] = row[import_field]
+        return pk_param_dict
+    
     def _setup_progressbar(self):
         """
         Instantiates and configures the ProgressBar for the importer.
@@ -156,18 +160,18 @@ class SQLImporter(object):
         """
         self.pbar.update(self.itercount)
 
-    def parse_int_bool(self, int_bool):
-        """
-        Takes an int and converts it to a bool in the basis of 1=True, 0=False.
-        """
-        if int_bool == 1:
-            return True
-        else:
-            return False
-
     def get_importer_name(self):
         """
         Returns the name of the importer. Currently, this is just the
         table name.
         """
         return self.__class__.__name__.split('_')[1]
+
+
+def parse_int_bool(int_bool):
+    """
+    Takes an int and converts it to a bool in the basis of 1=True, 0=False.
+    """
+    if int_bool == 1:
+        return True
+    return False

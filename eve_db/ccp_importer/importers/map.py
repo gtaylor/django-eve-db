@@ -5,90 +5,73 @@ from eve_db.models import *
 from importer_classes import SQLImporter
 
 class Importer_mapUniverse(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = MapUniverse.objects.get_or_create(id=row['universeID'])
-        if row['universeName']:
-            imp_obj.name = row['universeName']
-        imp_obj.x = row['x']
-        imp_obj.x_min = row['xMin']
-        imp_obj.x_max = row['xMax']
-        imp_obj.y = row['y']
-        imp_obj.y_min = row['yMin']
-        imp_obj.y_max = row['yMax']
-        imp_obj.z = row['z']
-        imp_obj.z_min = row['zMin']
-        imp_obj.z_max = row['zMax']
-        imp_obj.radius = row['radius']
-        imp_obj.save()
+    model = MapUniverse
+    pks = (('id', 'universeID'),)
+    field_map = (('name', 'universeName'),
+                 ('x', 'x'),
+                 ('x_min', 'xMin'),
+                 ('x_max', 'xMax'),
+                 ('y', 'y'),
+                 ('y_min', 'yMin'),
+                 ('y_max', 'yMax'),
+                 ('z', 'z'),
+                 ('z_min', 'zMin'),
+                 ('z_max', 'zMax'),
+                 ('radius', 'radius'))
+
 
 class Importer_mapRegions(SQLImporter):
     DEPENDENCIES = ['chrFactions']
+    model = MapRegion
+    pks = (('id', 'regionID'),)
+    field_map = (('name', 'regionName'),
+                 ('x', 'x'),
+                 ('x_min', 'xMin'),
+                 ('x_max', 'xMax'),
+                 ('y', 'y'),
+                 ('y_min', 'yMin'),
+                 ('y_max', 'yMax'),
+                 ('z', 'z'),
+                 ('z_min', 'zMin'),
+                 ('z_max', 'zMax'),
+                 ('faction_id', 'factionID'),
+                 ('radius', 'radius'))
 
-    def import_row(self, row):
-        imp_obj = MapRegion(id=row['regionID'])
-        imp_obj.name = row['regionName']
-        imp_obj.x = row['x']
-        imp_obj.x_min = row['xMin']
-        imp_obj.x_max = row['xMax']
-        imp_obj.y = row['y']
-        imp_obj.y_min = row['yMin']
-        imp_obj.y_max = row['yMax']
-        imp_obj.z = row['z']
-        imp_obj.z_min = row['zMin']
-        imp_obj.z_max = row['zMax']
 
-        if row['factionID']:
-            imp_obj.faction_id = row['factionID']
-
-        imp_obj.radius = row['radius']
-        imp_obj.save()
 
 class Importer_mapRegionJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions']
+    model = MapRegionJump
+    pks = (('from_region', 'fromRegionID'), ('to_region', 'toRegionID'))
 
-    def import_row(self, row):
-        from_region = MapRegion(id=row['fromRegionID'])
-        to_region = MapRegion(id=row['toRegionID'])
-        imp_obj, created = MapRegionJump.objects.get_or_create(from_region=from_region,
-                                                               to_region=to_region)
 
 class Importer_mapConstellations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions']
+    model = MapConstellation
+    pks = (('id', 'constellationID'),)
+    field_map = (('name', 'constellationName'),
+                 ('x', 'x'),
+                 ('x_min', 'xMin'),
+                 ('x_max', 'xMax'),
+                 ('y', 'y'),
+                 ('y_min', 'yMin'),
+                 ('y_max', 'yMax'),
+                 ('z', 'z'),
+                 ('z_min', 'zMin'),
+                 ('z_max', 'zMax'),
+                 ('region_id', 'regionID'),
+                 ('faction_id', 'factionID'),
+                 ('radius', 'radius'))
 
-    def import_row(self, row):
-        imp_obj = MapConstellation(id=row['constellationID'])
-        imp_obj.name = row['constellationName']
-        imp_obj.x = row['x']
-        imp_obj.x_min = row['xMin']
-        imp_obj.x_max = row['xMax']
-        imp_obj.y = row['y']
-        imp_obj.y_min = row['yMin']
-        imp_obj.y_max = row['yMax']
-        imp_obj.z = row['z']
-        imp_obj.z_min = row['zMin']
-        imp_obj.z_max = row['zMax']
-        imp_obj.radius = row['radius']
-
-        if row['regionID']:
-            imp_obj.region_id = row['regionID']
-
-        if row['factionID']:
-            imp_obj.faction_id = row['factionID']
-
-        imp_obj.save()
 
 class Importer_mapConstellationJumps(SQLImporter):
     DEPENDENCIES = ['mapRegions', 'mapConstellations']
+    model = MapConstellationJump
+    pks = (('from_constellation', 'fromConstellationID'),
+           ('to_constellation', 'toConstellationID'))
+    field_map = (('from_region_id', 'fromRegionID'),
+                 ('to_region_id', 'toRegionID'))
 
-    def import_row(self, row):
-        from_constellation = MapConstellation(id=row['fromConstellationID'])
-        from_region = MapRegion(id=row['fromRegionID'])
-        to_constellation = MapConstellation(id=row['toConstellationID'])
-        to_region = MapRegion(id=row['toRegionID'])
-        imp_obj, created = MapConstellationJump.objects.get_or_create(from_constellation=from_constellation,
-                                                               from_region=from_region,
-                                                               to_constellation=to_constellation,
-                                                               to_region=to_region)
 
 class Importer_mapSolarSystems(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'mapRegions', 'mapConstellations',
@@ -164,7 +147,7 @@ class Importer_mapSolarSystemJumps(SQLImporter):
                                                                     to_region=to_region,
                                                                     from_solar_system=from_solar_system,
                                                                     to_solar_system=to_solar_system)
-        
+
     def import_new_row(self, row):
         imp_obj = MapSolarSystemJump(from_constellation_id=row['fromConstellationID'],
                                     from_region_id=row['fromRegionID'],
@@ -182,7 +165,7 @@ class Importer_mapJumps(SQLImporter):
         destination_gate = MapDenormalize.objects.get(id=row['celestialID'])
         imp_obj, created = MapJump.objects.get_or_create(origin_gate=origin_gate,
                                                                  destination_gate=destination_gate)
-        
+
     def import_new_row(self, row):
         imp_obj = MapJump(origin_gate_id=row['stargateID'],
                           destination_gate_id=row['celestialID'])
@@ -218,7 +201,7 @@ class Importer_mapDenormalize(SQLImporter):
 
         if row['regionID']:
             mapdenorm.region_id = row['regionID']
-            
+
         return mapdenorm
 
 class Importer_mapLandmarks(SQLImporter):

@@ -11,7 +11,7 @@ class RamActivity(models.Model):
     name = models.CharField(max_length=75, blank=True)
     description = models.CharField(max_length=100, blank=True)
     # Name of the file, should be two numbers separated by underscore, no extension.
-    icon_filename = models.CharField(max_length=50, blank=True)
+    icon_filename = models.CharField(max_length=50, blank=True, null=True)
     is_published = models.BooleanField(default=True)
 
     class Meta:

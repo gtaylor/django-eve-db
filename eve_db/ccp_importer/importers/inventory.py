@@ -2,130 +2,85 @@
 Import inventory data.
 """
 from eve_db.models import *
-from importer_classes import SQLImporter
+from importer_classes import SQLImporter, parse_int_bool
+
+
 
 class Importer_invCategories(SQLImporter):
     DEPENDENCIES = ['eveIcons']
+    model = InvCategory
+    pks = (('id', 'categoryID'),)
+    field_map = (('name', 'categoryName'),
+                 ('icon_id', 'iconID'),
+                 ('description', 'description'),
+                 ('is_published', 'published', parse_int_bool))
 
-    def import_row(self, row):
-        category, created = InvCategory.objects.get_or_create(id=row['categoryID'])
-        category.name = row['categoryName']
-        category.description = row['description']
-
-        icon_id = row['iconID']
-        if icon_id:
-            category.icon_id = EveIcon.objects.get(id=icon_id)
-
-        # Handle boolean.
-        if row['published'] != 1:
-            category.is_published = False
-
-        category.save()
 
 class Importer_invGroups(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'invCategories']
+    model = InvGroup
+    pks = (('id', 'groupID'),)
+    field_map = (('name', 'groupName'),
+                 ('category_id', 'categoryID'),
+                 ('description', 'description'),
+                 ('icon_id', 'iconID'),
+                 ('use_base_price', 'useBasePrice', parse_int_bool),
+                 ('allow_manufacture', 'allowManufacture', parse_int_bool),
+                 ('allow_recycle', 'allowRecycler', parse_int_bool),
+                 ('allow_anchoring', 'anchorable', parse_int_bool),
+                 ('is_anchored', 'anchored', parse_int_bool),
+                 ('is_fittable_non_singleton', 'fittableNonSingleton', parse_int_bool),
+                 ('is_published', 'published', parse_int_bool))
 
-    def import_row(self, row):
-        group = InvGroup(id=row['groupID'])
-        group.category_id = row['categoryID']
-        group.name = row['groupName']
-        group.description = row['description']
-
-        if row['iconID']:
-            group.icon_id = row['iconID']
-
-        # Handle boolean.
-        group.use_base_price = self.parse_int_bool(row['useBasePrice'])
-        group.allow_manufacture = self.parse_int_bool(row['allowManufacture'])
-        group.allow_recycle = self.parse_int_bool(row['allowRecycler'])
-        group.allow_anchoring = self.parse_int_bool(row['anchorable'])
-        group.is_anchored = self.parse_int_bool(row['anchored'])
-        group.is_fittable_non_singleton = self.parse_int_bool(row['fittableNonSingleton'])
-        group.is_published = self.parse_int_bool(row['published'])
-
-        group.save()
 
 class Importer_invMetaGroups(SQLImporter):
     DEPENDENCIES = ['eveIcons']
+    model = InvMetaGroup
+    pks = (('id', 'metaGroupID'),)
+    field_map = (('name', 'metaGroupName'),
+                 ('icon_id', 'iconID'),
+                 ('description', 'description'))
 
-    def import_row(self, row):
-        imp_obj, created = InvMetaGroup.objects.get_or_create(id=row['metaGroupID'])
-        imp_obj.name = row['metaGroupName']
-        imp_obj.description = row['description']
-
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
-
-        imp_obj.save()
 
 class Importer_invMarketGroups(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'invMarketGroups']
+    model = InvMarketGroup
+    pks = (('id', 'marketGroupID'),)
+    field_map = (('name', 'marketGroupName'),
+                 ('icon_id', 'iconID'),
+                 ('description', 'description'),
+                 ('parent_id', 'parentGroupID'),
+                 ('has_items', 'hasTypes', parse_int_bool))
 
-    def import_row(self, row):
-        group = InvMarketGroup(id=row['marketGroupID'])
-        group.name = row['marketGroupName']
-        group.description = row['description']
-
-        if row['iconID']:
-            group.icon_id = row['iconID']
-
-        if row['parentGroupID']:
-            group.parent_id = row['parentGroupID']
-
-        group.has_items = self.parse_int_bool(row['hasTypes'])
-        group.save()
 
 class Importer_invTypes(SQLImporter):
     DEPENDENCIES = ['eveGraphics', 'eveIcons', 'invMarketGroups', 'chrRaces',
                     'invGroups']
+    model = InvType
+    pks = (('id', 'typeID'),)
+    field_map = (('name', 'typeName'),
+                 ('description', 'description'),
+                 ('group_id', 'groupID'),
+                 ('radius', 'radius'),
+                 ('mass', 'mass'),
+                 ('volume', 'volume'),
+                 ('capacity', 'capacity'),
+                 ('portion_size', 'portionSize'),
+                 ('base_price', 'basePrice'),
+                 ('market_group_id', 'marketGroupID'),
+                 ('is_published', 'published', parse_int_bool),
+                 ('race_id', 'raceID'),
+                 ('graphic_id', 'graphicID'),
+                 ('icon_id', 'iconID'),
+                 ('chance_of_duplicating', 'chanceOfDuplicating'))
 
-    def import_row(self, row):
-        invtype = InvType(id=row['typeID'])
-        invtype.name = row['typeName']
-        invtype.description = row['description']
-        invtype.group_id = row['groupID']
-        invtype.radius = row['radius']
-        invtype.mass = row['mass']
-        invtype.volume = row['volume']
-        invtype.capacity = row['capacity']
-        invtype.portion_size = row['portionSize']
-        invtype.base_price = row['basePrice']
-
-        if row['marketGroupID']:
-            invtype.market_group_id = row['marketGroupID']
-
-        if row['published'] == 1:
-            invtype.is_published = True
-
-        if row['raceID']:
-            invtype.race_id = row['raceID']
-
-        if row['graphicID']:
-            invtype.graphic_id = row['graphicID']
-
-        if row['iconID']:
-            invtype.icon_id = row['iconID']
-
-        invtype.chance_of_duplicating = row['chanceOfDuplicating']
-        invtype.save()
 
 class Importer_invTypeMaterials(SQLImporter):
     DEPENDENCIES = ['invTypes']
+    model = InvTypeMaterial
+    pks = (('type', 'typeID'), ('material_type', 'materialTypeID'))
+    field_map = (('quantity', 'quantity'),)
 
-    def import_row(self, row):
-        item_type = InvType(id=row['typeID'])
-        material_type = InvType(id=row['materialTypeID'])
-        invmat, created = InvTypeMaterial.objects.get_or_create(type=item_type,
-                                                                material_type=material_type)
-        invmat.quantity = row['quantity']
-        invmat.save()
-        
-    def import_new_row(self, row):
-        invmat = InvTypeMaterial(type_id=row['typeID'],
-                                 material_type_id=row['materialTypeID'],
-                                 quantity=row['quantity'])
-        invmat.save()
 
 class Importer_invMetaTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invMetaGroups']
@@ -229,14 +184,12 @@ class Importer_dgmTypeEffects(SQLImporter):
 
 class Importer_invFlags(SQLImporter):
     DEPENDENCIES = ['invFlags']
+    model = InvFlag
+    pks = (('id', 'flagID'),)
+    field_map = (('name', 'flagName'),
+                 ('text', 'flagText'),
+                 ('order', 'orderID'))
 
-    def import_row(self, row):
-        imp_obj, created = InvFlag.objects.get_or_create(id=row['flagID'])
-        imp_obj.name = row['flagName']
-        imp_obj.text = row['flagText']
-        imp_obj.type_text = row['flagType']
-        imp_obj.order = row['orderID']
-        imp_obj.save()
 
 class Importer_invBlueprintTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
@@ -260,26 +213,20 @@ class Importer_invBlueprintTypes(SQLImporter):
 
 class Importer_invControlTowerResourcePurposes(SQLImporter):
     DEPENDENCIES = ['invControlTowerResourcePurposes']
+    model = InvPOSResourcePurpose
+    pks = (('id', 'purpose'),)
+    field_map = (('purpose', 'purposeText'),)
 
-    def import_row(self, row):
-        imp_obj, created = InvPOSResourcePurpose.objects.get_or_create(id=row['purpose'])
-        imp_obj.purpose = row['purposeText']
-        imp_obj.save()
 
 class Importer_invControlTowerResources(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invControlTowerResourcePurposes']
+    model = InvPOSResource
+    pks = (('control_tower_type', 'controlTowerTypeID'),
+           ('resource_type', 'resourceTypeID'))
+    field_map = (('purpose_id', 'purpose'),
+                 ('quantity', 'quantity'),
+                 ('min_security_level', 'minSecurityLevel'))
 
-    def import_row(self, row):
-        control_tower_type = InvType(id=row['controlTowerTypeID'])
-        resource_type = InvType(id=row['resourceTypeID'])
-        imp_obj, created = InvPOSResource.objects.get_or_create(control_tower_type=control_tower_type,
-                                                                resource_type=resource_type)
-        imp_obj.control_tower_type = control_tower_type
-        imp_obj.resource_type = resource_type
-        imp_obj.purpose_id = row['purpose']
-        imp_obj.quantity = row['quantity']
-        imp_obj.min_security_level = row['minSecurityLevel']
-        imp_obj.save()
 
 class Importer_invTypeReactions(SQLImporter):
     DEPENDENCIES = ['invTypes']

@@ -2,37 +2,31 @@
 Import station related data.
 """
 from eve_db.models import *
-from importer_classes import SQLImporter
+from importer_classes import SQLImporter, parse_int_bool
+
+
 
 class Importer_ramActivities(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = RamActivity.objects.get_or_create(id=row['activityID'])
-        imp_obj.name = row['activityName']
-        imp_obj.description = row['description']
+    model = RamActivity
+    pks = (('id', 'activityID'),)
+    field_map = (('name', 'activityName'),
+                 ('icon_filename', 'iconNo'),
+                 ('description', 'description'),
+                 ('is_published', 'published', parse_int_bool))
 
-        if row['iconNo']:
-            imp_obj.icon_filename = row['iconNo']
-
-        if row['published'] == 1:
-            imp_obj.is_published = True
-        else:
-            imp_obj.is_published = False
-
-        imp_obj.save()
 
 class Importer_ramAssemblyLineTypes(SQLImporter):
     DEPENDENCIES = ['ramActivities']
+    model = RamAssemblyLineType
+    pks = (('id', 'assemblyLineTypeID'),)
+    field_map = (('name', 'assemblyLineTypeName'),
+                 ('base_time_multiplier', 'baseTimeMultiplier'),
+                 ('description', 'description'),
+                 ('base_material_multiplier', 'baseMaterialMultiplier'),
+                 ('volume', 'volume'),
+                 ('activity_id', 'activityID'),
+                 ('min_cost_per_hour', 'minCostPerHour'))
 
-    def import_row(self, row):
-        imp_obj, created = RamAssemblyLineType.objects.get_or_create(id=row['assemblyLineTypeID'])
-        imp_obj.name = row['assemblyLineTypeName']
-        imp_obj.description = row['description']
-        imp_obj.base_time_multiplier = row['baseTimeMultiplier']
-        imp_obj.base_material_multiplier = row['baseMaterialMultiplier']
-        imp_obj.volume = row['volume']
-        imp_obj.activity = RamActivity.objects.get(id=row['activityID'])
-        imp_obj.min_cost_per_hour = row['minCostPerHour']
-        imp_obj.save()
 
 class Importer_staOperationServices(SQLImporter):
     DEPENDENCIES = ['staOperations', 'staServices']
@@ -96,11 +90,11 @@ class Importer_ramAssemblyLineTypeDetailPerGroup(SQLImporter):
         imp_obj.save()
 
 class Importer_staServices(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = StaService.objects.get_or_create(id=row['serviceID'])
-        imp_obj.name = row['serviceName']
-        imp_obj.description = row['description']
-        imp_obj.save()
+    model = StaService
+    pks = (('id', 'serviceID'),)
+    field_map = (('name', 'serviceName'),
+                 ('description', 'description'))
+
 
 class Importer_staStationTypes(SQLImporter):
     DEPENDENCIES = ['eveGraphics', 'staOperations', 'invTypes']
