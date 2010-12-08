@@ -22,7 +22,7 @@ class ChrAttributeAdmin(admin.ModelAdmin):
 admin.site.register(ChrAttribute, ChrAttributeAdmin)
 
 class InvMetaGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'graphic')
+    list_display = ('id', 'name', 'description', 'icon')
 admin.site.register(InvMetaGroup, InvMetaGroupAdmin)
 
 class InvMetaTypeAdmin(admin.ModelAdmin):
@@ -161,7 +161,7 @@ class DgmTypeAttributeAdmin(admin.ModelAdmin):
 admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
 
 class EveGraphicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'name', 'icon_filename')
+    list_display = ('id', 'description', 'name', 'file', 'is_obsolete')
 admin.site.register(EveGraphic, EveGraphicAdmin)
 
 class EveNameAdmin(admin.ModelAdmin):
@@ -207,10 +207,10 @@ class StaServiceAdmin(admin.ModelAdmin):
 admin.site.register(StaService, StaServiceAdmin)
 
 class StaStationTypeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'docking_bay_graphic', 'hangar_graphic',
-                    'dock_entry_x', 'dock_orientation_x', 'dock_entry_y',
+    list_display = ('id', 'dock_entry_x', 'dock_orientation_x', 'dock_entry_y',
                     'dock_orientation_y', 'dock_entry_z', 'dock_orientation_z',
-                    'operation', 'office_slots', 'reprocessing_efficiency', 'is_conquerable')
+                    'operation', 'office_slots', 'reprocessing_efficiency',
+                    'is_conquerable')
 admin.site.register(StaStationType, StaStationTypeAdmin)
 
 class StaOperationAdmin(admin.ModelAdmin):
