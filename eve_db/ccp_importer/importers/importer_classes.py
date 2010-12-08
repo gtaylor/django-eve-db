@@ -21,7 +21,7 @@ class SQLImporter(object):
     # A mapping of model fields to CCP dump columns. Without previously
     # specified PK fields!
     field_map = ()
-    
+
     def __init__(self):
         self.insert_only = False
         self.cursor = None
@@ -41,9 +41,9 @@ class SQLImporter(object):
         # Right now, the importer name matches the table name.
         self._setup_progressbar()
         self.insert_only = self.model.objects.all().count() == 0
-        
+
         transaction.commit()
-        
+
         inserts_bucket = []
         updates_bucket = []
         inserts_counter = 0
@@ -51,7 +51,7 @@ class SQLImporter(object):
         batch_size = 1000
         self.itercount = 0
         query_string = 'SELECT * FROM %s' % self.table_name
-        
+
         try:
             for new_obj, insert in (self.import_row(row) for row in self.cursor.execute(query_string)):
                 # Now we have either a new model instance, an existing model
@@ -69,12 +69,12 @@ class SQLImporter(object):
                         if updates_counter % batch_size == 0:
                             update_many(updates_bucket)
                             updates_bucket = []
-                    
+
                 if self.itercount % self.progress_update_interval == 0:
                     self._progress_handler()
-    
+
                 self.itercount += 1
-                
+
     #                if settings.DEBUG:
     #                    db.reset_queries()
             if len(inserts_bucket) > 0:
@@ -98,7 +98,7 @@ class SQLImporter(object):
         if self.insert_only:
             # When creating a new instance we want both PK params and row params
             return self.model(**dict(pk_params_insert, **row_params)), True
-        
+
         try:
             old_instance = self.model.objects.get(**pk_params_get)
         except self.model.DoesNotExist:
@@ -112,7 +112,7 @@ class SQLImporter(object):
             for field_name, value in row_params.items():
                 setattr(old_instance, field_name, value)
             return old_instance, False
-        
+
     def _get_fields_param_dict(self, row):
         param_dict = {}
         for field_info in self.field_map:
@@ -123,16 +123,22 @@ class SQLImporter(object):
                 model_field, import_field = field_info
                 param_dict[model_field] = row[import_field]
         return param_dict
-    
+
     def _get_pk_param_dict(self, row, suffix=''):
         pk_param_dict = {}
-        for model_field, import_field in self.pks:
-            if model_field == self.model._meta.pk.column:
+        apply_suffix = True
+        for field_info in self.pks:
+            if len(field_info) == 3:
+                model_field, import_field, apply_suffix = field_info
+            else:
+                model_field, import_field = field_info
+
+            if model_field == self.model._meta.pk.column or not apply_suffix:
                 pk_param_dict[model_field] = row[import_field]
             else:
                 pk_param_dict["%s%s" % (model_field, suffix)] = row[import_field]
         return pk_param_dict
-    
+
     def _setup_progressbar(self):
         """
         Instantiates and configures the ProgressBar for the importer.
