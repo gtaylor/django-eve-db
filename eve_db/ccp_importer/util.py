@@ -5,7 +5,6 @@ from django.conf import settings
 from importers import *
 # Import this way as well for getattr()
 import importers
-
 # These are references to importer functions. They are ran in the order
 # they appear in this list. Any lines that are commented out are importers
 # that have not been written yet.

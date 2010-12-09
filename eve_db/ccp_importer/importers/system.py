@@ -2,45 +2,40 @@
 """
 Import various important system tables.
 """
-from eve_db.models import *
-from importer_classes import SQLImporter
+from eve_db.models import EveUnit, EveName, EveGraphic, EveIcon
+from importer_classes import SQLImporter, parse_int_bool
+
+
 
 class Importer_eveUnits(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = EveUnit.objects.get_or_create(id=row['unitid'])
-        imp_obj.name = row['unitname']
-        imp_obj.display_name = row['displayname']
-        imp_obj.description = row['description']
-        imp_obj.save()
+    model = EveUnit
+    pks = (('id', 'unitid'),)
+    field_map = (('name', 'unitname'),
+                 ('display_name', 'displayname'),
+                 ('description', 'description'))
+
 
 class Importer_eveNames(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
+    model = EveName
+    pks = (('id', 'itemID'),)
+    field_map = (('name', 'itemName'),
+                 ('category_id', 'categoryID'),
+                 ('group_id', 'groupID'),
+                 ('type_id', 'typeID'))
 
-    def import_row(self, row):
-        imp_obj = EveName(id=row['itemID'])
-        imp_obj.name = row['itemName']
-        imp_obj.category = InvCategory(id=row['categoryID'])
-        imp_obj.group = InvGroup(id=row['groupID'])
-        imp_obj.type = InvType(id=row['typeID'])
-        imp_obj.save()
 
 class Importer_eveIcons(SQLImporter):
-    def import_row(self, row):
-        graphic, created = EveIcon.objects.get_or_create(id=row['iconID'])
-        graphic.file = row['iconFile']
-        graphic.description = row['description']
-
-        graphic.save()
+    model = EveIcon
+    pks = (('id', 'iconID'),)
+    field_map = (('file', 'iconFile'),
+                 ('description', 'description'),)
 
 
 class Importer_eveGraphics(SQLImporter):
-    def import_row(self, row):
-        graphic, created = EveGraphic.objects.get_or_create(id=row['graphicID'])
-        graphic.name = row['graphicName']
-        graphic.file = row['graphicFile']
-        graphic.description = row['description']
-
-        if row['obsolete'] == 1:
-            graphic.is_obsolete = True
-
-        graphic.save()
+    model = EveGraphic
+    pks = (('id', 'graphicID'),)
+    field_map = (('name', 'graphicName'),
+                 ('file', 'graphicFile'),
+                 ('description', 'description'),
+                 ('is_obsolete', 'obsolete', parse_int_bool))
