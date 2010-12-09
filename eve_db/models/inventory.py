@@ -288,7 +288,7 @@ class DgmAttributeType(models.Model):
     category = models.ForeignKey(DgmAttributeCategory, blank=True, null=True)
     description = models.TextField(blank=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
-    defaultvalue = models.IntegerField(blank=True, null=True)
+    default_value = models.IntegerField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     display_name = models.CharField(max_length=100, blank=True)
     unit = models.ForeignKey('EveUnit', blank=True, null=True)

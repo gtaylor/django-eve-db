@@ -276,7 +276,7 @@ class MapCelestialStatistic(models.Model):
     celestial = models.ForeignKey('MapDenormalize', unique=True, primary_key=True)
     temperature = models.FloatField(blank=True, null=True)
     spectral_class = models.CharField(max_length=255, blank=True)
-    luminousity = models.FloatField(blank=True, null=True)
+    luminosity = models.FloatField(blank=True, null=True)
     age = models.FloatField(blank=True, null=True)
     life = models.FloatField(blank=True, null=True)
     orbit_radius = models.FloatField(blank=True, null=True)

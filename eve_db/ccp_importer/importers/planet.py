@@ -1,36 +1,27 @@
 """
 Import planetary interaction related data.
 """
-from eve_db.models import *
-from importer_classes import SQLImporter
+from eve_db.models import PlanetSchematic, PlanetSchematicsPinMap, PlanetSchematicsTypeMap
+from importer_classes import SQLImporter, parse_int_bool
+
+
 
 class Importer_planetSchematics(SQLImporter):
-    def import_row(self, row):
-        imp_obj = PlanetSchematic(id=row['schematicID'])
-        imp_obj.name = row['schematicName']
-        imp_obj.cycle_time = row['cycleTime']
-        imp_obj.save()
-    
+    model = PlanetSchematic
+    pks = (('id', 'schematicID'),)
+    field_map = (('name', 'schematicName'),
+                 ('cycle_time', 'cycleTime'))
+
+
 class Importer_planetSchematicsPinMap(SQLImporter):
     DEPENDENCIES = ['invTypes', 'planetSchematics']
-    
-    def import_row(self, row):
-        type = InvType.objects.get(id=row['pinTypeID'])
-        schematic = PlanetSchematic(id=row['schematicID'])
-        imp_obj, created = PlanetSchematicsPinMap.objects.get_or_create(type=type, schematic=schematic)
+    model = PlanetSchematicsPinMap
+    pks = (('type', 'pinTypeID'), ('schematic', 'schematicID'))
+
 
 class Importer_planetSchematicsTypeMap(SQLImporter):
     DEPENDENCIES = ['invTypes', 'planetSchematics']
-    
-    def import_row(self, row):
-        type = InvType.objects.get(id=row['typeID'])
-        schematic = PlanetSchematic(id=row['schematicID'])
-        imp_obj, created = PlanetSchematicsTypeMap.objects.get_or_create(type=type, schematic=schematic)
-        imp_obj.quantity = row['quantity']
-        
-        if row['isInput'] == 1:
-            imp_obj.is_input = True
-        else:
-            imp_obj.is_input = False
-        
-        imp_obj.save()
+    model = PlanetSchematicsTypeMap
+    pks = (('type', 'typeID'), ('schematic', 'schematicID'))
+    field_map = (('quantity', 'quantity'),
+                 ('is_input', 'isInput', parse_int_bool))
