@@ -1,13 +1,18 @@
 """
 Import character data.
 """
-from eve_db.models import *
 from django.db import transaction
 from importer_classes import SQLImporter
 
+from eve_db.models import chr as chr_models
+from eve_db.models.map import MapSolarSystem
+from eve_db.models.npc import CrpNPCCorporation
+
+
+
 class Importer_chrRaces(SQLImporter):
     DEPENDENCIES = ['eveIcons']
-    model = ChrRace
+    model = chr_models.ChrRace
     pks = (('id', 'raceID'),)
     field_map = (('name', 'raceName'),
                  ('icon_id', 'iconID'),
@@ -17,23 +22,18 @@ class Importer_chrRaces(SQLImporter):
 
 class Importer_chrAttributes(SQLImporter):
     DEPENDENCIES = ['eveIcons']
+    model = chr_models.ChrAttribute
+    pks = (('id', 'attributeID'),)
+    field_map = (('name', 'attributeName'),
+                 ('icon_id', 'iconID'),
+                 ('description', 'description'),
+                 ('short_description', 'shortDescription'),
+                 ('notes', 'notes'))
 
-    def import_row(self, row):
-        imp_obj, created = ChrAttribute.objects.get_or_create(id=row['attributeID'])
-        imp_obj.name = row['attributeName']
-        imp_obj.short_description = row['shortDescription']
-        imp_obj.description = row['description']
-        imp_obj.notes = row['notes']
-
-        icon_id = row['iconID']
-        if icon_id:
-            imp_obj.icon = EveIcon.objects.get(id=icon_id)
-
-        imp_obj.save()
 
 class Importer_chrFactions(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'mapSolarSystems', 'crpNPCCorporations']
-    model = ChrFaction
+    model = chr_models.ChrFaction
 
     def import_row(self, row):
         # We need these queries because of circular dependencies
@@ -77,7 +77,7 @@ class Importer_chrFactions(SQLImporter):
 
 class Importer_chrBloodlines(SQLImporter):
     DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveIcons']
-    model = ChrBloodline
+    model = chr_models.ChrBloodline
     pks = (('id', 'bloodlineID'),)
     field_map = (('name', 'bloodlineName'),
                  ('race_id', 'raceID'),
@@ -98,7 +98,7 @@ class Importer_chrBloodlines(SQLImporter):
 
 class Importer_chrAncestries(SQLImporter):
     DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveIcons']
-    model = ChrAncestry
+    model = chr_models.ChrAncestry
     pks = (('id', 'ancestryID'),)
     field_map = (('name', 'ancestryName'),
                  ('bloodline_id', 'bloodlineID'),

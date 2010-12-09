@@ -2,7 +2,7 @@
 Import inventory data.
 """
 from eve_db.models import *
-from importer_classes import SQLImporter, parse_int_bool
+from importer_classes import SQLImporter, parse_int_bool, parse_char_notnull
 
 
 
@@ -84,103 +84,81 @@ class Importer_invTypeMaterials(SQLImporter):
 
 class Importer_invMetaTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invMetaGroups']
+    model = InvMetaType
+    pks = (('type', 'typeID'),)
+    field_map = (('parent_type_id', 'parentTypeID'),
+                 ('meta_group_id', 'metaGroupID'))
 
-    def import_row(self, row):
-        imp_obj = InvMetaType(type_id=row['typeID'],
-                              parent_type_id=row['parentTypeID'],
-                              meta_group_id=row['metaGroupID'])
-        imp_obj.save()
 
 class Importer_dgmAttributeCategories(SQLImporter):
-    def import_row(self, row):
-        imp_obj, created = DgmAttributeCategory.objects.get_or_create(id=row['categoryid'])
-        imp_obj.name = row['categoryname']
-        imp_obj.description = row['categorydescription']
-        imp_obj.save()
+    model = DgmAttributeCategory
+    pks = (('id', 'categoryid'),)
+    field_map = (('name', 'categoryname'),
+                 ('description', 'categorydescription'))
+    
 
 class Importer_dgmAttributeTypes(SQLImporter):
     DEPENDENCIES = ['dgmAttributeCategories', 'eveIcons', 'eveUnits']
+    model = DgmAttributeType
+    pks = (('id', 'attributeid'),)
+    field_map = (('name', 'attributename'),
+                 ('description', 'description'),
+                 ('default_value', 'defaultvalue'),
+                 ('is_published', 'published', parse_int_bool),
+                 ('display_name', 'displayname'),
+                 ('is_stackable', 'stackable', parse_int_bool),
+                 ('high_is_good', 'highisgood', parse_int_bool),
+                 ('category_id', 'categoryid'),
+                 ('unit_id', 'unitid'),
+                 ('icon_id', 'iconID'))
 
-    def import_row(self, row):
-        imp_obj = DgmAttributeType(id=row['attributeid'])
-        imp_obj.name = row['attributename']
-        imp_obj.description = row['description']
-        imp_obj.default_value = row['defaultvalue']
-        imp_obj.is_published = self.parse_int_bool(row['published'])
-        imp_obj.display_name = row['displayname']
-        imp_obj.is_stackable = self.parse_int_bool(row['stackable'])
-        imp_obj.high_is_good = self.parse_int_bool(row['highisgood'])
-
-        if row['categoryid']:
-            imp_obj.category_id = row['categoryid']
-
-        if row['unitid']:
-            imp_obj.unit_id = row['unitid']
-
-        if row['iconID']:
-            imp_obj.icon_id = row['iconID']
-
-        imp_obj.save()
 
 class Importer_dgmTypeAttributes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmAttributeTypes', 'dgmTypeAttributes']
+    model = DgmTypeAttribute
+    pks = (('inventory_type', 'typeid'), ('attribute', 'attributeid'))
+    field_map = (('value_int', 'valueint'),
+                 ('value_float', 'valuefloat'))
 
-    def import_row(self, row):
-        imp_obj, created = DgmTypeAttribute.objects.\
-            get_or_create(inventory_type=InvType(id=row['typeid']),
-                          attribute=DgmAttributeType(id=row['attributeid']))
-
-        if row['valueint']:
-            imp_obj.value_int = row['valueint']
-
-        if row['valuefloat']:
-            imp_obj.value_float = row['valuefloat']
-
-        imp_obj.save()
 
 class Importer_dgmEffects(SQLImporter):
     DEPENDENCIES = ['eveIcons', 'dgmAttributeTypes']
+    model = DgmEffect
+    pks = (('id', 'effectID'),)
+    field_map = (('name', 'effectName'),
+                 ('category', 'effectCategory'),
+                 ('pre_expression', 'preExpression'),
+                 ('post_expression', 'postExpression'),
+                 ('description', 'description'),
+                 ('guid', 'guid', parse_char_notnull),
+                 ('icon_id', 'iconID'),
+                 ('is_offensive', 'isOffensive', parse_int_bool),
+                 ('is_assistance', 'isAssistance', parse_int_bool),
+                 ('duration_attribute_id', 'durationAttributeID'),
+                 ('tracking_speed_attribute_id', 'trackingSpeedAttributeID'),
+                 ('discharge_attribute_id', 'dischargeAttributeID'),
+                 ('range_attribute_id', 'rangeAttributeID'),
+                 ('falloff_attribute_id', 'falloffAttributeID'),
+                 ('disallow_auto_repeat', 'disallowAutoRepeat', parse_int_bool),
+                 ('is_published', 'published', parse_int_bool),
+                 ('display_name', 'displayName'),
+                 ('is_warp_safe', 'isWarpSafe', parse_int_bool),
+                 ('has_range_chance', 'rangeChance', parse_int_bool),
+                 ('has_electronic_chance', 'electronicChance', parse_int_bool),
+                 ('has_propulsion_chance', 'propulsionChance', parse_int_bool),
+                 ('distribution', 'distribution'),
+                 ('sfx_name', 'sfxName', parse_char_notnull),
+                 ('npc_usage_chance_attribute_id', 'npcUsageChanceAttributeID'),
+                 ('npc_activation_chance_attribute_id', 'npcActivationChanceAttributeID'),
+                 ('fitting_usage_chance_attribute_id', 'fittingUsageChanceAttributeID'))
 
-    def import_row(self, row):
-        imp_obj = DgmEffect(id=row['effectID'],
-                            name=row['effectName'],
-                            category=row['effectCategory'],
-                            pre_expression=row['preExpression'],
-                            post_expression=row['postExpression'],
-                            description=row['description'],
-                            guid=row['guid'] if row['guid'] else '',
-                            icon_id=row['iconID'],
-                            is_offensive=self.parse_int_bool(row['isOffensive']),
-                            is_assistance=self.parse_int_bool(row['isAssistance']),
-                            duration_attribute_id=row['durationAttributeID'],
-                            tracking_speed_attribute_id=row['trackingSpeedAttributeID'],
-                            discharge_attribute_id=row['dischargeAttributeID'],
-                            range_attribute_id=row['rangeAttributeID'],
-                            falloff_attribute_id=row['falloffAttributeID'],
-                            disallow_auto_repeat=self.parse_int_bool(row['disallowAutoRepeat']),
-                            is_published=self.parse_int_bool(row['published']),
-                            display_name=row['displayName'],
-                            is_warp_safe=self.parse_int_bool(row['isWarpSafe']),
-                            has_range_chance=self.parse_int_bool(row['rangeChance']),
-                            has_electronic_chance=self.parse_int_bool(row['electronicChance']),
-                            has_propulsion_chance=self.parse_int_bool(row['propulsionChance']),
-                            distribution=row['distribution'],
-                            sfx_name=row['sfxName'] if row['sfxName'] else '',
-                            npc_usage_chance_attribute_id=row['npcUsageChanceAttributeID'],
-                            npc_activation_chance_attribute_id=row['npcActivationChanceAttributeID'],
-                            fitting_usage_chance_attribute_id=row['fittingUsageChanceAttributeID'])
-
-        imp_obj.save()
 
 class Importer_dgmTypeEffects(SQLImporter):
     DEPENDENCIES = ['invTypes', 'dgmEffects', 'dgmTypeEffects']
+    model = DgmTypeEffect
+    pks = (('type', 'typeID'), ('effect', 'effectID'))
+    field_map = (('is_default', 'isDefault'),)
 
-    def import_row(self, row):
-        imp_obj, created = DgmTypeEffect.objects.\
-            get_or_create(type=InvType(id=row['typeID']),
-                          effect=DgmEffect(id=row['effectID']))
-        imp_obj.is_default = row['isDefault']
-        imp_obj.save()
 
 class Importer_invFlags(SQLImporter):
     DEPENDENCIES = ['invFlags']
@@ -193,23 +171,20 @@ class Importer_invFlags(SQLImporter):
 
 class Importer_invBlueprintTypes(SQLImporter):
     DEPENDENCIES = ['invTypes', 'invBlueprintTypes']
+    model = InvBlueprintType
+    pks = (('blueprint_type', 'blueprintTypeID'),)
+    field_map = (('product_type_id', 'productTypeID'),
+                 ('parent_blueprint_type_id', 'parentBlueprintTypeID'),
+                 ('tech_level', 'techLevel'),
+                 ('research_productivity_time', 'researchProductivityTime'),
+                 ('research_material_time', 'researchMaterialTime'),
+                 ('research_copy_time', 'researchCopyTime'),
+                 ('research_tech_time', 'researchTechTime'),
+                 ('productivity_modifier', 'productivityModifier'),
+                 ('material_modifier', 'materialModifier'),
+                 ('waste_factor', 'wasteFactor'),
+                 ('max_production_limit', 'maxProductionLimit'))
 
-    def import_row(self, row):
-        invtype = InvBlueprintType(blueprint_type_id=row['blueprintTypeID'],
-                                   product_type_id=row['productTypeID'])
-        if row['parentBlueprintTypeID']:
-            invtype.parent_blueprint_type_id = row['parentBlueprintTypeID']
-
-        invtype.tech_level = row['techLevel']
-        invtype.research_productivity_time = row['researchProductivityTime']
-        invtype.research_material_time = row['researchMaterialTime']
-        invtype.research_copy_time = row['researchCopyTime']
-        invtype.research_tech_time = row['researchTechTime']
-        invtype.productivity_modifier = row['productivityModifier']
-        invtype.material_modifier = row['materialModifier']
-        invtype.waste_factor = row['wasteFactor']
-        invtype.max_production_limit = row['maxProductionLimit']
-        invtype.save()
 
 class Importer_invControlTowerResourcePurposes(SQLImporter):
     DEPENDENCIES = ['invControlTowerResourcePurposes']

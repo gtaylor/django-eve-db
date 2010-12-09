@@ -1,11 +1,14 @@
 """
 Import NPC corp/agent data.
 """
-from eve_db.models import *
+from eve_db.models import npc as npc_models
 from importer_classes import SQLImporter
+from eve_db.models.system import EveName
+
+
 
 class Importer_crpActivities(SQLImporter):
-    model = CrpActivity
+    model = npc_models.CrpActivity
     pks = (('id', 'activityID'),)
     field_map = (('name', 'activityName'),
                  ('description', 'description')) 
@@ -13,83 +16,74 @@ class Importer_crpActivities(SQLImporter):
 
 class Importer_crpNPCCorporationDivisions(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'crpNPCCorporations']
+    model = npc_models.CrpNPCCorporationDivision
+    pks = (('corporation', 'corporationID'), ('division', 'divisionID'))
+    field_map = (('size', 'size'),) 
 
-    def import_row(self, row):
-        corporation = CrpNPCCorporation.objects.get(id=row['corporationID'])
-        division = CrpNPCDivision.objects.get(id=row['divisionID'])
-        imp_obj, created = CrpNPCCorporationDivision.objects.get_or_create(corporation=corporation,
-                                                                           division=division)
-        imp_obj.size = row['size']
-        imp_obj.save()
 
 class Importer_crpNPCCorporationTrades(SQLImporter):
     DEPENDENCIES = ['invTypes', 'crpNPCCorporations']
+    model = npc_models.CrpNPCCorporationTrade
+    pks = (('corporation', 'corporationID'), ('type', 'typeID'))
 
-    def import_row(self, row):
-        imp_obj, created = CrpNPCCorporationTrade.objects.\
-            get_or_create(corporation=CrpNPCCorporation(id=row['corporationID']),
-                          type=InvType(id=row['typeID']))
-        imp_obj.save()
 
 class Importer_crpNPCCorporationResearchFields(SQLImporter):
     DEPENDENCIES = ['invTypes', 'crpNPCCorporations']
+    model = npc_models.CrpNPCCorporationResearchField
+    pks = (('corporation', 'corporationID'), ('skill', 'skillID'))
 
-    def import_row(self, row):
-        corporation = CrpNPCCorporation.objects.get(id=row['corporationID'])
-        skill = InvType.objects.get(id=row['skillID'])
-        imp_obj, created = CrpNPCCorporationResearchField.objects.get_or_create(corporation=corporation)
-        imp_obj.skill = skill
-        imp_obj.save()
 
 class Importer_agtAgentTypes(SQLImporter):
-    model = AgtAgentType
+    model = npc_models.AgtAgentType
     pks = (('id', 'agentTypeID'),)
-    field_map = (('name', 'agentType'),) 
+    field_map = (('name', 'agentType'),)
     
-
+    
+# Need to keep this mostly the old way due to all the self-referencing
+# foreign keys. 
 class Importer_crpNPCCorporations(SQLImporter):
     DEPENDENCIES = ['chrFactions', 'eveIcons', 'eveNames', 'mapSolarSystems']
+    model = npc_models.CrpNPCCorporation
 
     def import_row(self, row):
-        imp_obj, created = CrpNPCCorporation.objects.get_or_create(id=row['corporationID'])
+        imp_obj, created = self.model.objects.get_or_create(id=row['corporationID'])
         imp_obj.name = EveName.objects.get(id=row['corporationID']).name
         imp_obj.size = row['size']
         imp_obj.extent = row['extent']
 
         if row['solarSystemID']:
-            ssystem, created = MapSolarSystem.objects.get_or_create(id=row['solarSystemID'])
-            imp_obj.solar_system = ssystem
+            imp_obj.solar_system_id = row['solarSystemID']
 
         if row['investorID1']:
-            investor1, created = CrpNPCCorporation.objects.get_or_create(id=row['investorID1'])
+            investor1, created = self.model.objects.get_or_create(id=row['investorID1'])
             imp_obj.investor1 = investor1
             imp_obj.investor1_shares = row['investorShares1']
 
         if row['investorID2']:
-            investor2, created = CrpNPCCorporation.objects.get_or_create(id=row['investorID2'])
+            investor2, created = self.model.objects.get_or_create(id=row['investorID2'])
             imp_obj.investor2 = investor2
             imp_obj.investor2_shares = row['investorShares2']
 
         if row['investorID3']:
-            investor3, created = CrpNPCCorporation.objects.get_or_create(id=row['investorID3'])
+            investor3, created = self.model.objects.get_or_create(id=row['investorID3'])
             imp_obj.investor3 = investor3
             imp_obj.investor3_shares = row['investorShares3']
 
         if row['investorID4']:
-            investor4, created = CrpNPCCorporation.objects.get_or_create(id=row['investorID4'])
+            investor4, created = self.model.objects.get_or_create(id=row['investorID4'])
             imp_obj.investor4 = investor4
             imp_obj.investor4_shares = row['investorShares4']
 
         if row['friendID']:
-            friend, created = CrpNPCCorporation.objects.get_or_create(id=row['friendID'])
+            friend, created = self.model.objects.get_or_create(id=row['friendID'])
             imp_obj.friendly_corp = friend
 
         if row['enemyID']:
-            enemy, created = CrpNPCCorporation.objects.get_or_create(id=row['enemyID'])
+            enemy, created = self.model.objects.get_or_create(id=row['enemyID'])
             imp_obj.enemy_corp = enemy
 
         if row['iconID']:
-            imp_obj.icon = EveIcon.objects.get(id=row['iconID'])
+            imp_obj.icon_id = row['iconID']
 
         if row['scattered'] == 1:
             imp_obj.stations_are_scattered = True
@@ -101,16 +95,18 @@ class Importer_crpNPCCorporations(SQLImporter):
         imp_obj.corridor_systems = row['corridor']
         imp_obj.hub_systems = row['hub']
         imp_obj.border_systems = row['border']
-        faction, faction_created = ChrFaction.objects.get_or_create(id=row['factionID'])
-        imp_obj.faction = faction
+        imp_obj.faction_id = row['factionID']
         imp_obj.size_factor = row['sizeFactor']
         imp_obj.station_count = row['stationCount']
         imp_obj.station_system_count = row['stationSystemCount']
         imp_obj.description = row['description']
         imp_obj.save()
+        # Tell the bulk inserter/updater to skip this
+        # We've already saved it.
+        return None, None
 
 class Importer_crpNPCDivisions(SQLImporter):
-    model = CrpNPCDivision
+    model = npc_models.CrpNPCDivision
     pks = (('id', 'divisionID'),)
     field_map = (('name', 'divisionName'),
                  ('description', 'description'),
@@ -121,7 +117,7 @@ class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
                     'eveNames', 'agtAgentTypes']
     def import_row(self, row):
-        imp_obj = AgtAgent(id=row['agentID'],
+        imp_obj = npc_models.AgtAgent(id=row['agentID'],
             division_id=row['divisionID'],
             corporation_id=row['corporationID'],
             location_id=row['locationID'],
@@ -134,8 +130,8 @@ class Importer_agtAgents(SQLImporter):
 class Importer_agtConfig(SQLImporter):
     DEPENDENCIES = ['agtAgents']
     def import_row(self, row):
-        imp_obj, created = AgtConfig.objects.\
-            get_or_create(agent=AgtAgent(id=row['agentID']),
+        imp_obj, created = npc_models.AgtConfig.objects.\
+            get_or_create(agent=npc_models.AgtAgent(id=row['agentID']),
                           key=row['k'])
         imp_obj.value = row['v']
         imp_obj.save()

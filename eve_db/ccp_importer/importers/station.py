@@ -65,29 +65,21 @@ class Importer_ramAssemblyLines(SQLImporter):
 
 class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes', 'invCategories']
+    model = RamAssemblyLineTypeDetailPerCategory
+    pks = (('assembly_line_type', 'assemblyLineTypeID'),
+           ('category', 'categoryID'))
+    field_map = (('time_multiplier', 'timeMultiplier'),
+                 ('material_multiplier', 'materialMultiplier'))
 
-    def import_row(self, row):
-        ass_type = RamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
-        category = InvCategory.objects.get(id=row['categoryID'])
-        imp_obj, created = RamAssemblyLineTypeDetailPerCategory.objects.get_or_create(
-                                                    assembly_line_type=ass_type,
-                                                    category=category)
-        imp_obj.time_multiplier = row['timeMultiplier']
-        imp_obj.material_multiplier = row['materialMultiplier']
-        imp_obj.save()
 
 class Importer_ramAssemblyLineTypeDetailPerGroup(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes', 'invGroups']
+    model = RamAssemblyLineTypeDetailPerGroup
+    pks = (('assembly_line_type', 'assemblyLineTypeID'),
+           ('group', 'groupID'))
+    field_map = (('time_multiplier', 'timeMultiplier'),
+                 ('material_multiplier', 'materialMultiplier'))
 
-    def import_row(self, row):
-        ass_type = RamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
-        group = InvGroup.objects.get(id=row['groupID'])
-        imp_obj, created = RamAssemblyLineTypeDetailPerGroup.objects.get_or_create(
-                                                    assembly_line_type=ass_type,
-                                                    group=group)
-        imp_obj.time_multiplier = row['timeMultiplier']
-        imp_obj.material_multiplier = row['materialMultiplier']
-        imp_obj.save()
 
 class Importer_staServices(SQLImporter):
     model = StaService
@@ -96,58 +88,45 @@ class Importer_staServices(SQLImporter):
                  ('description', 'description'))
 
 
+def get_operation(operation_id):
+    if operation_id:
+        return StaOperation.objects.get_or_create(id=operation_id)[0]
+    return None
+
 class Importer_staStationTypes(SQLImporter):
     DEPENDENCIES = ['eveGraphics', 'staOperations', 'invTypes']
+    model = StaStationType
+    pks = (('id', 'stationTypeID'),)
+    field_map = (('dock_entry_x', 'dockEntryX'),
+                 ('dock_orientation_x', 'dockOrientationX'),
+                 ('dock_entry_y', 'dockEntryY'),
+                 ('dock_orientation_y', 'dockOrientationY'),
+                 ('dock_entry_z', 'dockEntryZ'),
+                 ('dock_orientation_z', 'dockOrientationZ'),
+                 ('office_slots', 'officeSlots'),
+                 ('reprocessing_efficiency', 'reprocessingEfficiency'),
+                 ('operation', 'operationID', get_operation),
+                 ('is_conquerable', 'conquerable', parse_int_bool))
 
-    def import_row(self, row):
-        imp_obj, created = StaStationType.objects.get_or_create(id=row['stationTypeID'])
-        imp_obj.dock_entry_x = row['dockEntryX']
-        imp_obj.dock_orientation_x = row['dockOrientationX']
-        imp_obj.dock_entry_y = row['dockEntryY']
-        imp_obj.dock_orientation_y = row['dockOrientationY']
-        imp_obj.dock_entry_z = row['dockEntryZ']
-        imp_obj.dock_orientation_z = row['dockOrientationZ']
-        imp_obj.office_slots = row['officeSlots']
-        imp_obj.reprocessing_efficiency = row['reprocessingEfficiency']
-
-        if row['operationID']:
-            imp_obj.operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
-
-        if row['conquerable'] == 1:
-            imp_obj.is_conquerable = True
-
-        imp_obj.save()
 
 class Importer_staOperations(SQLImporter):
     DEPENDENCIES = ['staStationTypes']
+    model = StaOperation
+    pks = (('id', 'operationID'),)
+    field_map = (('activity_id', 'activityID'),
+                 ('name', 'operationName'),
+                 ('description', 'description'),
+                 ('fringe', 'fringe'),
+                 ('corridor', 'corridor'),
+                 ('hub', 'hub'),
+                 ('border', 'border'),
+                 ('ratio', 'ratio'),
+                 ('caldari_station_type_id', 'caldariStationTypeID'),
+                 ('minmatar_station_type_id', 'minmatarStationTypeID'),
+                 ('amarr_station_type_id', 'amarrStationTypeID'),
+                 ('gallente_station_type_id', 'gallenteStationTypeID'),
+                 ('jove_station_type_id', 'joveStationTypeID'))
 
-    def import_row(self, row):
-        operation, created = StaOperation.objects.get_or_create(id=row['operationID'])
-        operation.activity_id = row['activityID']
-        operation.name = row['operationName']
-        operation.description = row['description']
-        operation.fringe = row['fringe']
-        operation.corridor = row['corridor']
-        operation.hub = row['hub']
-        operation.border = row['border']
-        operation.ratio = row['ratio']
-
-        if row['caldariStationTypeID']:
-            operation.caldari_station_type, created = StaStationType.objects.get_or_create(id=row['caldariStationTypeID'])
-
-        if row['minmatarStationTypeID']:
-            operation.minmatar_station_type, created = StaStationType.objects.get_or_create(id=row['minmatarStationTypeID'])
-
-        if row['amarrStationTypeID']:
-            operation.amarr_station_type, created = StaStationType.objects.get_or_create(id=row['amarrStationTypeID'])
-
-        if row['gallenteStationTypeID']:
-            operation.gallente_station_type, created = StaStationType.objects.get_or_create(id=row['gallenteStationTypeID'])
-
-        if row['joveStationTypeID']:
-            operation.jove_station_type, created = StaStationType.objects.get_or_create(id=row['joveStationTypeID'])
-
-        operation.save()
 
 class Importer_ramAssemblyLineStations(SQLImporter):
     DEPENDENCIES = ['staStations', 'ramAssemblyLineTypes', 'staStationTypes',
@@ -189,37 +168,22 @@ class Importer_staStations(SQLImporter):
     DEPENDENCIES = ['invTypes', 'staOperations', 'staStationTypes',
                     'chrNPCCorporations', 'mapSolarSystems',
                     'mapConstellations', 'mapRegions']
-
-    def import_row(self, row):
-        station = StaStation(id=row['stationID'])
-        station.security = row['security']
-        station.docking_cost_per_volume = row['dockingCostPerVolume']
-        station.max_ship_volume_dockable = row['maxShipVolumeDockable']
-        station.office_rental_cost = row['officeRentalCost']
-        station.name = row['stationName']
-        station.x = row['x']
-        station.y = row['y']
-        station.z = row['z']
-        station.reprocessing_efficiency = row['reprocessingEfficiency']
-        station.reprocessing_stations_take = row['reprocessingStationsTake']
-        station.reprocessing_hangar_flag = row['reprocessingHangarFlag']
-
-        if row['operationID']:
-            station.operation_id = row['operationID']
-
-        if row['stationTypeID']:
-            station.type_id = row['stationTypeID']
-
-        if row['corporationID']:
-            station.corporation_id = row['corporationID']
-
-        if row['solarSystemID']:
-            station.solar_system_id = row['solarSystemID']
-
-        if row['constellationID']:
-            station.constellation_id = row['constellationID']
-
-        if row['regionID']:
-            station.region_id = row['regionID']
-
-        station.save()
+    model = StaStation
+    pks = (('id', 'stationID'),)
+    field_map = (('security', 'security'),
+                 ('docking_cost_per_volume', 'dockingCostPerVolume'),
+                 ('max_ship_volume_dockable', 'maxShipVolumeDockable'),
+                 ('office_rental_cost', 'officeRentalCost'),
+                 ('name', 'stationName'),
+                 ('x', 'x'),
+                 ('y', 'y'),
+                 ('z', 'z'),
+                 ('reprocessing_efficiency', 'reprocessingEfficiency'),
+                 ('reprocessing_stations_take', 'reprocessingStationsTake'),
+                 ('reprocessing_hangar_flag', 'reprocessingHangarFlag'),
+                 ('operation_id', 'operationID'),
+                 ('type_id', 'stationTypeID'),
+                 ('corporation_id', 'corporationID'),
+                 ('solar_system_id', 'solarSystemID'),
+                 ('constellation_id', 'constellationID'),
+                 ('region_id', 'regionID'))
