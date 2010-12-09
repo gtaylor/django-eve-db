@@ -30,38 +30,44 @@ class Importer_ramAssemblyLineTypes(SQLImporter):
 
 class Importer_staOperationServices(SQLImporter):
     DEPENDENCIES = ['staOperations', 'staServices']
+    model = StaOperationServices
+    pks = (('operation', 'operationID'), ('service', 'serviceID'))
 
-    def import_row(self, row):
-        operation = StaOperation.objects.get(id=row['operationID'])
-        service = StaService.objects.get(id=row['serviceID'])
-        imp_obj, created = StaOperationServices.objects.get_or_create(
-                                                    operation=operation,
-                                                    service=service)
-        imp_obj.save()
 
 class Importer_ramAssemblyLines(SQLImporter):
     DEPENDENCIES = ['ramActivities', 'ramAssemblyLineTypes', 'staStations',
                     'crpNPCCorporations']
+    model = RamAssemblyLine
+    pks = (('id', 'assemblyLineID'),)
+    
+    def __init__(self, *args, **kwargs):
+        super(Importer_ramAssemblyLines, self).__init__(*args, **kwargs)
+        self.field_map = (('assembly_line_type_id', 'assemblyLineTypeID'),
+                 ('station_id', 'containerID'),
+                 ('owner_id', 'ownerID'),
+                 ('activity_id', 'activityID'),
+                 ('name', 'assemblyLineTypeID', self.get_assembly_line_type_name),
+                 ('ui_grouping_id', 'UIGroupingID'),
+                 ('cost_install', 'costInstall'),
+                 ('cost_per_hour', 'costPerHour'),
+                 ('discount_per_good_standing_point', 'discountPerGoodStandingPoint'),
+                 ('surcharge_per_bad_standing_point', 'surchargePerBadStandingPoint'),
+                 ('minimum_standing', 'minimumStanding'),
+                 ('minimum_char_security', 'minimumCharSecurity'),
+                 ('minimum_corp_security', 'minimumCorpSecurity'),
+                 ('maximum_char_security', 'maximumCharSecurity'),
+                 ('maximum_corp_security', 'maximumCorpSecurity'))
+        
+        # Retrieve and store all assembly type names by ID
+        self.assembly_line_type_names = {}
+        for type_id, name in (keyvalue for keyvalue in RamAssemblyLineType.objects.all().values_list('id', 'name')):
+            print type_id, name
+            self.assembly_line_type_names[type_id] = name
+            
+    def get_assembly_line_type_name(self, type_id):
+#        return RamAssemblyLineType.objects.get(id=type_id).name
+        return self.assembly_line_type_names.get(type_id) 
 
-    def import_row(self, row):
-        assembly_line_type = RamAssemblyLineType.objects.get(id=row['assemblyLineTypeID'])
-        imp_obj = RamAssemblyLine(id=row['assemblyLineID'],
-                                  assembly_line_type=assembly_line_type,
-                                  station_id=row['containerID'],
-                                  owner_id=row['ownerID'],
-                                  activity_id=row['activityID'])
-        imp_obj.name = assembly_line_type.name
-        imp_obj.ui_grouping_id = row['UIGroupingID']
-        imp_obj.cost_install = row['costInstall']
-        imp_obj.cost_per_hour = row['costPerHour']
-        imp_obj.discount_per_good_standing_point = row['discountPerGoodStandingPoint']
-        imp_obj.surcharge_per_bad_standing_point = row['surchargePerBadStandingPoint']
-        imp_obj.minimum_standing = row['minimumStanding']
-        imp_obj.minimum_char_security = row['minimumCharSecurity']
-        imp_obj.minimum_corp_security = row['minimumCorpSecurity']
-        imp_obj.maximum_char_security = row['maximumCharSecurity']
-        imp_obj.maximum_corp_security = row['maximumCorpSecurity']
-        imp_obj.save
 
 class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes', 'invCategories']
@@ -132,36 +138,23 @@ class Importer_ramAssemblyLineStations(SQLImporter):
     DEPENDENCIES = ['staStations', 'ramAssemblyLineTypes', 'staStationTypes',
                     'chrNPCCorporations', 'mapSolarSystems',
                     'mapRegions']
+    model = RamAssemblyLineStations
+    pks = (('station', 'stationID'), ('assembly_line_type', 'assemblyLineTypeID'))
+    field_map = (('station_type_id', 'stationTypeID'),
+                 ('owner_id', 'ownerID'),
+                 ('solar_system_id', 'solarSystemID'),
+                 ('region_id', 'regionID'),
+                 ('quantity', 'quantity'))
 
-    def import_row(self, row):
-        imp_obj, created = RamAssemblyLineStations.objects.\
-            get_or_create(station=StaStation(id=row['stationID']),
-                          assembly_line_type=RamAssemblyLineType(id=row['assemblyLineTypeID']))
-        imp_obj.station_type_id = row['stationTypeID']
-        imp_obj.owner_id = row['ownerID']
-        imp_obj.solar_system_id = row['solarSystemID']
-        imp_obj.region_id = row['regionID']
-        imp_obj.quantity_id = row['quantity']
-        imp_obj.save()
 
 class Importer_ramTypeRequirements(SQLImporter):
     DEPENDENCIES = ['invTypes', 'ramActivities']
-
-    def import_row(self, row):
-        imp_obj, created = RamTypeRequirement.objects.\
-            get_or_create(type=InvType(id=row['typeID']),
-                          activity_type=RamActivity(id=row['activityID']),
-                          required_type=InvType(id=row['requiredTypeID']))
-        imp_obj.quantity = row['quantity']
-        imp_obj.damage_per_job = row['damagePerJob']
-
-        if row['recycle'] == 0:
-            imp_obj.recycle = False
-        if row['recycle'] == 1:
-            imp_obj.recycle = True
-
-        imp_obj.save()
-
+    model = RamTypeRequirement
+    pks = (('type', 'typeID'), ('activity_type', 'activityID'),
+           ('required_type', 'requiredTypeID'))
+    field_map = (('quantity', 'quantity'),
+                 ('damage_per_job', 'damagePerJob'),
+                 ('recycle', 'recycle', parse_int_bool))
 
 
 class Importer_staStations(SQLImporter):

@@ -4,6 +4,7 @@ Import NPC corp/agent data.
 from eve_db.models import npc as npc_models
 from importer_classes import SQLImporter
 from eve_db.models.system import EveName
+from eve_db.models.npc import AgtAgent, AgtConfig
 
 
 
@@ -11,14 +12,14 @@ class Importer_crpActivities(SQLImporter):
     model = npc_models.CrpActivity
     pks = (('id', 'activityID'),)
     field_map = (('name', 'activityName'),
-                 ('description', 'description')) 
-    
+                 ('description', 'description'))
+
 
 class Importer_crpNPCCorporationDivisions(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'crpNPCCorporations']
     model = npc_models.CrpNPCCorporationDivision
     pks = (('corporation', 'corporationID'), ('division', 'divisionID'))
-    field_map = (('size', 'size'),) 
+    field_map = (('size', 'size'),)
 
 
 class Importer_crpNPCCorporationTrades(SQLImporter):
@@ -37,8 +38,8 @@ class Importer_agtAgentTypes(SQLImporter):
     model = npc_models.AgtAgentType
     pks = (('id', 'agentTypeID'),)
     field_map = (('name', 'agentType'),)
-    
-    
+
+
 # Need to keep this mostly the old way due to all the self-referencing
 # foreign keys. 
 class Importer_crpNPCCorporations(SQLImporter):
@@ -111,27 +112,28 @@ class Importer_crpNPCDivisions(SQLImporter):
     field_map = (('name', 'divisionName'),
                  ('description', 'description'),
                  ('leader_type', 'leaderType'))
-    
+
+
+def get_evename_for_agent(agent_id):
+    return EveName.objects.get(id=agent_id).name
 
 class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
                     'eveNames', 'agtAgentTypes']
-    def import_row(self, row):
-        imp_obj = npc_models.AgtAgent(id=row['agentID'],
-            division_id=row['divisionID'],
-            corporation_id=row['corporationID'],
-            location_id=row['locationID'],
-            level=row['level'],
-            quality=row['quality'],
-            type_id=row['agentTypeID'],
-            name=EveName.objects.get(id=row['agentID']).name)
-        imp_obj.save()
+    model = AgtAgent
+    pks = (('id', 'agentID'),)
+    field_map = (('division_id', 'divisionID'),
+                 ('corporation_id', 'corporationID'),
+                 ('location_id', 'locationID'),
+                 ('level', 'level'),
+                 ('quality', 'quality'),
+                 ('type_id', 'agentTypeID'),
+                 ('name', 'agentID', get_evename_for_agent))
+
 
 class Importer_agtConfig(SQLImporter):
     DEPENDENCIES = ['agtAgents']
-    def import_row(self, row):
-        imp_obj, created = npc_models.AgtConfig.objects.\
-            get_or_create(agent=npc_models.AgtAgent(id=row['agentID']),
-                          key=row['k'])
-        imp_obj.value = row['v']
-        imp_obj.save()
+    model = AgtConfig
+    pks = (('agent', 'agentID'), ('key', 'k', False))
+    field_map = (('value', 'v'),)
+
