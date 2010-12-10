@@ -61,7 +61,6 @@ class Importer_ramAssemblyLines(SQLImporter):
         # Retrieve and store all assembly type names by ID
         self.assembly_line_type_names = {}
         for type_id, name in (keyvalue for keyvalue in RamAssemblyLineType.objects.all().values_list('id', 'name')):
-            print type_id, name
             self.assembly_line_type_names[type_id] = name
             
     def get_assembly_line_type_name(self, type_id):
