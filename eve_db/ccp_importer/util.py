@@ -17,7 +17,7 @@ IMPORT_LIST = [Importer_eveIcons,
                Importer_agtAgentTypes,
                Importer_crpNPCDivisions,
                Importer_crpActivities,
-               Importer_eveGraphics,
+               #Importer_eveGraphics,
                Importer_eveUnits,
                Importer_invMetaGroups,
                Importer_invFlags,
@@ -128,6 +128,8 @@ def run_importers(importer_classes, include_deps=False):
     """
     # Create the SQLite connection object.
     conn = sqlite3.connect(settings.EVE_CCP_DUMP_SQLITE_DB)
+    # Ignore characters that can't be decoded from UTF-8.
+    conn.text_factory = lambda x: unicode(x, "utf-8", "ignore")
     conn.row_factory = sqlite3.Row
 
     if include_deps:

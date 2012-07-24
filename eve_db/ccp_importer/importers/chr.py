@@ -4,6 +4,7 @@ Import character data.
 from django.db import transaction
 from importer_classes import SQLImporter
 
+from eve_db.ccp_importer.importers.importer_classes import parse_char_notnull
 from eve_db.models import chr as chr_models
 from eve_db.models.map import MapSolarSystem
 from eve_db.models.npc import CrpNPCCorporation
@@ -16,7 +17,7 @@ class Importer_chrRaces(SQLImporter):
     pks = (('id', 'raceID'),)
     field_map = (('name', 'raceName'),
                  ('icon_id', 'iconID'),
-                 ('description', 'description'),
+                 ('description', 'description', parse_char_notnull),
                  ('short_description', 'shortDescription'))
 
 

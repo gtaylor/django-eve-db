@@ -146,6 +146,7 @@ class SQLImporter(object):
         count_query_string = 'SELECT count(*) AS count from %s' % self.table_name
         # Count the rows in the table.
         self.row_count = self.cursor.execute(count_query_string).fetchone()['count']
+        assert self.row_count > 0, "Row count for table %s is 0." % self.table_name
         # Every N number of iterations, update the progress bar. Do this
         # relative to query size.
         self.progress_update_interval = max(1, self.row_count / 100)

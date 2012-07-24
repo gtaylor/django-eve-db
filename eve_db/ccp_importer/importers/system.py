@@ -3,16 +3,14 @@
 Import various important system tables.
 """
 from eve_db.models import EveUnit, EveName, EveGraphic, EveIcon
-from importer_classes import SQLImporter, parse_int_bool
-
-
+from importer_classes import SQLImporter, parse_int_bool, parse_char_notnull
 
 class Importer_eveUnits(SQLImporter):
     model = EveUnit
     pks = (('id', 'unitid'),)
     field_map = (('name', 'unitname'),
-                 ('display_name', 'displayname'),
-                 ('description', 'description'))
+                 ('display_name', 'displayname', parse_char_notnull),
+                 ('description', 'description', parse_char_notnull))
 
 
 class Importer_eveNames(SQLImporter):
@@ -35,7 +33,7 @@ class Importer_eveIcons(SQLImporter):
 class Importer_eveGraphics(SQLImporter):
     model = EveGraphic
     pks = (('id', 'graphicID'),)
-    field_map = (('name', 'graphicName'),
-                 ('file', 'graphicFile'),
-                 ('description', 'description'),
+    field_map = (('name', 'graphicName', parse_char_notnull),
+                 ('file', 'graphicFile', parse_char_notnull),
+                 ('description', 'description', parse_char_notnull),
                  ('is_obsolete', 'obsolete', parse_int_bool))

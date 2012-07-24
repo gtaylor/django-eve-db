@@ -88,8 +88,8 @@ class EveGraphic(models.Model):
     CCP Primary key: "graphicID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=255)
+    name = models.CharField(max_length=50, blank=True)
+    description = models.CharField(max_length=255, blank=True)
     file = models.TextField(blank=True)
     is_obsolete = models.BooleanField(default=False)
 

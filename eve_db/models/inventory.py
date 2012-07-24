@@ -109,7 +109,7 @@ class InvMetaGroup(models.Model):
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
 
     class Meta:
@@ -139,7 +139,6 @@ class InvType(models.Model):
     description = models.TextField(blank=True)
     group = models.ForeignKey(InvGroup, blank=True, null=True)
     market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
-    graphic = models.ForeignKey('EveGraphic', blank=True, null=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)

@@ -1,6 +1,7 @@
 """
 Import station related data.
 """
+from eve_db.ccp_importer.importers.importer_classes import parse_char_notnull
 from eve_db.models import *
 from importer_classes import SQLImporter, parse_int_bool
 
@@ -90,7 +91,7 @@ class Importer_staServices(SQLImporter):
     model = StaService
     pks = (('id', 'serviceID'),)
     field_map = (('name', 'serviceName'),
-                 ('description', 'description'))
+                 ('description', 'description', parse_char_notnull))
 
 
 def get_operation(operation_id):

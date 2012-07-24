@@ -39,7 +39,7 @@ class Importer_invMetaGroups(SQLImporter):
     pks = (('id', 'metaGroupID'),)
     field_map = (('name', 'metaGroupName'),
                  ('icon_id', 'iconID'),
-                 ('description', 'description'))
+                 ('description', 'description', parse_char_notnull))
 
 
 class Importer_invMarketGroups(SQLImporter):
@@ -59,7 +59,7 @@ class Importer_invTypes(SQLImporter):
     model = InvType
     pks = (('id', 'typeID'),)
     field_map = (('name', 'typeName'),
-                 ('description', 'description'),
+                 ('description', 'description', parse_char_notnull),
                  ('group_id', 'groupID'),
                  ('radius', 'radius'),
                  ('mass', 'mass'),
@@ -70,7 +70,6 @@ class Importer_invTypes(SQLImporter):
                  ('market_group_id', 'marketGroupID'),
                  ('is_published', 'published', parse_int_bool),
                  ('race_id', 'raceID'),
-                 ('graphic_id', 'graphicID'),
                  ('icon_id', 'iconID'),
                  ('chance_of_duplicating', 'chanceOfDuplicating'))
 
