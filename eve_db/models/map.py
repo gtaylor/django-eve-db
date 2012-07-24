@@ -113,7 +113,7 @@ class MapConstellation(models.Model):
     z_max = models.FloatField(blank=True, null=True)
     x = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
-    alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
+    #alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
     faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
     sovereignty_grace_start_time = models.DateTimeField(blank=True, null=True)
@@ -190,7 +190,7 @@ class MapSolarSystem(models.Model):
     radius = models.FloatField(blank=True, null=True)
     sun_type = models.ForeignKey('InvType', blank=True, null=True)
     security_class = models.CharField(max_length=5, blank=True)
-    alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
+    #alliance = models.ForeignKey('eve_api.ApiPlayerAlliance', blank=True, null=True)
     sovereignty_level = models.IntegerField(blank=True, null=True)
     sovereignty_start_time = models.DateTimeField(blank=True, null=True)
 

@@ -9,3 +9,4 @@ dist
 *.tmp
 MANIFEST
 .DS_Store
+.idea

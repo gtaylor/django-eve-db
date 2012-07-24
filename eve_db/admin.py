@@ -130,12 +130,12 @@ class ChrFactionAdmin(admin.ModelAdmin):
 admin.site.register(ChrFaction, ChrFactionAdmin)
 
 class MapConstellationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'faction', 'alliance')
+    list_display = ('id', 'name', 'faction')
 admin.site.register(MapConstellation, MapConstellationAdmin)
 
 class MapSolarSystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'constellation', 'region', 'faction',
-                    'alliance', 'security_class', 'security_level')
+                    'security_class', 'security_level')
 admin.site.register(MapSolarSystem, MapSolarSystemAdmin)
 
 class MapSolarSystemJumpAdmin(admin.ModelAdmin):

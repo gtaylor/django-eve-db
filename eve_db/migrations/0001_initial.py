@@ -6,10 +6,6 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
-    depends_on = (
-        ("eve_api", "0001_initial"),
-    )
-
     def forwards(self, orm):
 
         # Adding model 'EveName'
@@ -353,7 +349,6 @@ class Migration(SchemaMigration):
             ('z_min', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('x', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('radius', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('alliance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_api.ApiPlayerAlliance'], null=True, blank=True)),
             ('faction', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.ChrFaction'], null=True, blank=True)),
             ('sovereignty_start_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('sovereignty_grace_start_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
@@ -400,7 +395,6 @@ class Migration(SchemaMigration):
             ('radius', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('sun_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_db.InvType'], null=True, blank=True)),
             ('security_class', self.gf('django.db.models.fields.CharField')(max_length=5, blank=True)),
-            ('alliance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['eve_api.ApiPlayerAlliance'], null=True, blank=True)),
             ('sovereignty_level', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('sovereignty_start_time', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
@@ -1204,15 +1198,6 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'eve_api.apiplayeralliance': {
-            'Meta': {'ordering': "['date_founded']", 'object_name': 'ApiPlayerAlliance'},
-            'api_last_updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'date_founded': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'member_count': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'ticker': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'})
-        },
         'eve_db.agtagent': {
             'Meta': {'ordering': "['id']", 'object_name': 'AgtAgent'},
             'corporation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.CrpNPCCorporation']", 'null': 'True', 'blank': 'True'}),
@@ -1646,7 +1631,6 @@ class Migration(SchemaMigration):
         },
         'eve_db.mapconstellation': {
             'Meta': {'ordering': "['id']", 'object_name': 'MapConstellation'},
-            'alliance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_api.ApiPlayerAlliance']", 'null': 'True', 'blank': 'True'}),
             'faction': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.ChrFaction']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
@@ -1731,7 +1715,6 @@ class Migration(SchemaMigration):
         },
         'eve_db.mapsolarsystem': {
             'Meta': {'ordering': "['id']", 'object_name': 'MapSolarSystem'},
-            'alliance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_api.ApiPlayerAlliance']", 'null': 'True', 'blank': 'True'}),
             'constellation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.MapConstellation']", 'null': 'True', 'blank': 'True'}),
             'faction': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'solarsystem_set'", 'null': 'True', 'to': "orm['eve_db.ChrFaction']"}),
             'has_interconstellational_link': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),

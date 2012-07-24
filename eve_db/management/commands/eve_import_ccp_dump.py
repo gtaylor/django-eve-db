@@ -2,23 +2,11 @@ import sys
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.conf import settings
-
-# Make sure we have all of the dependencies.
-try:
-    from eve_proxy.models import CachedDocument
-except ImportError:
-    print "\n\rFAIL: You have not installed django-eve-proxy. Please see:\n\r"
-    print "   https://github.com/gtaylor/django-eve-proxy\n\r"
-    sys.exit(1)
-try:
-    from eve_api import app_defines
-except ImportError:
-    print "\n\rFAIL: You have not installed django-eve-api. Please see:\n\r"
-    print "   https://github.com/gtaylor/django-eve-api\n\r"
-    sys.exit(1)
-
 from eve_db.ccp_importer import util
 from eve_db.ccp_importer import importers
+
+# TODO: Un hardcode this some day when we're feeling ambitious.
+settings.EVE_CCP_DUMP_SQLITE_DB = 'inferno11.db3'
 
 def exit_with_error(error_msg):
     """
@@ -119,7 +107,7 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
         check_for_eve_db()
 
         try:
-            if len(args) == 0:
+            if len(args) is 0:
                 print "No table names specified, importing all."
                 util.run_importers(util.IMPORT_LIST)
             else:

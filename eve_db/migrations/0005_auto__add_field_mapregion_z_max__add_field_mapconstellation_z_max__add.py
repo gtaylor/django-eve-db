@@ -31,15 +31,6 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'eve_api.apiplayeralliance': {
-            'Meta': {'ordering': "['date_founded']", 'object_name': 'ApiPlayerAlliance'},
-            'api_last_updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'date_founded': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'member_count': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
-            'ticker': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'})
-        },
         'eve_db.agtagent': {
             'Meta': {'ordering': "['id']", 'object_name': 'AgtAgent'},
             'corporation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.CrpNPCCorporation']", 'null': 'True', 'blank': 'True'}),
@@ -473,7 +464,6 @@ class Migration(SchemaMigration):
         },
         'eve_db.mapconstellation': {
             'Meta': {'ordering': "['id']", 'object_name': 'MapConstellation'},
-            'alliance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_api.ApiPlayerAlliance']", 'null': 'True', 'blank': 'True'}),
             'faction': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.ChrFaction']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.IntegerField', [], {'unique': 'True', 'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
@@ -559,7 +549,6 @@ class Migration(SchemaMigration):
         },
         'eve_db.mapsolarsystem': {
             'Meta': {'ordering': "['id']", 'object_name': 'MapSolarSystem'},
-            'alliance': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_api.ApiPlayerAlliance']", 'null': 'True', 'blank': 'True'}),
             'constellation': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['eve_db.MapConstellation']", 'null': 'True', 'blank': 'True'}),
             'faction': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'solarsystem_set'", 'null': 'True', 'to': "orm['eve_db.ChrFaction']"}),
             'has_interconstellational_link': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
