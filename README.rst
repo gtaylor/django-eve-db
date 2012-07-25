@@ -1,6 +1,6 @@
-=================
-django-eve-db 1.0
-=================
+=============
+django-eve-db
+=============
 
 :Author: Greg Taylor
 :License: BSD
