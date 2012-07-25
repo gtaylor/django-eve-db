@@ -15,12 +15,9 @@ Getting Started
 ---------------
 
 For details on how to get started using this software, see the 
-`Getting Started`_ page. Note that since this app requires django-eve-api and 
-django-eve-proxy, it may be better to just install `django-eve`_, which wraps 
-all of these into a neat starter project framework.
+`Getting Started`_ page.
 
 .. _Getting Started: https://github.com/gtaylor/django-eve-db/wiki/Getting-started
-.. _django-eve: https://github.com/gtaylor/django-eve
 
 -----------
 Development
