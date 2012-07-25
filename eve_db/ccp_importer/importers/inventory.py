@@ -5,6 +5,11 @@ from eve_db.models import *
 from importer_classes import SQLImporter, parse_int_bool, parse_char_notnull
 
 
+class Importer_invNames(SQLImporter):
+    model = InvName
+    pks = (('id', 'itemID'),)
+    field_map = (('name', 'itemName', parse_char_notnull),)
+
 
 class Importer_invCategories(SQLImporter):
     DEPENDENCIES = ['eveIcons']
@@ -104,7 +109,7 @@ class Importer_dgmAttributeTypes(SQLImporter):
                  ('description', 'description'),
                  ('default_value', 'defaultvalue'),
                  ('is_published', 'published', parse_int_bool),
-                 ('display_name', 'displayname'),
+                 ('display_name', 'displayname', parse_char_notnull),
                  ('is_stackable', 'stackable', parse_int_bool),
                  ('high_is_good', 'highisgood', parse_int_bool),
                  ('category_id', 'categoryid'),
@@ -128,7 +133,7 @@ class Importer_dgmEffects(SQLImporter):
                  ('category', 'effectCategory'),
                  ('pre_expression', 'preExpression'),
                  ('post_expression', 'postExpression'),
-                 ('description', 'description'),
+                 ('description', 'description', parse_char_notnull),
                  ('guid', 'guid', parse_char_notnull),
                  ('icon_id', 'iconID'),
                  ('is_offensive', 'isOffensive', parse_int_bool),

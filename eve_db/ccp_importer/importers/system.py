@@ -2,7 +2,7 @@
 """
 Import various important system tables.
 """
-from eve_db.models import EveUnit, EveName, EveGraphic, EveIcon
+from eve_db.models import EveUnit, EveGraphic, EveIcon
 from importer_classes import SQLImporter, parse_int_bool, parse_char_notnull
 
 class Importer_eveUnits(SQLImporter):
@@ -11,16 +11,6 @@ class Importer_eveUnits(SQLImporter):
     field_map = (('name', 'unitname'),
                  ('display_name', 'displayname', parse_char_notnull),
                  ('description', 'description', parse_char_notnull))
-
-
-class Importer_eveNames(SQLImporter):
-    DEPENDENCIES = ['invTypes', 'invCategories', 'invGroups']
-    model = EveName
-    pks = (('id', 'itemID'),)
-    field_map = (('name', 'itemName'),
-                 ('category_id', 'categoryID'),
-                 ('group_id', 'groupID'),
-                 ('type_id', 'typeID'))
 
 
 class Importer_eveIcons(SQLImporter):

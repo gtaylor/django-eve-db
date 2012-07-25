@@ -21,6 +21,10 @@ class ChrAttributeAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'name')
 admin.site.register(ChrAttribute, ChrAttributeAdmin)
 
+class InvNameAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'category', 'group', 'type')
+admin.site.register(InvName, InvNameAdmin)
+
 class InvMetaGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'icon')
 admin.site.register(InvMetaGroup, InvMetaGroupAdmin)
@@ -163,10 +167,6 @@ admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
 class EveGraphicAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'name', 'file', 'is_obsolete')
 admin.site.register(EveGraphic, EveGraphicAdmin)
-
-class EveNameAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'category', 'group', 'type')
-admin.site.register(EveName, EveNameAdmin)
 
 class ChrRaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'short_description')

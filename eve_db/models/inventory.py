@@ -1,8 +1,35 @@
 """
 This module holds inventory/item-related models.
 """
-from xml.dom import minidom
+
 from django.db import models
+
+class InvName(models.Model):
+    """
+    This appears to be something used to search everything at once. Most of
+    the stuff in this table have models with a 'name' field on them. The CCP
+    dump doesn't use the invNames table directly many times.
+
+    Things covered by this model include space objects, corporations, and
+    people.
+
+    CCP Table: invNames
+    CCP Primary key: "itemID" int(11)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    name = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Name'
+        verbose_name_plural = 'Names'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
 
 class InvMarketGroup(models.Model):
     """

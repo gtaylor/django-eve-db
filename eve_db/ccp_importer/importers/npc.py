@@ -2,10 +2,9 @@
 Import NPC corp/agent data.
 """
 from eve_db.models import npc as npc_models
+from eve_db.models.inventory import InvName
 from importer_classes import SQLImporter
-from eve_db.models.system import EveName
-from eve_db.models.npc import AgtAgent, AgtConfig
-
+from eve_db.models.npc import AgtAgent
 
 
 class Importer_crpActivities(SQLImporter):
@@ -43,12 +42,12 @@ class Importer_agtAgentTypes(SQLImporter):
 # Need to keep this mostly the old way due to all the self-referencing
 # foreign keys. 
 class Importer_crpNPCCorporations(SQLImporter):
-    DEPENDENCIES = ['chrFactions', 'eveIcons', 'eveNames', 'mapSolarSystems']
+    DEPENDENCIES = ['chrFactions', 'eveIcons', 'invNames', 'mapSolarSystems']
     model = npc_models.CrpNPCCorporation
 
     def import_row(self, row):
         imp_obj, created = self.model.objects.get_or_create(id=row['corporationID'])
-        imp_obj.name = EveName.objects.get(id=row['corporationID']).name
+        imp_obj.name = InvName.objects.get(id=row['corporationID']).name
         imp_obj.size = row['size']
         imp_obj.extent = row['extent']
 
@@ -115,11 +114,11 @@ class Importer_crpNPCDivisions(SQLImporter):
 
 
 def get_evename_for_agent(agent_id):
-    return EveName.objects.get(id=agent_id).name
+    return InvName.objects.get(id=agent_id).name
 
 class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
-                    'eveNames', 'agtAgentTypes']
+                    'invNames', 'agtAgentTypes']
     model = AgtAgent
     pks = (('id', 'agentID'),)
     field_map = (('division_id', 'divisionID'),
@@ -130,10 +129,4 @@ class Importer_agtAgents(SQLImporter):
                  ('type_id', 'agentTypeID'),
                  ('name', 'agentID', get_evename_for_agent))
 
-
-class Importer_agtConfig(SQLImporter):
-    DEPENDENCIES = ['agtAgents']
-    model = AgtConfig
-    pks = (('agent', 'agentID'), ('key', 'k', False))
-    field_map = (('value', 'v'),)
 

@@ -240,25 +240,3 @@ class AgtAgent(models.Model):
 
     def __str__(self):
         return self.__unicode__()
-
-class AgtConfig(models.Model):
-    """
-    CCP Table: agtConfig
-    CCP Primary key: ("agentID" int(11), "k" varchar(50))
-    """
-    agent = models.ForeignKey(AgtAgent)
-    key = models.CharField(max_length=255)
-    value = models.CharField(max_length=255, blank=True, null=True)
-
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['id']
-        verbose_name = 'Agent Config'
-        verbose_name_plural = 'Agent Configs'
-        unique_together = ('agent', 'key')
-
-    def __unicode__(self):
-        return "%s %s=%s" % (self.agent.name, self.key, self.value)
-
-    def __str__(self):
-        return self.__unicode__()

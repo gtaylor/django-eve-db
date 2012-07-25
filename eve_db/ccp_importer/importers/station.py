@@ -121,7 +121,7 @@ class Importer_staOperations(SQLImporter):
     pks = (('id', 'operationID'),)
     field_map = (('activity_id', 'activityID'),
                  ('name', 'operationName'),
-                 ('description', 'description'),
+                 ('description', 'description', parse_char_notnull),
                  ('fringe', 'fringe'),
                  ('corridor', 'corridor'),
                  ('hub', 'hub'),

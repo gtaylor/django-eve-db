@@ -1,12 +1,9 @@
 import sys
 from optparse import make_option
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from eve_db.ccp_importer import util
 from eve_db.ccp_importer import importers
-
-# TODO: Un hardcode this some day when we're feeling ambitious.
-settings.EVE_CCP_DUMP_SQLITE_DB = 'inferno11.db3'
 
 def exit_with_error(error_msg):
     """
@@ -33,13 +30,13 @@ def list_tables(option, opt, value, parser):
     # The -l argument is just used for listing, proceed no further.
     exit_with_succ()
 
-def check_for_eve_db():
+def check_for_eve_db(sqlite_file):
     """
     Checks for the presence of the CCP EVE dump in SQLite format. Exit if
     this can't be found.
     """
     try:
-        dbfile = open(settings.EVE_CCP_DUMP_SQLITE_DB, 'r')
+        dbfile = open(sqlite_file, 'r')
     except IOError:
         exit_with_error("""No CCP data dump could be found. Visit 
 http://wiki.eve-id.net/CCP_Database_Dump_Resources#Conversions
@@ -55,7 +52,7 @@ def get_importer_classes_from_arg_list(arg_list):
     exception so the user may be notified.
     """
     importer_classes = set()
-    for arg in arg_list:
+    for arg in arg_list[1:]:
         importer_class = getattr(importers, 'Importer_%s' % arg, False)
         if importer_class not in util.IMPORT_LIST:
             exit_with_error("No such table to import: %s\n\rNOTE: Table names are case-sensitive." % arg)
@@ -104,16 +101,23 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
         """
         #print "OPTIONS", options
         #print "ARGS:", args
-        check_for_eve_db()
+
+        if len(args) < 1:
+            raise CommandError(
+                "You must specify the static data dump file to import. This is "
+                "probably something in the pattern of *.db3")
 
         try:
-            if len(args) is 0:
+            sqlite_file = args[0]
+            check_for_eve_db(sqlite_file)
+
+            if len(args) is 1:
                 print "No table names specified, importing all."
-                util.run_importers(util.IMPORT_LIST)
+                util.run_importers(util.IMPORT_LIST, sqlite_file)
             else:
                 specified_importers = get_importer_classes_from_arg_list(args)
                 start_at_import = options.get('start_at_import')
-                print "Importing: %s" % args
+                print "Importing: %s" % args[1:]
 
                 include_deps = options.get('include_deps')
                 if include_deps and not start_at_import:
@@ -125,7 +129,7 @@ the CCP data dump. If no arguments are specified, all tables will be imported.""
                     # everything after it.
                     specified_importers = get_importers_for_start_at_import(specified_importers)
 
-                util.run_importers(specified_importers,
+                util.run_importers(specified_importers, sqlite_file,
                                    include_deps=include_deps)
         except KeyboardInterrupt:
             print "Terminating early..."

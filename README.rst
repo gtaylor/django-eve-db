@@ -1,6 +1,6 @@
-=============
-django-eve-db
-=============
+=================
+django-eve-db 1.0
+=================
 
 django-eve-db is a set of `Django`_ models that wrap CCP's EVE Online data 
 dump. This makes it extremely easy to query the dump and rapidly 
