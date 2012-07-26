@@ -249,10 +249,6 @@ class AgtAgentTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 admin.site.register(AgtAgentType, AgtAgentTypeAdmin)
 
-class AgtConfigAdmin(admin.ModelAdmin):
-    list_display = ('id', 'agent', 'key', 'value')
-admin.site.register(AgtConfig, AgtConfigAdmin)
-
 class CrtCategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description')
 admin.site.register(CrtCategory, CrtCategoryAdmin)
