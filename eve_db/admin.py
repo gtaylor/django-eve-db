@@ -22,7 +22,7 @@ class ChrAttributeAdmin(admin.ModelAdmin):
 admin.site.register(ChrAttribute, ChrAttributeAdmin)
 
 class InvNameAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'category', 'group', 'type')
+    list_display = ('id', 'name')
 admin.site.register(InvName, InvNameAdmin)
 
 class InvMetaGroupAdmin(admin.ModelAdmin):
