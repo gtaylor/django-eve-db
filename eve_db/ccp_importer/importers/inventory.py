@@ -66,7 +66,6 @@ class Importer_invTypes(SQLImporter):
     field_map = (('name', 'typeName'),
                  ('description', 'description', parse_char_notnull),
                  ('group_id', 'groupID'),
-                 ('radius', 'radius'),
                  ('mass', 'mass'),
                  ('volume', 'volume'),
                  ('capacity', 'capacity'),
