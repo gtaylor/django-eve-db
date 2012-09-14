@@ -167,7 +167,6 @@ class InvType(models.Model):
     group = models.ForeignKey(InvGroup, blank=True, null=True)
     market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
     icon = models.ForeignKey('EveIcon', blank=True, null=True)
-    radius = models.FloatField(blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
     volume = models.FloatField(blank=True, null=True)
     capacity = models.FloatField(blank=True, null=True)
