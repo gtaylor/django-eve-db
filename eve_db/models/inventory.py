@@ -373,6 +373,7 @@ class InvBlueprintType(models.Model):
     parent_blueprint_type = models.ForeignKey(InvType, blank=True,
                                               null=True,
                                               related_name='parent_blueprint_type_set')
+    production_time = models.IntegerField(blank=True, null=True)
     tech_level = models.IntegerField(blank=True, null=True)
     research_productivity_time = models.IntegerField(blank=True, null=True)
     research_material_time = models.IntegerField(blank=True, null=True)

@@ -177,6 +177,7 @@ class Importer_invBlueprintTypes(SQLImporter):
     model = InvBlueprintType
     pks = (('blueprint_type', 'blueprintTypeID'),)
     field_map = (('product_type_id', 'productTypeID'),
+                 ('production_time', 'productionTime'),
                  ('parent_blueprint_type_id', 'parentBlueprintTypeID'),
                  ('tech_level', 'techLevel'),
                  ('research_productivity_time', 'researchProductivityTime'),
