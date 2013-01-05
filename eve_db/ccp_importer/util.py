@@ -9,7 +9,6 @@ import importers
 # they appear in this list. Any lines that are commented out are importers
 # that have not been written yet.
 IMPORT_LIST = [
-    Importer_eveIcons,
     Importer_chrFactions,
     Importer_invNames,
     Importer_mapRegions,
@@ -19,7 +18,6 @@ IMPORT_LIST = [
     Importer_agtAgentTypes,
     Importer_crpNPCDivisions,
     Importer_crpActivities,
-    #Importer_eveGraphics,
     Importer_eveUnits,
     Importer_invMetaGroups,
     Importer_invFlags,
@@ -80,7 +78,7 @@ IMPORT_LIST = [
 def order_importers(importer_classes):
     """
     Given a list of importer classes, order them based on their dependencies.
-    
+
     importer_classes: (list) References to the importer classes to run.
     """
     ordered = []
@@ -111,7 +109,7 @@ def add_dependencies(importer_classes):
     """
     Given a list of importer classes, add any dependencies needed for a
     complete import of the given tables.
-    
+
     importer_classes: (list) References to the importer classes to run.
     """
     # Make a copy so the Set size doesn't change during iteration.

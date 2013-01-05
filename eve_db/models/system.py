@@ -6,7 +6,7 @@ from django.db import models
 class EveUnit(models.Model):
     """
     Units of measurement.
-    
+
     CCP Table: eveUnits
     CCP Primary key: "unitID" tinyint(3)
     """
@@ -20,54 +20,6 @@ class EveUnit(models.Model):
         ordering = ['id']
         verbose_name = 'Unit'
         verbose_name_plural = 'Units'
-
-    def __unicode__(self):
-        return self.name
-
-    def __str__(self):
-        return self.__unicode__()
-
-class EveIcon(models.Model):
-    """
-    An icon.
-
-    CCP Table: eveIcons
-    CCP Primary key: "iconID" smallint(6)
-    """
-    id = models.IntegerField(unique=True, primary_key=True)
-    file = models.TextField(blank=True)
-    description = models.CharField(max_length=255)
-
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['id']
-        verbose_name = 'Icon'
-        verbose_name_plural = 'Icons'
-
-    def __unicode__(self):
-        return self.file
-
-    def __str__(self):
-        return self.__unicode__()
-
-class EveGraphic(models.Model):
-    """
-    Stored graphic model.
-
-    CCP Table: eveGraphics
-    CCP Primary key: "graphicID" smallint(6)
-    """
-    id = models.IntegerField(unique=True, primary_key=True)
-    name = models.CharField(max_length=50, blank=True)
-    description = models.CharField(max_length=255, blank=True)
-    file = models.TextField(blank=True)
-    is_obsolete = models.BooleanField(default=False)
-
-    class Meta:
-        app_label = 'eve_db'
-        ordering = ['id']
-        verbose_name = 'Graphic'
-        verbose_name_plural = 'Graphics'
 
     def __unicode__(self):
         return self.name

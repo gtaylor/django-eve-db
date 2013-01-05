@@ -1,12 +1,12 @@
 """
-Character stuff. 
+Character stuff.
 """
 from django.db import models
 
 class ChrRace(models.Model):
     """
-    Table lists available races. Races are numbered like bitmask - 1,2,4,8,16... 
-    
+    Table lists available races. Races are numbered like bitmask - 1,2,4,8,16...
+
     CCP Table: chrRaces
     CCP Primary key: "raceID" tinyint(3)
     """
@@ -14,7 +14,7 @@ class ChrRace(models.Model):
     name = models.CharField(max_length=30)
     short_description = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     # TODO: Add allegiance to a Faction here.
 
     class Meta:
@@ -31,7 +31,7 @@ class ChrRace(models.Model):
 
 class ChrBloodline(models.Model):
     """
-    Bloodlines for newly created characters with starting attributes. 
+    Bloodlines for newly created characters with starting attributes.
 
     CCP Table: chrBloodlines
     CCP Primary key: "bloodlineID" tinyint(3)
@@ -52,7 +52,7 @@ class ChrBloodline(models.Model):
     starting_charisma = models.IntegerField(default=0)
     starting_memory = models.IntegerField(default=0)
     starting_intelligence = models.IntegerField(default=0)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     short_description = models.TextField(blank=True)
     short_male_description = models.TextField(blank=True)
     short_female_description = models.TextField(blank=True)
@@ -71,7 +71,7 @@ class ChrBloodline(models.Model):
 
 class ChrAncestry(models.Model):
     """
-    Available Ancestries with bonus skills and items. 
+    Available Ancestries with bonus skills and items.
 
     CCP Table: chrAncestries
     CCP Primary key: "ancestryID" tinyint(3)
@@ -85,7 +85,7 @@ class ChrAncestry(models.Model):
     charisma_bonus = models.IntegerField(default=0)
     memory_bonus = models.IntegerField(default=0)
     intelligence_bonus = models.IntegerField(default=0)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     short_description = models.TextField(blank=True)
 
     class Meta:
@@ -102,8 +102,8 @@ class ChrAncestry(models.Model):
 
 class ChrAttribute(models.Model):
     """
-    Five base Attrinutes annotated. 
-    
+    Five base Attrinutes annotated.
+
     CCP Table: chrAttributes
     CCP Primary key: "attributeID" tinyint(3)
     """
@@ -112,7 +112,7 @@ class ChrAttribute(models.Model):
     description = models.TextField(blank=True)
     short_description = models.TextField(blank=True)
     notes = models.TextField(blank=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -128,7 +128,7 @@ class ChrAttribute(models.Model):
 
 class ChrFaction(models.Model):
     """
-    All main Factions found in game. 
+    All main Factions found in game.
 
     CCP Table: chrFactions
     CCP Primary key: "factionID" int(11)
@@ -143,7 +143,7 @@ class ChrFaction(models.Model):
     size_factor = models.FloatField(blank=True, null=True)
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'

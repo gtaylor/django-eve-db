@@ -1,5 +1,5 @@
 """
-Map-related models. 
+Map-related models.
 """
 from django.db import models
 
@@ -95,7 +95,7 @@ class MapConstellation(models.Model):
     Represents a constellation. Note that all sovereignty data is subject
     to change, and is held in an external model. django-eve-api has a few
     of these for your convenience.
-    
+
     CCP Table: mapConstellations
     CCP Primary key: "constellationID" int(11)
     """
@@ -246,7 +246,7 @@ class MapSolarSystemJump(models.Model):
 class MapJump(models.Model):
     """
     Jumps between stargates.
-    
+
     CCP Table: mapJumps
     CCP Primary key: "stargateID" int(11)
     """
@@ -352,7 +352,7 @@ class MapLandmark(models.Model):
     y = models.FloatField(blank=True, null=True)
     z = models.FloatField(blank=True, null=True)
     radius = models.FloatField(blank=True, null=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     importance = models.IntegerField(blank=True, null=True)
 
     class Meta:

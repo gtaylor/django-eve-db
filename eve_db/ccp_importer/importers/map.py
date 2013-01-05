@@ -147,7 +147,7 @@ class Importer_mapDenormalize(SQLImporter):
 
 
 class Importer_mapLandmarks(SQLImporter):
-    DEPENDENCIES = ['mapSolarSystems', 'eveIcons']
+    DEPENDENCIES = ['mapSolarSystems']
     model = map_models.MapLandmark
     pks = (('id', 'landmarkID'),)
     field_map = (('name', 'landmarkName'),

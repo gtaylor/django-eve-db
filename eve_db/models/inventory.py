@@ -34,16 +34,16 @@ class InvName(models.Model):
 class InvMarketGroup(models.Model):
     """
     Market groups are used to group items together in the market browser.
-    
+
     CCP Table: invMarketGroups
     CCP Primary key: "marketGroupID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=300012, blank=True, null=True)
     parent = models.ForeignKey('InvMarketGroup', blank=True, null=True)
     has_items = models.BooleanField(default=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -71,7 +71,7 @@ class InvCategory(models.Model):
     Inventory categories are the top level classification for all items, be
     it planets, moons, modules, ships, or any other entity within the game
     that physically exists.
-    
+
     CCP Table: invCategories
     CCP Primary key: "categoryID" tinyint(3)
     """
@@ -79,7 +79,7 @@ class InvCategory(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=255)
     is_published = models.BooleanField(default=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -95,10 +95,10 @@ class InvCategory(models.Model):
 
 class InvGroup(models.Model):
     """
-    Inventory groups are a further sub-classification within an 
+    Inventory groups are a further sub-classification within an
     InvCategory. For example, the 'MapRegion' inventory group's
     category is 'Celestial'.
-    
+
     CCP Table: invGroups
     CCP Primary key: "groupID" smallint(6)
     """
@@ -106,7 +106,7 @@ class InvGroup(models.Model):
     category = models.ForeignKey(InvCategory, blank=True, null=True)
     name = models.CharField(max_length=150)
     description = models.TextField()
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     use_base_price = models.BooleanField(default=False)
     allow_manufacture = models.BooleanField(default=True)
     allow_recycle = models.BooleanField(default=True)
@@ -130,14 +130,14 @@ class InvGroup(models.Model):
 class InvMetaGroup(models.Model):
     """
     Names of variants of items.
-    
+
     CCP Table: invMetaGroups
     CCP Primary key: "metaGroupID" smallint(6)
     """
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -156,8 +156,8 @@ class InvType(models.Model):
     Inventory types are generally objects that can be carried in your
     inventory (with the exception of suns, moons, planets, etc.) These are mostly
     market items, along with some basic attributes of each that are common
-    to all items. 
-    
+    to all items.
+
     CCP Table: invTypes
     CCP Primary key: "typeID" smallint(6)
     """
@@ -166,7 +166,6 @@ class InvType(models.Model):
     description = models.TextField(blank=True)
     group = models.ForeignKey(InvGroup, blank=True, null=True)
     market_group = models.ForeignKey(InvMarketGroup, blank=True, null=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
     mass = models.FloatField(blank=True, null=True)
     volume = models.FloatField(blank=True, null=True)
     capacity = models.FloatField(blank=True, null=True)
@@ -195,7 +194,7 @@ class InvTypeMaterial(models.Model):
     """
     These are materials required to produce an item type. Used for calculating
     build requirements.
-    
+
     CCP Table: invTypeMaterials
     CCP Primary key: ("typeID" smallint(6), "materialTypeID" smallint(6))
     """
@@ -220,11 +219,11 @@ class InvTypeMaterial(models.Model):
 
 class InvMetaType(models.Model):
     """
-    Relation between different variants of item (i.e. Tech-I, Faction, Tech-II). 
-    These are not "meta-levels" of items used for calculate invention success. 
-    For that information see Attribute metaLevel (attributeID=633) in table 
+    Relation between different variants of item (i.e. Tech-I, Faction, Tech-II).
+    These are not "meta-levels" of items used for calculate invention success.
+    For that information see Attribute metaLevel (attributeID=633) in table
     dgmTypeAttributes linked with type in question.
-    
+
     CCP Table: invMetaTypes
     CCP Primary key: "typeID" smallint(6)
     """
@@ -249,10 +248,10 @@ class InvMetaType(models.Model):
 
 class InvFlag(models.Model):
     """
-    The invFlags table is used to identify the location and/or status of an 
-    item within an office, station, ship, module or other container for the 
-    API calls APIv2 Char AssetList XML and APIv2 Corp AssetList XML. 
-    
+    The invFlags table is used to identify the location and/or status of an
+    item within an office, station, ship, module or other container for the
+    API calls APIv2 Char AssetList XML and APIv2 Corp AssetList XML.
+
     CCP Table: invFlags
     CCP Primary key: "flagID" tinyint(3)
     """
@@ -280,8 +279,8 @@ class InvFlag(models.Model):
 
 class DgmAttributeCategory(models.Model):
     """
-    Attribute Categories and their descriptions. 
-    
+    Attribute Categories and their descriptions.
+
     CCP Table: dgmAttributeCategories
     CCP Primary key: "categoryID" tinyint(3)
     """
@@ -303,8 +302,8 @@ class DgmAttributeCategory(models.Model):
 
 class DgmAttributeType(models.Model):
     """
-    Names and descriptions of attributes. 
-    
+    Names and descriptions of attributes.
+
     CCP Table: dgmAttributeTypes
     CCP Primary key: "attributeID" smallint(6)
     """
@@ -312,7 +311,7 @@ class DgmAttributeType(models.Model):
     name = models.CharField(max_length=75)
     category = models.ForeignKey(DgmAttributeCategory, blank=True, null=True)
     description = models.TextField(blank=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     default_value = models.IntegerField(blank=True, null=True)
     is_published = models.BooleanField(default=False)
     display_name = models.CharField(max_length=100, blank=True)
@@ -335,7 +334,7 @@ class DgmAttributeType(models.Model):
 class DgmTypeAttribute(models.Model):
     """
     All attributes for items.
-    
+
     CCP Table: dgmTypeAttributes
     CCP Primary key: ("typeID" smallint(6), "attributeID" smallint(6))
     """
@@ -360,7 +359,7 @@ class DgmTypeAttribute(models.Model):
 class InvBlueprintType(models.Model):
     """
     Stores info about each kind of blueprint.
-    
+
     CCP Table: invBlueprintTypes
     CCP Primary key: "blueprintTypeID" smallint(6)
     """
@@ -373,6 +372,7 @@ class InvBlueprintType(models.Model):
     parent_blueprint_type = models.ForeignKey(InvType, blank=True,
                                               null=True,
                                               related_name='parent_blueprint_type_set')
+    production_time = models.IntegerField(blank=True, null=True)
     tech_level = models.IntegerField(blank=True, null=True)
     research_productivity_time = models.IntegerField(blank=True, null=True)
     research_material_time = models.IntegerField(blank=True, null=True)
@@ -398,7 +398,7 @@ class InvBlueprintType(models.Model):
 class DgmEffect(models.Model):
     """
     Name and descriptions of effects.
-    
+
     CCP Table: dgmTypeEffects
     CCP Primary key: "effectID" smallint(6)
     """
@@ -413,7 +413,7 @@ class DgmEffect(models.Model):
     description = models.TextField(blank=True)
     # Unknown
     guid = models.CharField(max_length=255, blank=True)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
     # If True, applied to enemy.
     is_offensive = models.BooleanField(default=False)
     # If True, applied to ally.
@@ -470,7 +470,7 @@ class DgmTypeEffect(models.Model):
     Effects related to items. Effects are like boolean flags - if an item has
     an effect listed, it's subject to this effect with the specified
     parameters, listed as per the DgmEffect.
-    
+
     CCP Table: dgmTypeEffects
     CCP Primary key: ("typeID" smallint(6), "effectID" smallint(6))
     """
@@ -493,8 +493,8 @@ class DgmTypeEffect(models.Model):
 
 class InvPOSResourcePurpose(models.Model):
     """
-    Types of tasks for which POS need resources, i.e. Online, Reinforced. 
-    
+    Types of tasks for which POS need resources, i.e. Online, Reinforced.
+
     CCP Table: invControlTowerResourcePurposes
     CCP Primary key: "purpose" tinyint(4)
     """
@@ -517,8 +517,8 @@ class InvPOSResourcePurpose(models.Model):
 
 class InvPOSResource(models.Model):
     """
-    Fuel needed to support POSes. 
-    
+    Fuel needed to support POSes.
+
     CCP Table: invControlTowerResources
     CCP Primary key: ("controlTowerTypeID" smallint(6), "resourceTypeID" smallint(6))
     """
@@ -547,7 +547,7 @@ class InvPOSResource(models.Model):
 class InvTypeReaction(models.Model):
     """
     Reaction recipes for POSes.
-    
+
     CCP Table: invTypeReactions
     CCP Primary key: ("reactionTypeID" smallint(6), "input" tinyint(1), "typeID" smallint(6))
     """
@@ -578,7 +578,7 @@ class InvTypeReaction(models.Model):
 class InvContrabandType(models.Model):
     """
     Points to an InventoryType that is considered contraband somewhere.
-    
+
     CCP Table: invContrabandTypes
     CCP Primary key: ("factionID" int(11), "typeID" smallint(6))
     """

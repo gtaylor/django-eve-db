@@ -12,7 +12,6 @@ from eve_db.models.npc import CrpNPCCorporation
 
 
 class Importer_chrRaces(SQLImporter):
-    DEPENDENCIES = ['eveIcons']
     model = chr_models.ChrRace
     pks = (('id', 'raceID'),)
     field_map = (('name', 'raceName'),
@@ -22,7 +21,6 @@ class Importer_chrRaces(SQLImporter):
 
 
 class Importer_chrAttributes(SQLImporter):
-    DEPENDENCIES = ['eveIcons']
     model = chr_models.ChrAttribute
     pks = (('id', 'attributeID'),)
     field_map = (('name', 'attributeName'),
@@ -33,7 +31,7 @@ class Importer_chrAttributes(SQLImporter):
 
 
 class Importer_chrFactions(SQLImporter):
-    DEPENDENCIES = ['eveIcons', 'mapSolarSystems', 'crpNPCCorporations']
+    DEPENDENCIES = ['mapSolarSystems', 'crpNPCCorporations']
     model = chr_models.ChrFaction
 
     def import_row(self, row):
@@ -77,7 +75,7 @@ class Importer_chrFactions(SQLImporter):
             return new_instance, True
 
 class Importer_chrBloodlines(SQLImporter):
-    DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations', 'eveIcons']
+    DEPENDENCIES = ['chrRaces', 'invTypes', 'crpNPCCorporations']
     model = chr_models.ChrBloodline
     pks = (('id', 'bloodlineID'),)
     field_map = (('name', 'bloodlineName'),
@@ -98,7 +96,7 @@ class Importer_chrBloodlines(SQLImporter):
 
 
 class Importer_chrAncestries(SQLImporter):
-    DEPENDENCIES = ['chrBloodlines', 'invTypes', 'eveIcons']
+    DEPENDENCIES = ['chrBloodlines', 'invTypes']
     model = chr_models.ChrAncestry
     pks = (('id', 'ancestryID'),)
     field_map = (('name', 'ancestryName'),

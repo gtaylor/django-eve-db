@@ -12,7 +12,6 @@ class Importer_invNames(SQLImporter):
 
 
 class Importer_invCategories(SQLImporter):
-    DEPENDENCIES = ['eveIcons']
     model = InvCategory
     pks = (('id', 'categoryID'),)
     field_map = (('name', 'categoryName'),
@@ -22,7 +21,7 @@ class Importer_invCategories(SQLImporter):
 
 
 class Importer_invGroups(SQLImporter):
-    DEPENDENCIES = ['eveIcons', 'invCategories']
+    DEPENDENCIES = ['invCategories']
     model = InvGroup
     pks = (('id', 'groupID'),)
     field_map = (('name', 'groupName'),
@@ -39,7 +38,6 @@ class Importer_invGroups(SQLImporter):
 
 
 class Importer_invMetaGroups(SQLImporter):
-    DEPENDENCIES = ['eveIcons']
     model = InvMetaGroup
     pks = (('id', 'metaGroupID'),)
     field_map = (('name', 'metaGroupName'),
@@ -48,7 +46,7 @@ class Importer_invMetaGroups(SQLImporter):
 
 
 class Importer_invMarketGroups(SQLImporter):
-    DEPENDENCIES = ['eveIcons', 'invMarketGroups']
+    DEPENDENCIES = ['invMarketGroups']
     model = InvMarketGroup
     pks = (('id', 'marketGroupID'),)
     field_map = (('name', 'marketGroupName'),
@@ -59,7 +57,7 @@ class Importer_invMarketGroups(SQLImporter):
 
 
 class Importer_invTypes(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'eveIcons', 'invMarketGroups', 'chrRaces',
+    DEPENDENCIES = ['invMarketGroups', 'chrRaces',
                     'invGroups']
     model = InvType
     pks = (('id', 'typeID'),)
@@ -74,7 +72,6 @@ class Importer_invTypes(SQLImporter):
                  ('market_group_id', 'marketGroupID'),
                  ('is_published', 'published', parse_int_bool),
                  ('race_id', 'raceID'),
-                 ('icon_id', 'iconID'),
                  ('chance_of_duplicating', 'chanceOfDuplicating'))
 
 
@@ -98,10 +95,10 @@ class Importer_dgmAttributeCategories(SQLImporter):
     pks = (('id', 'categoryid'),)
     field_map = (('name', 'categoryname'),
                  ('description', 'categorydescription'))
-    
+
 
 class Importer_dgmAttributeTypes(SQLImporter):
-    DEPENDENCIES = ['dgmAttributeCategories', 'eveIcons', 'eveUnits']
+    DEPENDENCIES = ['dgmAttributeCategories', 'eveUnits']
     model = DgmAttributeType
     pks = (('id', 'attributeid'),)
     field_map = (('name', 'attributename'),
@@ -125,7 +122,7 @@ class Importer_dgmTypeAttributes(SQLImporter):
 
 
 class Importer_dgmEffects(SQLImporter):
-    DEPENDENCIES = ['eveIcons', 'dgmAttributeTypes']
+    DEPENDENCIES = ['dgmAttributeTypes']
     model = DgmEffect
     pks = (('id', 'effectID'),)
     field_map = (('name', 'effectName'),
@@ -177,6 +174,7 @@ class Importer_invBlueprintTypes(SQLImporter):
     model = InvBlueprintType
     pks = (('blueprint_type', 'blueprintTypeID'),)
     field_map = (('product_type_id', 'productTypeID'),
+                 ('production_time', 'productionTime'),
                  ('parent_blueprint_type_id', 'parentBlueprintTypeID'),
                  ('tech_level', 'techLevel'),
                  ('research_productivity_time', 'researchProductivityTime'),

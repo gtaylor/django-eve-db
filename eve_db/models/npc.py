@@ -5,8 +5,8 @@ from django.db import models
 
 class CrpActivity(models.Model):
     """
-    Activity types of corporations. 
-    
+    Activity types of corporations.
+
     CCP Table: crpActivities
     CCP Primary key: "activityID" tinyint(3)
     """
@@ -79,9 +79,9 @@ class CrpNPCCorporation(models.Model):
     border_systems = models.IntegerField(default=0)
     faction = models.ForeignKey('ChrFaction', blank=True, null=True)
     size_factor = models.FloatField(blank=True, null=True)
-    station_count = models.IntegerField(default=0)
-    station_system_count = models.IntegerField(default=0)
-    icon = models.ForeignKey('EveIcon', blank=True, null=True)
+    station_count = models.IntegerField(default=0, blank=True, null=True)
+    station_system_count = models.IntegerField(default=0, blank=True, null=True)
+    icon_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -101,7 +101,7 @@ class CrpNPCCorporation(models.Model):
 class CrpNPCDivision(models.Model):
     """
     Agent division types.
-    
+
     CCP Table: crpNPCDivisions
     CCP Primary key: "divisionID" tinyint(3)
     """
@@ -125,7 +125,7 @@ class CrpNPCDivision(models.Model):
 class CrpNPCCorporationDivision(models.Model):
     """
     Agent divisions available in corporations.
-    
+
     CCP Table: crpNPCCorporationDivisions
     CCP Primary key: ("corporationID" int(11), "divisionID" tinyint(3))
     """
@@ -148,10 +148,10 @@ class CrpNPCCorporationDivision(models.Model):
 
 class CrpNPCCorporationTrade(models.Model):
     """
-    Market items the corporation buys or sells. Supply/demand has been removed 
+    Market items the corporation buys or sells. Supply/demand has been removed
     from dumps, see:
-    http://www.eveonline.com/ingameboard.asp?a=topic&threadID=835467&page=2#32. 
-    
+    http://www.eveonline.com/ingameboard.asp?a=topic&threadID=835467&page=2#32.
+
     CCP Table: crpNPCCorporationTrades
     CCP Primary key: ("corporationID" int(11), "typeID" smallint(6))
     """
@@ -173,8 +173,8 @@ class CrpNPCCorporationTrade(models.Model):
 
 class CrpNPCCorporationResearchField(models.Model):
     """
-    Research fields for R&D agents in corporations. 
-    
+    Research fields for R&D agents in corporations.
+
     CCP Table: crpNPCCorporationResearchFields
     CCP Primary key: ("skillID" smallint(6), "corporationID" int(11))
     """
