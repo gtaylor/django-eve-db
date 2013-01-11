@@ -40,7 +40,7 @@ class Importer_ramAssemblyLines(SQLImporter):
                     'crpNPCCorporations']
     model = RamAssemblyLine
     pks = (('id', 'assemblyLineID'),)
-    
+
     def __init__(self, *args, **kwargs):
         super(Importer_ramAssemblyLines, self).__init__(*args, **kwargs)
         self.field_map = (('assembly_line_type_id', 'assemblyLineTypeID'),
@@ -58,15 +58,15 @@ class Importer_ramAssemblyLines(SQLImporter):
                  ('minimum_corp_security', 'minimumCorpSecurity'),
                  ('maximum_char_security', 'maximumCharSecurity'),
                  ('maximum_corp_security', 'maximumCorpSecurity'))
-        
+
         # Retrieve and store all assembly type names by ID
         self.assembly_line_type_names = {}
         for type_id, name in (keyvalue for keyvalue in RamAssemblyLineType.objects.all().values_list('id', 'name')):
             self.assembly_line_type_names[type_id] = name
-            
+
     def get_assembly_line_type_name(self, type_id):
 #        return RamAssemblyLineType.objects.get(id=type_id).name
-        return self.assembly_line_type_names.get(type_id) 
+        return self.assembly_line_type_names.get(type_id)
 
 
 class Importer_ramAssemblyLineTypeDetailPerCategory(SQLImporter):
@@ -100,7 +100,7 @@ def get_operation(operation_id):
     return None
 
 class Importer_staStationTypes(SQLImporter):
-    DEPENDENCIES = ['eveGraphics', 'staOperations', 'invTypes']
+    DEPENDENCIES = ['staOperations', 'invTypes']
     model = StaStationType
     pks = (('id', 'stationTypeID'),)
     field_map = (('dock_entry_x', 'dockEntryX'),

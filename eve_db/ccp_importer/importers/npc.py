@@ -40,9 +40,9 @@ class Importer_agtAgentTypes(SQLImporter):
 
 
 # Need to keep this mostly the old way due to all the self-referencing
-# foreign keys. 
+# foreign keys.
 class Importer_crpNPCCorporations(SQLImporter):
-    DEPENDENCIES = ['chrFactions', 'eveIcons', 'invNames', 'mapSolarSystems']
+    DEPENDENCIES = ['chrFactions', 'invNames', 'mapSolarSystems']
     model = npc_models.CrpNPCCorporation
 
     def import_row(self, row):

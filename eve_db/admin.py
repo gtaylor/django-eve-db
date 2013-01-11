@@ -26,7 +26,7 @@ class InvNameAdmin(admin.ModelAdmin):
 admin.site.register(InvName, InvNameAdmin)
 
 class InvMetaGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'icon')
+    list_display = ('id', 'name', 'description', 'icon_id')
 admin.site.register(InvMetaGroup, InvMetaGroupAdmin)
 
 class InvMetaTypeAdmin(admin.ModelAdmin):
@@ -163,10 +163,6 @@ admin.site.register(DgmAttributeType, DgmAttributeTypeAdmin)
 class DgmTypeAttributeAdmin(admin.ModelAdmin):
     list_display = ('inventory_type', 'attribute', 'value_int', 'value_float')
 admin.site.register(DgmTypeAttribute, DgmTypeAttributeAdmin)
-
-class EveGraphicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'name', 'file', 'is_obsolete')
-admin.site.register(EveGraphic, EveGraphicAdmin)
 
 class ChrRaceAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'short_description')

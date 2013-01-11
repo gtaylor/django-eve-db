@@ -15,8 +15,8 @@ class SQLImporter(object):
     DEPENDENCIES = []
     model = None
     # A mapping of model primary keys to CCP dump primary keys
-    # For multi-column PKs this is not actually the true Django PK but the 
-    # fields (presumably unique_together) that map to the CCP multi-column PKs! 
+    # For multi-column PKs this is not actually the true Django PK but the
+    # fields (presumably unique_together) that map to the CCP multi-column PKs!
     pks = ()
     # A mapping of model fields to CCP dump columns. Without previously
     # specified PK fields!
