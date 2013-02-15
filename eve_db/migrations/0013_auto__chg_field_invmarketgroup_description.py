@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 import datetime
+import django
+
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
+from django.conf import settings
 
 class Migration(SchemaMigration):
+
+    def is_sqlite(self):
+        if django.VERSION[1] < 2:
+            return settings.DATABASE_ENGINE == 'sqlite3'
+        else:
+            return settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3'
 
     def forwards(self, orm):
         # Deleting model 'EveIcon'
@@ -20,7 +28,8 @@ class Migration(SchemaMigration):
         # Changing field 'ChrFaction.icon'
         db.alter_column('eve_db_chrfaction', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'ChrFaction', fields ['icon']
-        db.delete_index('eve_db_chrfaction', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_chrfaction', ['icon_id'])
 
 
         # Renaming column for 'DgmEffect.icon' to match new field type.
@@ -28,7 +37,8 @@ class Migration(SchemaMigration):
         # Changing field 'DgmEffect.icon'
         db.alter_column('eve_db_dgmeffect', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'DgmEffect', fields ['icon']
-        db.delete_index('eve_db_dgmeffect', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_dgmeffect', ['icon_id'])
 
 
         # Renaming column for 'MapLandmark.icon' to match new field type.
@@ -36,7 +46,8 @@ class Migration(SchemaMigration):
         # Changing field 'MapLandmark.icon'
         db.alter_column('eve_db_maplandmark', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'MapLandmark', fields ['icon']
-        db.delete_index('eve_db_maplandmark', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_maplandmark', ['icon_id'])
 
 
         # Renaming column for 'CrpNPCCorporation.icon' to match new field type.
@@ -44,7 +55,8 @@ class Migration(SchemaMigration):
         # Changing field 'CrpNPCCorporation.icon'
         db.alter_column('eve_db_crpnpccorporation', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'CrpNPCCorporation', fields ['icon']
-        db.delete_index('eve_db_crpnpccorporation', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_crpnpccorporation', ['icon_id'])
 
 
         # Renaming column for 'ChrRace.icon' to match new field type.
@@ -52,7 +64,8 @@ class Migration(SchemaMigration):
         # Changing field 'ChrRace.icon'
         db.alter_column('eve_db_chrrace', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'ChrRace', fields ['icon']
-        db.delete_index('eve_db_chrrace', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_chrrace', ['icon_id'])
 
         # Deleting field 'InvType.icon'
         db.delete_column('eve_db_invtype', 'icon_id')
@@ -63,7 +76,8 @@ class Migration(SchemaMigration):
         # Changing field 'InvMetaGroup.icon'
         db.alter_column('eve_db_invmetagroup', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'InvMetaGroup', fields ['icon']
-        db.delete_index('eve_db_invmetagroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_invmetagroup', ['icon_id'])
 
 
         # Renaming column for 'InvCategory.icon' to match new field type.
@@ -71,7 +85,8 @@ class Migration(SchemaMigration):
         # Changing field 'InvCategory.icon'
         db.alter_column('eve_db_invcategory', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'InvCategory', fields ['icon']
-        db.delete_index('eve_db_invcategory', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_invcategory', ['icon_id'])
 
 
         # Renaming column for 'InvGroup.icon' to match new field type.
@@ -79,7 +94,8 @@ class Migration(SchemaMigration):
         # Changing field 'InvGroup.icon'
         db.alter_column('eve_db_invgroup', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'InvGroup', fields ['icon']
-        db.delete_index('eve_db_invgroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_invgroup', ['icon_id'])
 
 
         # Renaming column for 'ChrAncestry.icon' to match new field type.
@@ -87,7 +103,8 @@ class Migration(SchemaMigration):
         # Changing field 'ChrAncestry.icon'
         db.alter_column('eve_db_chrancestry', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'ChrAncestry', fields ['icon']
-        db.delete_index('eve_db_chrancestry', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_chrancestry', ['icon_id'])
 
 
         # Changing field 'InvMarketGroup.description'
@@ -98,7 +115,8 @@ class Migration(SchemaMigration):
         # Changing field 'InvMarketGroup.icon'
         db.alter_column('eve_db_invmarketgroup', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'InvMarketGroup', fields ['icon']
-        db.delete_index('eve_db_invmarketgroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_invmarketgroup', ['icon_id'])
 
 
         # Renaming column for 'ChrAttribute.icon' to match new field type.
@@ -106,7 +124,8 @@ class Migration(SchemaMigration):
         # Changing field 'ChrAttribute.icon'
         db.alter_column('eve_db_chrattribute', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'ChrAttribute', fields ['icon']
-        db.delete_index('eve_db_chrattribute', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_chrattribute', ['icon_id'])
 
 
         # Renaming column for 'ChrBloodline.icon' to match new field type.
@@ -114,7 +133,8 @@ class Migration(SchemaMigration):
         # Changing field 'ChrBloodline.icon'
         db.alter_column('eve_db_chrbloodline', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'ChrBloodline', fields ['icon']
-        db.delete_index('eve_db_chrbloodline', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_chrbloodline', ['icon_id'])
 
 
         # Renaming column for 'DgmAttributeType.icon' to match new field type.
@@ -122,48 +142,62 @@ class Migration(SchemaMigration):
         # Changing field 'DgmAttributeType.icon'
         db.alter_column('eve_db_dgmattributetype', 'icon', self.gf('django.db.models.fields.IntegerField')(null=True))
         # Removing index on 'DgmAttributeType', fields ['icon']
-        db.delete_index('eve_db_dgmattributetype', ['icon_id'])
+        if not self.is_sqlite():
+            db.delete_index('eve_db_dgmattributetype', ['icon_id'])
 
 
     def backwards(self, orm):
         # Adding index on 'DgmAttributeType', fields ['icon']
-        db.create_index('eve_db_dgmattributetype', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_dgmattributetype', ['icon_id'])
 
         # Adding index on 'ChrBloodline', fields ['icon']
-        db.create_index('eve_db_chrbloodline', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_chrbloodline', ['icon_id'])
 
         # Adding index on 'ChrAttribute', fields ['icon']
-        db.create_index('eve_db_chrattribute', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_chrattribute', ['icon_id'])
 
         # Adding index on 'InvMarketGroup', fields ['icon']
-        db.create_index('eve_db_invmarketgroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_invmarketgroup', ['icon_id'])
 
         # Adding index on 'ChrAncestry', fields ['icon']
-        db.create_index('eve_db_chrancestry', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_chrancestry', ['icon_id'])
 
         # Adding index on 'InvGroup', fields ['icon']
-        db.create_index('eve_db_invgroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_invgroup', ['icon_id'])
 
         # Adding index on 'InvCategory', fields ['icon']
-        db.create_index('eve_db_invcategory', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_invcategory', ['icon_id'])
 
         # Adding index on 'InvMetaGroup', fields ['icon']
-        db.create_index('eve_db_invmetagroup', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_invmetagroup', ['icon_id'])
 
         # Adding index on 'ChrRace', fields ['icon']
-        db.create_index('eve_db_chrrace', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_chrrace', ['icon_id'])
 
         # Adding index on 'CrpNPCCorporation', fields ['icon']
-        db.create_index('eve_db_crpnpccorporation', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_crpnpccorporation', ['icon_id'])
 
         # Adding index on 'MapLandmark', fields ['icon']
-        db.create_index('eve_db_maplandmark', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_maplandmark', ['icon_id'])
 
         # Adding index on 'DgmEffect', fields ['icon']
-        db.create_index('eve_db_dgmeffect', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_dgmeffect', ['icon_id'])
 
         # Adding index on 'ChrFaction', fields ['icon']
-        db.create_index('eve_db_chrfaction', ['icon_id'])
+        if not self.is_sqlite():
+            db.create_index('eve_db_chrfaction', ['icon_id'])
 
         # Adding model 'EveIcon'
         db.create_table('eve_db_eveicon', (
