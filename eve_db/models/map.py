@@ -366,3 +366,86 @@ class MapLandmark(models.Model):
 
     def __str__(self):
         return self.__unicode__()
+
+class MapLocationScene(models.Model):
+    """
+    CCP Table: MapLocationScenes
+    CCP Primary key: "locationID" smallint(6)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    graphic = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Location Scene'
+        verbose_name_plural = 'Location Scenes'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class MapLocationWormholeClass(models.Model):
+    """
+    CCP Table: MapLocationWormholeClasses
+    CCP Primary key: "locationID" smallint(6)
+    """
+    location = models.ForeignKey('MapDenormalize', unique=True, primary_key=True)
+    wormhole_class = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['location']
+        verbose_name = 'Wormhole Class'
+        verbose_name_plural = 'Wormhole Classes'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class WarCombatZone(models.Model):
+    """
+    CCP Table: WarCombatZone
+    CCP Primary key: "combatZoneID" int(11)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    name = models.CharField(max_length=255, blank=True)
+    faction = models.ForeignKey('ChrFaction')
+    center_system = models.ForeignKey('MapSolarSystem')
+    description = models.TextField(blank=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Combat Zone'
+        verbose_name_plural = 'Combat Zones'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class WarCombatZoneSystem(models.Model):
+    """
+    CCP Table: WarCombatZone
+    CCP Primary key: "combatZoneID" int(11)
+    """
+    solar_system = models.ForeignKey('MapSolarSystem', max_length=255, blank=True)
+    combat_zone = models.ForeignKey('WarCombatZone', max_length=255, blank=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Combat Zone System'
+        verbose_name_plural = 'Combat Zone Systems'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()

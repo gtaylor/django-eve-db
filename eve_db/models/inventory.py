@@ -260,8 +260,6 @@ class InvFlag(models.Model):
     name = models.CharField(max_length=255)
     # Full, descriptive name for the flag.
     text = models.CharField(max_length=255, blank=True)
-    # Very inconsistently used.
-    type_text = models.CharField(max_length=255, blank=True)
     # Have no idea what this is.
     order = models.IntegerField(blank=True, null=True)
 
@@ -598,6 +596,88 @@ class InvContrabandType(models.Model):
 
     def __unicode__(self):
         return self.type
+
+    def __str__(self):
+        return self.__unicode__()
+
+class InvItem(models.Model):
+    """
+    Contains all static items, i.e. items that aren't (much) affected by player activity:
+
+    * abstract system objects
+    * NPCs, NPC corps, factions
+    * regions, constellations, solar systems
+    * suns, planets, moons, asteroid belts, wormhole effects
+    * stargates, stations, station services ("Factories at Dodixie IX - Moon 20 - Federation Navy Assembly Plant")
+
+    CCP Table: invItems
+    CCP Primary key: "itemID" int(11)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    type = models.ForeignKey(InvType)
+    owner = models.IntegerField(null=True)
+    location = models.IntegerField(null=True)
+    flag = models.ForeignKey('InvFlag')
+    quantity = models.IntegerField()
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Item'
+        verbose_name_plural = 'Items'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class InvPosition(models.Model):
+    """
+    Contains the (x, y, z) coordinate and rotation information of static items.
+
+    CCP Table: invPosition
+    CCP Primary key: "itemID" int(11)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    x = models.FloatField(null=True)
+    y = models.FloatField(null=True)
+    z = models.FloatField(null=True)
+    yaw = models.FloatField(null=True)
+    pitch = models.FloatField(null=True)
+    roll = models.FloatField(null=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Position'
+        verbose_name_plural = 'Positions'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class InvUniqueName(models.Model):
+    """
+    Contains all the names of unique entities in the EVE Universe.
+
+    CCP Table: invUniqueNames
+    CCP Primary key: "itemID" int(11)
+    """
+    id = models.IntegerField(unique=True, primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
+    group = models.ForeignKey('InvGroup')
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Position'
+        verbose_name_plural = 'Positions'
+
+    def __unicode__(self):
+        return self.name
 
     def __str__(self):
         return self.__unicode__()

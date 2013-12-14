@@ -42,7 +42,7 @@ class InvTypeAdmin(admin.ModelAdmin):
 admin.site.register(InvType, InvTypeAdmin)
 
 class InvFlagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'text', 'type_text', 'order')
+    list_display = ('id', 'name', 'text', 'order')
 admin.site.register(InvFlag, InvFlagAdmin)
 
 class DgmEffectAdmin(admin.ModelAdmin):
@@ -76,13 +76,26 @@ class InvBlueprintTypeAdmin(admin.ModelAdmin):
     list_display = ('blueprint_type', 'product_type', 'tech_level')
 admin.site.register(InvBlueprintType, InvBlueprintTypeAdmin)
 
+class InvItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'owner', 'location', 'flag', 'quantity')
+admin.site.register(InvItem, InvItemAdmin)
+
+class InvPositionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'x', 'y', 'z', 'yaw', 'pitch', 'roll')
+admin.site.register(InvPosition, InvPositionAdmin)
+
+class InvUniqueNameAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'group',)
+admin.site.register(InvUniqueName, InvUniqueNameAdmin)
+
 class RamActivityAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'icon_filename', 'is_published')
 admin.site.register(RamActivity, RamActivityAdmin)
 
 class RamAssemblyLineAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'station', 'owner', 'activity',
-                    'minimum_char_security', 'cost_per_hour')
+                    'minimum_char_security', 'cost_per_hour', 'next_free_time',
+                    'restriction_mask')
 admin.site.register(RamAssemblyLine, RamAssemblyLineAdmin)
 
 class RamAssemblyLineStationsAdmin(admin.ModelAdmin):
@@ -108,6 +121,10 @@ class RamAssemblyLineTypeDetailPerGroupAdmin(admin.ModelAdmin):
 admin.site.register(RamAssemblyLineTypeDetailPerGroup,
                     RamAssemblyLineTypeDetailPerGroupAdmin)
 
+class RamInstallationTypeContentAdmin(admin.ModelAdmin):
+    list_display = ('installation_type', 'assembly_line_type', 'quantity')
+admin.site.register(RamInstallationTypeContent, RamInstallationTypeContentAdmin)
+
 class EveUnitAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'display_name', 'description')
 admin.site.register(EveUnit, EveUnitAdmin)
@@ -130,7 +147,7 @@ class MapConstellationJumpAdmin(admin.ModelAdmin):
 admin.site.register(MapConstellationJump, MapConstellationJumpAdmin)
 
 class ChrFactionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'solar_system')
+    list_display = ('id', 'name', 'description', 'solar_system', 'races')
 admin.site.register(ChrFaction, ChrFactionAdmin)
 
 class MapConstellationAdmin(admin.ModelAdmin):
@@ -229,6 +246,22 @@ class MapLandmarkAdmin(admin.ModelAdmin):
                     'importance', 'radius')
 admin.site.register(MapLandmark, MapLandmarkAdmin)
 
+class MapLocationSceneAdmin(admin.ModelAdmin):
+    list_display = ('id', 'graphic')
+admin.site.register(MapLocationScene, MapLocationSceneAdmin)
+
+class MapLocationWormholeClassAdmin(admin.ModelAdmin):
+    list_display = ('location', 'wormhole_class')
+admin.site.register(MapLocationWormholeClass, MapLocationWormholeClassAdmin)
+
+class WarCombatZoneAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'faction', 'center_system', 'description')
+admin.site.register(WarCombatZone, WarCombatZoneAdmin)
+
+class WarCombatZoneSystemAdmin(admin.ModelAdmin):
+    list_display = ('solar_system', 'combat_zone')
+admin.site.register(WarCombatZoneSystem, WarCombatZoneSystemAdmin)
+
 class StaStationAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'security',
                     'office_rental_cost',
@@ -238,33 +271,16 @@ admin.site.register(StaStation, StaStationAdmin)
 
 class AgtAgentAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'type', 'division', 'corporation', 'location',
-                    'quality', 'level')
+                    'quality', 'level', 'locator')
 admin.site.register(AgtAgent, AgtAgentAdmin)
 
 class AgtAgentTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
 admin.site.register(AgtAgentType, AgtAgentTypeAdmin)
 
-class CrtCategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description')
-admin.site.register(CrtCategory, CrtCategoryAdmin)
-
-class CrtClassAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description')
-admin.site.register(CrtClass, CrtClassAdmin)
-
-class CrtCertificateAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'cert_class', 'grade', 'corporation',
-                    'icon_num', 'description')
-admin.site.register(CrtCertificate, CrtCertificateAdmin)
-
-class CrtRelationshipAdmin(admin.ModelAdmin):
-    list_display = ('id', 'parent', 'parent_type', 'parent_level', 'child')
-admin.site.register(CrtRelationship, CrtRelationshipAdmin)
-
-class CrtRecommendationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ship_type', 'certificate', 'recommendation_level')
-admin.site.register(CrtRecommendation, CrtRecommendationAdmin)
+class AgtResearchAgentAdmin(admin.ModelAdmin):
+    list_display = ('agent', 'type')
+admin.site.register(AgtResearchAgent, AgtResearchAgentAdmin)
 
 class PlanetSchematicAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'cycle_time')

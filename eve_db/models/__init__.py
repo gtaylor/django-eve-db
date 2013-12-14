@@ -9,5 +9,4 @@ from map import *
 from chr import *
 from npc import *
 from station import *
-from certifications import *
 from planet import *

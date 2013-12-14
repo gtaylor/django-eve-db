@@ -220,3 +220,31 @@ class Importer_invContrabandTypes(SQLImporter):
                  ('confiscate_min_sec', 'confiscateMinSec'),
                  ('fine_by_value', 'fineByValue'),
                  ('attack_min_sec', 'attackMinSec'))
+
+class Importer_invItems(SQLImporter):
+    DEPENDENCIES = ['invTypes', 'invFlags']
+    model = InvItem
+    pks = (('id', 'itemID'),)
+    field_map = (('type_id', 'typeID'),
+                 ('owner', 'ownerID'),
+                 ('location', 'locationID'),
+                 ('flag_id', 'flagID'),
+                 ('quantity', 'quantity'))
+
+class Importer_invPositions(SQLImporter):
+    DEPENDENCIES = ['invItems']
+    model = InvPosition
+    pks = (('id', 'itemID'),)
+    field_map = (('x', 'x'),
+                 ('y', 'y'),
+                 ('z', 'z'),
+                 ('yaw', 'yaw'),
+                 ('pitch', 'pitch'),
+                 ('roll', 'roll'))
+
+class Importer_invUniqueNames(SQLImporter):
+    DEPENDENCIES = ['invItems', 'invGroups']
+    model = InvUniqueName
+    pks = (('id', 'itemID'),)
+    field_map = (('name', 'itemName'),
+                 ('group_id', 'groupID'))

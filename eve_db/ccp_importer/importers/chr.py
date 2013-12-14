@@ -31,7 +31,7 @@ class Importer_chrAttributes(SQLImporter):
 
 
 class Importer_chrFactions(SQLImporter):
-    DEPENDENCIES = ['mapSolarSystems', 'crpNPCCorporations']
+    DEPENDENCIES = ['chrRaces', 'mapSolarSystems', 'crpNPCCorporations']
     model = chr_models.ChrFaction
 
     def import_row(self, row):
@@ -56,7 +56,8 @@ class Importer_chrFactions(SQLImporter):
                                   icon_id=row['iconID'] if row['iconID'] else None,
                                   size_factor=row['sizeFactor'],
                                   station_count=row['stationCount'],
-                                  station_system_count=row['stationSystemCount'])
+                                  station_system_count=row['stationSystemCount'],
+                                  races=row['raceIDs'])
         if self.insert_only:
             return new_instance, True
 
@@ -70,6 +71,7 @@ class Importer_chrFactions(SQLImporter):
             old_instance.size_factor = row['sizeFactor']
             old_instance.station_count = row['stationCount']
             old_instance.station_system_count = row['stationSystemCount']
+            old_instance.races=row['raceIDs']
             return old_instance, False
         except self.model.DoesNotExist:
             return new_instance, True

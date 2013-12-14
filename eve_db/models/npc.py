@@ -228,12 +228,34 @@ class AgtAgent(models.Model):
     level = models.IntegerField(blank=True, null=True)
     quality = models.IntegerField(blank=True, null=True)
     type = models.ForeignKey(AgtAgentType, blank=True, null=True)
+    locator = models.BooleanField(default=False)
 
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
         verbose_name = 'Agent'
         verbose_name_plural = 'Agents'
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.__unicode__()
+
+class AgtResearchAgent(models.Model):
+    """
+    CCP Table: agtResearchAgents
+    CCP Primary key: "agentID" int(11)
+    """
+    agent = models.ForeignKey(AgtAgent)
+    type = models.ForeignKey('InvType')
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['agent']
+        verbose_name = 'Research Agent'
+        verbose_name_plural = 'Research Agents'
+        unique_together = ('agent', 'type')
 
     def __unicode__(self):
         return self.name
