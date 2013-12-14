@@ -3,7 +3,7 @@ from django.db import models
 class RamActivity(models.Model):
     """
     Research and Manufacturing activities.
-    
+
     CCP Table: ramActivities
     CCP Primary key: "activityID" tinyint(3)
     """
@@ -29,7 +29,7 @@ class RamActivity(models.Model):
 class RamAssemblyLineType(models.Model):
     """
     Various assembly line types.
-    
+
     CCP Table: ramAssemblyLineTypes
     CCP Primary key: "assemblyLineTypeID" tinyint(3)
     """
@@ -57,7 +57,7 @@ class RamAssemblyLineType(models.Model):
 class RamAssemblyLine(models.Model):
     """
     These represent individual assembly lines in stations.
-    
+
     CCP Table: ramAssemblyLines
     CCP Primary key: "assemblyLineID" int(11)
     """
@@ -79,6 +79,8 @@ class RamAssemblyLine(models.Model):
     maximum_corp_security = models.FloatField(blank=True, null=True)
     owner = models.ForeignKey('CrpNPCCorporation', blank=True, null=True)
     activity = models.ForeignKey('RamActivity', blank=True, null=True)
+    next_free_time = models.DateTimeField(blank=True, null=True)
+    restriction_mask = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = 'eve_db'
@@ -94,8 +96,8 @@ class RamAssemblyLine(models.Model):
 
 class RamAssemblyLineTypeDetailPerCategory(models.Model):
     """
-    Assembly line multipliers per produced item category. 
-    
+    Assembly line multipliers per produced item category.
+
     CCP Table: ramAssemblyLineTypeDetailPerCategory
     CCP Primary key: ("assemblyLineTypeID" tinyint(3), "categoryID" tinyint(3))
     """
@@ -119,8 +121,8 @@ class RamAssemblyLineTypeDetailPerCategory(models.Model):
 
 class RamAssemblyLineTypeDetailPerGroup(models.Model):
     """
-    Assembly line multipliers per produced item group. 
-    
+    Assembly line multipliers per produced item group.
+
     CCP Table: ramAssemblyLineTypeDetailPerGroup
     CCP Primary key: ("assemblyLineTypeID" tinyint(3), "groupID" smallint(6))
     """
@@ -145,7 +147,7 @@ class RamAssemblyLineTypeDetailPerGroup(models.Model):
 class RamAssemblyLineStations(models.Model):
     """
     Denotes assembly line types on individual stations.
-    
+
     CCP Table: ramAssemblyLineStations
     CCP Primary key: ("stationID" int(11), "assemblyLineTypeID" tinyint(3))
     """
@@ -199,7 +201,7 @@ class RamTypeRequirement(models.Model):
 class StaService(models.Model):
     """
     Entries for all services available at stations.
-    
+
     CCP Table: staServices
     CCP Primary key: "serviceID" int(11)
     """
@@ -222,7 +224,7 @@ class StaService(models.Model):
 class StaStationType(models.Model):
     """
     Details for the different types of stations.
-    
+
     CCP Table: staStationTypes
     CCP Primary key: "stationTypeID" smallint(6)
     """
@@ -252,8 +254,8 @@ class StaStationType(models.Model):
 
 class StaOperation(models.Model):
     """
-    Operation types for stations. 
-    
+    Operation types for stations.
+
     CCP Table: staOperations
     CCP Primary key: "operationID" tinyint(3)
     """
@@ -297,8 +299,8 @@ class StaOperation(models.Model):
 
 class StaStation(models.Model):
     """
-    Represents an individual station out in a system. 
-    
+    Represents an individual station out in a system.
+
     CCP Table: staStations
     CCP Primary key: "stationID" int(11)
     """
@@ -335,8 +337,8 @@ class StaStation(models.Model):
 
 class StaOperationServices(models.Model):
     """
-    Services per operations. 
-    
+    Services per operations.
+
     CCP Table: staOperationServices
     CCP Primary key: ("operationID" tinyint(3), "serviceID" int(11))
     """
@@ -349,6 +351,28 @@ class StaOperationServices(models.Model):
         verbose_name = 'Station Operation Service'
         verbose_name_plural = 'Station Operation Services'
         unique_together = ('operation', 'service')
+
+    def __unicode__(self):
+        return "%s: %s" % (self.operation, self.service)
+
+    def __str__(self):
+        return self.__unicode__()
+
+class RamInstallationTypeContent(models.Model):
+    """
+    CCP Table: ramInstallationTypeContent
+    CCP Primary key: ("installationTypeID" int(11))
+    """
+    installation_type = models.ForeignKey('InvType')
+    assembly_line_type = models.ForeignKey(RamAssemblyLineType)
+    quantity = models.IntegerField(null=True)
+
+    class Meta:
+        app_label = 'eve_db'
+        ordering = ['id']
+        verbose_name = 'Installation Type'
+        verbose_name_plural = 'Installation Types'
+        unique_together = ('installation_type', 'assembly_line_type')
 
     def __unicode__(self):
         return "%s: %s" % (self.operation, self.service)

@@ -183,3 +183,29 @@ class Importer_mapCelestialStatistics(SQLImporter):
                  ('mass', 'mass'),
                  ('is_locked', 'locked', parse_int_bool),
                  ('is_fragmented', 'fragmented', parse_int_bool))
+
+class Importer_mapLocationScenes(SQLImporter):
+    model = map_models.MapLocationScene
+    pks = (('id', 'locationID'),)
+    field_map = (('graphic', 'graphicID'),)
+
+class Importer_mapLocationWormholeClasses(SQLImporter):
+    DEPENDENCIES = ['mapDenormalize']
+    model = map_models.MapLocationWormholeClass
+    pks = (('location_id', 'locationID'),)
+    field_map = (('wormhole_class', 'wormholeClassID'),)
+
+class Importer_warCombatZones(SQLImporter):
+    DEPENDENCIES = ['chrFactions', 'mapSolarSystems']
+    model = map_models.WarCombatZone
+    pks = (('id', 'combatZoneID'),)
+    field_map = (('name', 'combatZoneName'),
+                ('faction_id', 'factionID'),
+                ('center_system_id', 'centerSystemID'),
+                ('description', 'description'))
+
+class Importer_warCombatZoneSystems(SQLImporter):
+    DEPENDENCIES = ['warCombatZones', 'mapSolarSystems']
+    model = map_models.WarCombatZoneSystem
+    pks = (('solar_system', 'solarSystemID'),)
+    field_map = (('combat_zone_id', 'combatZoneID'),)

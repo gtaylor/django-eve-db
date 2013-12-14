@@ -57,7 +57,9 @@ class Importer_ramAssemblyLines(SQLImporter):
                  ('minimum_char_security', 'minimumCharSecurity'),
                  ('minimum_corp_security', 'minimumCorpSecurity'),
                  ('maximum_char_security', 'maximumCharSecurity'),
-                 ('maximum_corp_security', 'maximumCorpSecurity'))
+                 ('maximum_corp_security', 'maximumCorpSecurity'),
+                 ('next_free_time', 'nextFreeTime'),
+                 ('rstriction_mask', 'restrictionMask'))
 
         # Retrieve and store all assembly type names by ID
         self.assembly_line_type_names = {}
@@ -180,3 +182,10 @@ class Importer_staStations(SQLImporter):
                  ('solar_system_id', 'solarSystemID'),
                  ('constellation_id', 'constellationID'),
                  ('region_id', 'regionID'))
+
+class Importer_ramInstallationTypeContents(SQLImporter):
+    DEPENDENCIES = ['ramAssemblyLineTypes']
+    model = RamInstallationTypeContent
+    pks = (('installation_type', 'installationTypeID'),)
+    field_map = (('assembly_line_type_id', 'assemblyLineTypeID'),
+                 ('quantity', 'quantity'),)

@@ -144,6 +144,7 @@ class ChrFaction(models.Model):
     station_count = models.IntegerField(default=0)
     station_system_count = models.IntegerField(default=0)
     icon_id = models.IntegerField(blank=True, null=True)
+    races = models.IntegerField(default=0)
 
     class Meta:
         app_label = 'eve_db'

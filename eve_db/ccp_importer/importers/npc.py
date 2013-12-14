@@ -119,7 +119,7 @@ def get_evename_for_agent(agent_id):
 class Importer_agtAgents(SQLImporter):
     DEPENDENCIES = ['crpNPCDivisions', 'mapDenormalize', 'crpNPCCorporations',
                     'invNames', 'agtAgentTypes']
-    model = AgtAgent
+    model = npc_models.AgtAgent
     pks = (('id', 'agentID'),)
     field_map = (('division_id', 'divisionID'),
                  ('corporation_id', 'corporationID'),
@@ -127,6 +127,13 @@ class Importer_agtAgents(SQLImporter):
                  ('level', 'level'),
                  ('quality', 'quality'),
                  ('type_id', 'agentTypeID'),
-                 ('name', 'agentID', get_evename_for_agent))
+                 ('name', 'agentID', get_evename_for_agent),
+                 ('locator', 'isLocator'))
+
+class Importer_agtResearchAgents(SQLImporter):
+    DEPENDENCIES = ['agtAgents', 'agtAgentTypes']
+    model = npc_models.AgtResearchAgent
+    pks = (('agent', 'agentID'),('type', 'typeID'))
+    field_map = ()
 
 
