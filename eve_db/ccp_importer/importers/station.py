@@ -59,7 +59,7 @@ class Importer_ramAssemblyLines(SQLImporter):
                  ('maximum_char_security', 'maximumCharSecurity'),
                  ('maximum_corp_security', 'maximumCorpSecurity'),
                  ('next_free_time', 'nextFreeTime'),
-                 ('rstriction_mask', 'restrictionMask'))
+                 ('restriction_mask', 'restrictionMask'))
 
         # Retrieve and store all assembly type names by ID
         self.assembly_line_type_names = {}
