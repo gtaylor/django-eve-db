@@ -186,6 +186,6 @@ class Importer_staStations(SQLImporter):
 class Importer_ramInstallationTypeContents(SQLImporter):
     DEPENDENCIES = ['ramAssemblyLineTypes']
     model = RamInstallationTypeContent
-    pks = (('installation_type', 'installationTypeID'),)
+    pks = (('installation_type', 'installationTypeID'), ('assembly_line_type', 'assemblyLineTypeID'),)
     field_map = (('assembly_line_type_id', 'assemblyLineTypeID'),
                  ('quantity', 'quantity'),)
