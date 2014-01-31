@@ -9,6 +9,7 @@ import importers
 # they appear in this list. Any lines that are commented out are importers
 # that have not been written yet.
 IMPORT_LIST = [
+    Importer_chrFactions,
     Importer_invNames,
     Importer_mapRegions,
     Importer_mapRegionJumps,
@@ -29,7 +30,6 @@ IMPORT_LIST = [
     Importer_invCategories,
     Importer_invGroups,
     Importer_chrRaces,
-    Importer_chrFactions,
     Importer_invTypes,
     Importer_invItems,
     Importer_invUniqueNames,
