@@ -242,8 +242,7 @@ class MapCelestialStatisticAdmin(admin.ModelAdmin):
 admin.site.register(MapCelestialStatistic, MapCelestialStatisticAdmin)
 
 class MapLandmarkAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'solar_system',
-                    'importance', 'radius')
+    list_display = ('id', 'name', 'description', 'solar_system')
 admin.site.register(MapLandmark, MapLandmarkAdmin)
 
 class MapLocationSceneAdmin(admin.ModelAdmin):
