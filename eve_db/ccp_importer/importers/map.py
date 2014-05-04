@@ -154,8 +154,6 @@ class Importer_mapLandmarks(SQLImporter):
                  ('x', 'x'),
                  ('y', 'y'),
                  ('z', 'z'),
-                 ('radius', 'radius'),
-                 ('importance', 'importance'),
                  ('solar_system_id', 'locationID'),
                  ('icon_id', 'iconID'))
 
