@@ -122,7 +122,7 @@ class Importer_mapJumps(SQLImporter):
     DEPENDENCIES = ['mapDenormalize']
     model = map_models.MapJump
     pks = (('origin_gate', 'stargateID'),)
-    field_map = (('destination_gate_id', 'celestialID'),)
+    field_map = (('destination_gate_id', 'destinationID'),)
 
 
 class Importer_mapDenormalize(SQLImporter):
