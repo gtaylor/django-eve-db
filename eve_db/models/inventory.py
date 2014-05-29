@@ -673,8 +673,8 @@ class InvUniqueName(models.Model):
     class Meta:
         app_label = 'eve_db'
         ordering = ['id']
-        verbose_name = 'Position'
-        verbose_name_plural = 'Positions'
+        verbose_name = 'Unique Name'
+        verbose_name_plural = 'Unique Names'
 
     def __unicode__(self):
         return self.name
